@@ -305,7 +305,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 				context = engine.getContext();
 			}
 			// get this from the jessop declaration eventually, but for now
-			PrintWriter out = new PrintWriter(System.out, true);
+			PrintWriter out = new PrintWriter(context.getWriter(), true);
 			context.setAttribute("out",  out, ScriptContext.ENGINE_SCOPE); // should be something like SCRIPT_SCOPE, really
 			Object result = engine.eval(source, context);
 			out.flush();
