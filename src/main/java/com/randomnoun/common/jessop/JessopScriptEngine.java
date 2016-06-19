@@ -82,6 +82,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 						// just a normal tag
 						sb.append('<');
 						sb.append(ch);
+						state = 0;
 					}
 					break;
 					
