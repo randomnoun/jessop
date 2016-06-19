@@ -1,0 +1,473 @@
+package com.randomnoun.common.jessop;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.script.AbstractScriptEngine;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+
+import org.apache.log4j.Logger;
+
+public class JessopScriptEngine extends AbstractScriptEngine implements Compilable {
+
+	Logger logger = Logger.getLogger(JessopScriptEngine.class);
+	
+	ScriptEngineFactory factory;
+	
+	// so I guess we implement this twice then
+	// going to use unix EOLs for everything for now
+	
+	// so should I have a Lexer here as well ? hmm. skip it for now.
+	
+	// need one of these for each language we intend to support
+	// the Tokeniser will call emit() methods in here as it parses the source script;
+	// classes that implement this interface should then generate code in the output script
+	private static interface JessopScriptBuilder {
+		// lines are source line numbers; try to keep these intact in the generated script
+		JessopDeclarations getDeclarations();                            // to retrieve declarations after the script is built
+		void setTokeniser(Tokeniser t, JessopDeclarations declarations); // set at the start of script parsing; allows this ScriptBuilder to switch ScriptBuilders
+		void emitText(int line, String s);        // ...
+		void emitExpression(int line, String s);  // <%= ... %>
+		void emitScriptlet(int line, String s);   // <% ... %> . JSP calls these things scriptlets
+		void emitDeclaration(int line, String s) throws ScriptException; // <%@ ... %>. ideally, there's only one of these, at the top of the source script 
+	}
+	
+	public static class JessopDeclarations {
+		String engine;
+	}
+
+	// this should be subclassed by specific languages (javascript etc)
+	public static abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {
+		Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);
+		JessopDeclarations declarations;
+		Tokeniser tokeniser;
+		PrintWriter pw;
+
+		public AbstractJessopScriptBuilder(PrintWriter pw) {
+			this.pw = pw;
+		}
+		
+		@Override
+		public void setTokeniser(Tokeniser t, JessopDeclarations declarations) {
+			this.tokeniser = t;
+			this.declarations = declarations;
+		}
+		public JessopDeclarations getDeclarations() {
+			return declarations;
+		}
+
+		@Override
+		public void emitDeclaration(int line, String s) throws ScriptException {
+			// declType attr1="val1" attr2="val2"
+			// don't really feel like tokenising this at the moment
+			s = s.trim();
+			// can't do this in 1 regex for some reason
+			//   Pattern declPattern = Pattern.compile("([^\\s\"]+)\\s*(?:(\\S+)=\"([^\"]*)\"\\s*)*$");
+			// so breaking into subregexes
+			String declType;
+			Pattern declTypePattern = Pattern.compile("^([^\\s\"]+)");
+			Matcher m = declTypePattern.matcher(s);
+			if (m.find()) {
+				declType = m.group(1);
+			} else {
+				throw new ScriptException("Could not parse declaration '" + s + "'", null, line);
+			}
+			s = s.substring(declType.length()).trim();
+			logger.info("s=" + s);
+			Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");
+			m = declAttrPattern.matcher(s);
+			while (m.find()) {
+				// do something
+				String attrName = m.group(1);
+				String attrValue = m.group(2);
+				if (attrName.equals("language")) {
+					// change the JessopScriptBuilder based on the language
+					// have a registry of these somewhere.
+					JessopScriptBuilder newBuilder;
+					if (attrValue.equals("javascript")) {
+						newBuilder = new JavascriptJessopScriptBuilder(pw); 
+						newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
+						tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
+						if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript
+					}
+					
+				} else if (attrName.equals("engine")) {
+					declarations.engine = attrValue;
+				}
+				logger.info("Found attr " + m.group(1) + "," + m.group(2));
+			}
+		}
+		
+		public abstract void emitText(int line, String s);
+		public abstract void emitExpression(int line, String s);
+		public abstract void emitScriptlet(int line, String s);
+	}
+	
+	// could have some kind of lineCountingPrintWriter, but let's just keep that in the JSB class
+	
+	private static class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+		Logger logger = Logger.getLogger(JavascriptJessopScriptBuilder.class);
+		int outputLine = 1; // current output line;
+		public JavascriptJessopScriptBuilder(PrintWriter pw) {
+			super(pw);
+		}
+		private void skipToLine(int line) {
+			while (outputLine < line) { print("\n"); }
+		}
+		private void print(String s) {
+			// logger.info("** PRINT " + s);
+			pw.print(s);
+			for (int i=0; i<s.length(); i++) {
+				if (s.charAt(i)=='\n') { outputLine++; } 
+			}
+		}
+		public static String escapeJavascript(String string) {
+	    	StringBuilder sb = new StringBuilder(string.length());
+			for (int i = 0; i<string.length(); i++) {
+				char ch = string.charAt(i);
+				if (ch=='\n') {
+				   sb.append("\\n");	
+				} else if (ch=='\\' || ch=='"' || ch=='\'' || ch<32 && ch>126) {
+					String hex = Integer.toString(ch, 16);
+					sb.append("\\u" + "0000".substring(0, 4-hex.length()) + hex);
+				} else {
+					sb.append(ch);
+				}
+			}
+	        return sb.toString();
+	    }
+		
+		@Override
+		public void emitText(int line, String s) {
+			skipToLine(line);
+			print("out.write(\"" + escapeJavascript(s) + "\");");
+		}
+		@Override
+		public void emitExpression(int line, String s) {
+			skipToLine(line);
+			print("out.write('' + (" + s + "));"); // coerce to String
+		}
+		@Override
+		public void emitScriptlet(int line, String s) {
+			skipToLine(line);
+			print(s);
+		}
+		
+	}
+	
+	
+	private static class Tokeniser {
+		Logger logger = Logger.getLogger(Tokeniser.class);
+		int state;
+		int charOffset;    // character number; starts at 0
+		int line;          // source line number; starts at 1
+		int eline;         // expression start line. Whenever we emit anything, reset the eline to line
+		StringBuilder sb;  // output stringBuilder
+		StringBuilder esb; // expression (or directive) stringBuilder
+		JessopScriptBuilder jsb;
+		public Tokeniser(JessopScriptBuilder jsb) {
+			state = 0;
+			line = 1; eline = 1; 
+			charOffset = 0;
+			this.jsb = jsb;
+			sb = new StringBuilder();
+			esb = new StringBuilder();
+			jsb.setTokeniser(this,  new JessopDeclarations());
+		}
+		public void setJessopScriptBuilder(JessopScriptBuilder jsb) {
+			// use this to switch languages within the tokeniser
+			this.jsb = jsb;
+		}
+		public void parseChar(char ch) throws ScriptException {
+			charOffset++;
+			// logger.debug("state " + state + " ch " + ch );
+			switch (state) {
+				case 0:  // initial state; parsing text to display
+					if (ch=='<') {
+						state = 1;
+					} else {
+						sb.append(ch);
+					}
+					break;
+					
+				case 1:  // parsed initial '<'
+					if (ch=='%') {  // <% ... %> or <%= ... %>
+						if (sb.length()>0) {
+							jsb.emitText(eline, sb.toString());
+							sb.setLength(0);
+							eline = line;
+						}
+						state = 2;
+					} else {
+						// just a normal tag
+						sb.append('<');
+						sb.append(ch);
+					}
+					break;
+					
+				case 2: // parsed initial '<%'
+					if (ch == '=') {  // <%= ... %>
+						state = 3;
+					} else if (ch=='@') { // <%@ ... %> declaration 
+						state = 5;
+					} else if (ch=='!') { // <%! ... %> block
+						state = 6;
+					} else if (ch=='-') { // <%-- ... --%> block
+						state = 7;
+					} else {        // <%  ... %>   NB: no space required after '<%'
+						state = 4;
+					}
+					break;
+					
+				case 3:
+					if (ch=='%') {
+						state = 13;  // possibly closing % of <%= ... %> 
+					} else {
+						esb.append(ch);
+					}
+					break;
+					
+				case 4:
+					if (ch=='%') {
+						state = 14;  // possibly closing % of <% ... %> 
+					} else {
+						esb.append(ch);
+					}
+					break;
+					
+				case 5:
+					if (ch=='"') {
+						state = 16;  // start of directive attribute
+						esb.append(ch);
+					} else if (ch=='%') { // closing % of <@ ... %>
+						state = 15;
+					} else {
+						esb.append(ch);
+					}
+					break;
+
+				case 6:
+					if (ch=='%') {
+						state = 16;  // possibly closing % of <%! ... %> 
+					} else {
+						esb.append(ch);
+					}
+					break;
+					
+				case 7:
+					if (ch=='-') {
+						state = 8;   // second '-' of starting <%-- ... --%>
+					} else {
+						// could say that this is in state 4; e.g. <%-someFunction%>
+						// but I'm going to chuck an exception
+						throw new ScriptException("'<%-' can only start a '<%--' comment block", null, line);  // charOffset
+					}
+					break;
+					
+				case 8:
+					if (ch=='-') {
+						state = 9;   // possibly close '-' of <%-- ... --%>
+					} else {
+						// stay in state 8
+						// ignore comments
+					}
+					break;
+					
+				case 9:
+					if (ch=='-') {
+						state = 10;  // possibly closing '--' of <%-- ... --%>
+					} else {
+						state = 8;
+						// ignore comments
+					}
+					break;
+				
+				case 10:
+					if (ch=='%') {   // possibly closing '--%' of <%-- ... --%>
+						state = 11;
+					} else {
+						state = 8;
+						// ignore comments
+					}
+					
+				case 11:
+					if (ch=='>') {   // closing '--%>' of <%-- ... --%>
+						state = 0;
+					} else {
+						state = 8; 
+					}
+					break;
+					
+				case 13:
+					if (ch=='>') {   // closing '%>' of <%= ... %>
+						jsb.emitExpression(eline, esb.toString());
+						esb.setLength(0);
+						eline = line;
+						state = 0;
+					} else {
+						esb.append(ch);
+						state = 3; 
+					}
+					break;
+				
+				case 14:
+					if (ch=='>') {   // closing '%>' of <% ... %>
+						jsb.emitScriptlet(eline, esb.toString());
+						esb.setLength(0);
+						eline = line;
+						state = 0;
+					} else {
+						esb.append(ch);
+						state = 4; 
+					}
+					break;
+					
+				case 15:
+					if (ch=='>') {   // closing '%>' of <%@ ... %> declaration
+						jsb.emitDeclaration(eline, esb.toString());
+						esb.setLength(0);
+						eline = line;
+						state = 0;
+					} else {
+						esb.append(ch);
+						state = 5; 
+					}
+					break;
+				
+				case 16:
+					if (ch=='"') {   // closing quote of <%@ ... %> declaration attribute
+						esb.append(ch);
+						state = 5;
+					} else {
+						esb.append(ch);
+						// stay in state 16
+					}
+					break;
+			}
+			
+			if (ch=='\n') { line++; }			
+		}
+		
+		public void parseEndOfFile() throws ScriptException {
+			// emit anythign that's left, raise exceptions if in invalid state
+			// logger.debug("state " + state + " EOF");
+			if (state!=0) {
+				// @TODO better error messages
+				throw new ScriptException("unexpected EOF (parse state=" + state + ")", null, line); // charOffset
+			}
+			if (sb.length()>0) {
+				jsb.emitText(eline, sb.toString());
+				sb.setLength(0);
+				eline = line;
+			}
+		}
+	}
+	
+	@Override
+	public Object eval(String script, ScriptContext context)
+			throws ScriptException {
+		CompiledScript cscript = compile(script);
+		return cscript.eval(context);
+	}
+
+	@Override
+	public Object eval(Reader reader, ScriptContext context)
+			throws ScriptException {
+		CompiledScript cscript = compile(reader);
+		return cscript.eval(context);
+	}
+
+	@Override
+	public Bindings createBindings() {
+		return new SimpleBindings();
+	}
+
+	@Override
+	public ScriptEngineFactory getFactory() {
+		if (factory != null) {
+			return factory;
+		} else {
+			return new JessopScriptEngineFactory();
+		}
+	}
+	
+	void setEngineFactory(ScriptEngineFactory fac) {
+		factory = fac;
+	}
+
+	@Override
+	public CompiledScript compile(String script) throws ScriptException {
+		return compile(new StringReader(script));
+	}
+
+	public static class JessopCompiledScript extends CompiledScript {
+		ScriptEngine engine;
+		String source;
+		public JessopCompiledScript(ScriptEngine engine, String source) {
+			this.engine = engine;
+			this.source = source;
+		}
+		
+		@Override
+		public Object eval(ScriptContext context) throws ScriptException {
+			// get this from the jessop declaration eventually, but for now
+			PrintWriter out = new PrintWriter(System.out, true);
+			context.setAttribute("out",  out, ScriptContext.ENGINE_SCOPE); // should be something like SCRIPT_SCOPE, really
+			return engine.eval(source, context);
+		}
+		@Override
+		public ScriptEngine getEngine() {
+			return engine;
+		}
+		
+		public String getSource() {
+			return source;
+		}
+	
+	}
+	
+	@Override
+	public CompiledScript compile(Reader script) throws ScriptException {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+			PrintWriter pw = new PrintWriter(baos);
+			JessopScriptBuilder jsb = new JavascriptJessopScriptBuilder(pw);
+			Tokeniser t = new Tokeniser(jsb);
+			int ch = script.read();
+			while (ch!=-1) {
+				t.parseChar((char) ch);
+				ch = script.read();
+			}
+			t.parseEndOfFile();
+			pw.flush();
+			String newScript = baos.toString();
+			
+			JessopDeclarations declarations = jsb.getDeclarations();
+			
+			// get this from the jessop declaration eventally, but for now:
+			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
+			ScriptEngine engine = new ScriptEngineManager().getEngineByName(declarations.engine);  // nashorn in JDK9
+			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
+			return new JessopCompiledScript(engine, newScript);
+			
+		} catch (IOException ioe) {
+			throw new ScriptException(ioe);
+		}
+		
+		
+		
+	}
+}
