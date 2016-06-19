@@ -9,6 +9,9 @@ import javax.script.ScriptException;
 
 import junit.framework.TestCase;
 
+// separate jython test since that doesn't seem to be working for me
+// so apparently some of the builds in mvn central don't actually work.
+
 public class JythonTest extends TestCase {
 
 	public static void listEngines(){ // Note 1
