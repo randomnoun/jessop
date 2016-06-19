@@ -49,7 +49,7 @@ public class JessopTest extends TestCase {
 	  "just some text\n" +
 	  "<% for (var i=0; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
-	  "<% } out.flush(); %>";
+	  "<% } %>";
 	
 	public void testJessop() throws ScriptException {
 		
