@@ -64,6 +64,27 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 					newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 					tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
 					if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript
+
+				} else if (attrValue.equals("java")) {
+					newBuilder = new JavaJessopScriptBuilder(pw); 
+					newBuilder.setTokeniser(tokeniser, declarations);   
+					tokeniser.setJessopScriptBuilder(newBuilder);       
+					if (declarations.engine==null) { declarations.engine = "beanshell"; }  // default engine for java
+
+				} else if (attrValue.equals("lua")) {
+					newBuilder = new LuaJessopScriptBuilder(pw); 
+					newBuilder.setTokeniser(tokeniser, declarations);   
+					tokeniser.setJessopScriptBuilder(newBuilder);       
+					if (declarations.engine==null) { declarations.engine = "luaj"; }  // default engine for lua
+
+				} else if (attrValue.equals("python") || attrValue.equals("python2")) {
+					newBuilder = new Python2JessopScriptBuilder(pw); 
+					newBuilder.setTokeniser(tokeniser, declarations);   
+					tokeniser.setJessopScriptBuilder(newBuilder);       
+					if (declarations.engine==null) { declarations.engine = "jython"; }  // default engine for lua
+
+				} else {
+					throw new IllegalArgumentException("Unknown language '" + attrValue + "'");
 				}
 				
 			} else if (attrName.equals("engine")) {
