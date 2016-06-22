@@ -38,7 +38,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	// could have some kind of lineCountingPrintWriter, but let's just keep that in the JSB class
 	static class Tokeniser {
 		Logger logger = Logger.getLogger(Tokeniser.class);
-		int state;
+		int state;         // parse state
 		int charOffset;    // character number; starts at 0
 		int line;          // source line number; starts at 1
 		int eline;         // expression start line. Whenever we emit anything, reset the eline to line
