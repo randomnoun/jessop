@@ -82,13 +82,12 @@ public class JessopTest extends TestCase {
 
 	public final static String JAVA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"java\" engine=\"beanshell\" %>\n" +
-	  "just some text\n" +
+	  "just some text\n" + 
 	  "<% for (int i=0; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 	
 	public void testJessop1() throws ScriptException {
-		
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
