@@ -50,7 +50,7 @@ public class JessopTest extends TestCase {
 	public final static String COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "just some text\n" +
-	  "<% for (var i=0; i<10; i++) { %>\n" +
+	  "<% for (var i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 
@@ -65,7 +65,7 @@ public class JessopTest extends TestCase {
 	  "<%@ jessop language=\"python\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "just some text\n" +
 	  "<%\n" +
-	  "for i in range(0, 10):\n"+
+	  "for i in range(1, 10):\n"+
 	  "%>\n" +
 	  "<%= i %>\n" +
 	  "<%\n" +
@@ -77,13 +77,13 @@ public class JessopTest extends TestCase {
 	public final static String PYTHON_COUNTING_SCRIPT_2 = 
 	  "<%@ jessop language=\"python\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "just some text\n" +
-	  "<% for i in range(0, 10): %>\n" +
+	  "<% for i in range(1, 10): %>\n" +
 	  "<%= i %>\n";
 
 	public final static String JAVA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"java\" engine=\"beanshell\" %>\n" +
 	  "just some text\n" + 
-	  "<% for (int i=0; i<10; i++) { %>\n" +
+	  "<% for (int i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 	
