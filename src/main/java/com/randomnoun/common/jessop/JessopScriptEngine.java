@@ -18,7 +18,6 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
-import org.luaj.vm2.script.LuajContext;
 
 /** The jessop ScriptEngine class.
  * 
