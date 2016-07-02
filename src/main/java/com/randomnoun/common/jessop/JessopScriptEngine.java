@@ -18,6 +18,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
+import org.luaj.vm2.script.LuajContext;
 
 /** The jessop ScriptEngine class.
  * 
@@ -118,11 +119,27 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 				}
 			}
 		}
-		
+
 		@Override
 		public Object eval(ScriptContext context) throws ScriptException {
 			if (context==null) { 
 				context = engine.getContext();
+			} else {
+				// may have to convert this context to whatever this engine expects (here's looking at you, lua)
+				ScriptContext newContext = engine.getContext();
+				if (newContext.getClass().equals(context.getClass())) {
+					// it's fine
+				} else {
+			        Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+			        if (gs != null) {
+			            newContext.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
+			        }
+		            newContext.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
+			        newContext.setReader(context.getReader());
+			        newContext.setWriter(context.getWriter());
+			        newContext.setErrorWriter(context.getErrorWriter());
+			        context = newContext;
+				}
 			}
 			// get this from the jessop declaration eventually, but for now
 			PrintWriter out = new PrintWriter(context.getWriter(), true);
