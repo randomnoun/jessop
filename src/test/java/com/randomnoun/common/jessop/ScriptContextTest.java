@@ -1,19 +1,16 @@
 package com.randomnoun.common.jessop;
 
 import java.util.Properties;
-import java.util.ServiceLoader;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.luaj.vm2.script.LuajContext;
 
 import com.randomnoun.common.jessop.JessopScriptEngine.JessopCompiledScript;
 
@@ -23,6 +20,12 @@ import junit.framework.TestCase;
 // if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
 // (add a space and delete it), resave it, and then run the unit test again.
 
+/** This unit test checks whether Bindings set on ScriptContexts are available to the target language within
+ * jessop scripts
+ * 
+ * @author knoxg
+ * @version $Id$
+ */
 public class ScriptContextTest extends TestCase {
 
 	Logger logger = Logger.getLogger(ScriptContextTest.class);

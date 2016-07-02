@@ -21,6 +21,11 @@ import junit.framework.TestCase;
 // if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
 // (add a space and delete it), resave it, and then run the unit test again.
 
+/** Simple jessop tests (tests language declaration, few different languages, simple loop/output in target language) 
+ * 
+ * @author knoxg
+ * @version $Id$
+ */
 public class JessopTest extends TestCase {
 
 	Logger logger = Logger.getLogger(JessopTest.class);

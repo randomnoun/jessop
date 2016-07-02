@@ -21,6 +21,11 @@ import junit.framework.TestCase;
 // if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
 // (add a space and delete it), resave it, and then run the unit test again.
 
+/** This unit test checks whether suppressEol declarations work as expected
+ * 
+ * @author knoxg
+ * @version $Id$
+ */
 public class SuppressEolTest extends TestCase {
 
 	Logger logger = Logger.getLogger(SuppressEolTest.class);

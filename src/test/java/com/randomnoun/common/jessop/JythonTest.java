@@ -12,6 +12,13 @@ import junit.framework.TestCase;
 // separate jython test since that doesn't seem to be working for me
 // so apparently some of the builds in mvn central don't actually work.
 
+/** This is a separate jython test because I'm having issues getting jython to do anything at all.
+ * 
+ * <p>Turns out that some of the builds in mvn central don't actually work.
+ * 
+ * @author knoxg
+ * @version $Id$
+ */
 public class JythonTest extends TestCase {
 
 	public static void listEngines(){ // Note 1
