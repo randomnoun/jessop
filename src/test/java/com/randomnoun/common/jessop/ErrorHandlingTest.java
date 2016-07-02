@@ -87,7 +87,7 @@ public class ErrorHandlingTest extends TestCase {
 	  "Hello, <%= name %>\n" + 
 	  "<% for (int i=1; i<maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
-	  "<% } %>" +
+	  "<% } %>\n" +
 	  "<% floob.flaherdiwordy = flimble; %>\n";
 	
 	public void testJessop1() throws ScriptException {
