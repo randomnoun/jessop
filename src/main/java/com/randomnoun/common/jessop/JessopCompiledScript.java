@@ -17,9 +17,15 @@ import javax.script.ScriptException;
  * @author knoxg
  */
 public class JessopCompiledScript extends CompiledScript {
-	ScriptEngine engine;   // target implementation engine (e.g. rhino, jython)
-	String source;         // generated script in target language
-	CompiledScript compiledSource; // compiled target language source, if the implementation engine supports it
+	
+	/** target implementation engine (e.g. rhino, jython) */
+	ScriptEngine engine;    
+	
+	/** generated script in target language */
+	String source;         
+	
+	/** compiled target language source, if the implementation engine supports it */
+	CompiledScript compiledSource; 
 	
 	public JessopCompiledScript(ScriptEngine engine, String filename, String source) throws ScriptException {
 		if (engine==null) { throw new NullPointerException("null engine"); }
@@ -48,6 +54,7 @@ public class JessopCompiledScript extends CompiledScript {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object eval(ScriptContext context) throws ScriptException {
 		if (context==null) { 
@@ -82,8 +89,8 @@ public class JessopCompiledScript extends CompiledScript {
 		return result;
 	}
 
-	@Override
 	/** {@inheritDoc} */
+	@Override
 	public ScriptEngine getEngine() {
 		return engine;
 	}
