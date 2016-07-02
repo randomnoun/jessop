@@ -1,16 +1,6 @@
 package com.randomnoun.common.jessop.lang;
 
-import java.io.Reader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
 import org.apache.log4j.Logger;
-import org.luaj.vm2.LuaError;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
 import com.randomnoun.common.jessop.JessopScriptBuilder;
@@ -99,35 +89,11 @@ public class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implemen
 	public String getDefaultScriptEngineName() {
 		return "luaj";
 	}
-
-	/* because lua's special */ 
 	@Override
-	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
-		if (t instanceof ScriptException) { 
-			return (ScriptException) t;
-		} else if (t instanceof LuaError) {
-			// there's a 'fileline' attribute in the LuaError, which isn't public, but is
-			// set in the LuaClosure class to
-			// le.fileline = (p.source != null? p.source.tojstring(): "?") + ":" 
-			//  + (p.lineinfo != null && pc >= 0 && pc < p.lineinfo.length? String.valueOf(p.lineinfo[pc]): "?");
-			// it's prepended to the error message
-			
-			LuaError le = (LuaError) t;
-			String msg = le.getMessage();
-			Pattern p = Pattern.compile("^(.*):([0-9+]|\\?) (.*)$", Pattern.DOTALL);
-			Matcher m = p.matcher(msg);
-			if (m.matches()) {
-				// just to make things even more annoying, the
-				//   public CompiledScript compile(Reader script) throws ScriptException
-				// method in LuaScriptEngine hardcodes the name 'script' as the script filename
-				// String filename = m.group(1);
-				String filename = (String) scriptContext.getAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);
-				return (ScriptException) new ScriptException(m.group(3), filename, 
-					m.group(2).equals("?") ? -1 : Integer.parseInt(m.group(2))).initCause(t);
-			} 
-		}
-		return (ScriptException) new ScriptException(t.getMessage()).initCause(t);
+	public String getDefaultExceptionConverterClassName() {
+		return "com.randomnoun.common.jessop.engine.LuajExceptionConverter";
 	}
+
 	
 
 }
