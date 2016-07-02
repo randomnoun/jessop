@@ -23,7 +23,7 @@ import javax.script.ScriptException;
  * @author knoxg
  * @version $Id$
  */
-interface JessopScriptBuilder {
+public interface JessopScriptBuilder {
 	// lines are source line numbers; try to keep these intact in the generated script
 	
 	/** Returns the name of the langauge that this scriptBuilder can parse; e.g. "javascript" or "python2".
