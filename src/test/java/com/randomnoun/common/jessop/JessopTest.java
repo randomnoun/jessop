@@ -49,6 +49,14 @@ public class JessopTest extends TestCase {
 			logger.info(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.
 		}
 		logger.info("ScriptEngineFactories end");
+
+		ServiceLoader<JessopScriptBuilder> jsbLoader = ServiceLoader.load(JessopScriptBuilder.class);
+		logger.info("JessopScriptBuilder start");
+		for (JessopScriptBuilder jsb : jsbLoader) {
+			logger.info(jsb.getLanguage()); // jessop appears when run from mvn test, but not in eclipse.
+		}
+		logger.info("JessopScriptBuilder end");
+
 	}
 	
 	public final static String COUNTING_SCRIPT = 
@@ -90,9 +98,12 @@ public class JessopTest extends TestCase {
 	  "<% for (int i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
+
+	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
+		return ((JessopCompiledScript) (((Compilable) engine).compile(jessopSource))).getSource();		
+	}
 	
 	public void testJessop1() throws ScriptException {
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		logger.info("Start eval");
@@ -114,8 +125,6 @@ public class JessopTest extends TestCase {
 	}
 
 	public void testJessopLua() throws ScriptException {
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
@@ -133,7 +142,7 @@ public class JessopTest extends TestCase {
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
+		logger.info("python source: " + getSource(engine, PYTHON_COUNTING_SCRIPT_1));
 		
 		logger.info("Start eval");
 		engine.eval(PYTHON_COUNTING_SCRIPT_1);
@@ -144,11 +153,9 @@ public class JessopTest extends TestCase {
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
+		logger.info("python source: " + getSource(engine, PYTHON_COUNTING_SCRIPT_2));
 		
 		logger.info("Start eval");
 		engine.eval(PYTHON_COUNTING_SCRIPT_2);
@@ -157,11 +164,9 @@ public class JessopTest extends TestCase {
 	
 	
 	public void testJessopBeanshell() throws ScriptException {
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		System.out.println("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
+		System.out.println("java source: " + getSource(engine, JAVA_COUNTING_SCRIPT));
 		
 		logger.info("Start eval");
 		engine.eval(JAVA_COUNTING_SCRIPT);
