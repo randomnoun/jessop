@@ -12,8 +12,15 @@ import java.util.ServiceLoader;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
+/** A class to implement the {@link javax.script.ScriptEngineFactory} interface for the jessop templating language.
+ * 
+ * @author knoxg
+ * @version $Id$
+ */
 // was thinking of creating one of these per jessop language; (e.g. jessop-javascript), but 
 // will just use declarations to define the language (and default to javascript if the declaration is missing)
+// actually getNames() could return jessop-xxx variants based on what's in the registry, couldn't it.
+// can't see how to get the value of that name though, so that's unfortunate
 public class JessopScriptEngineFactory implements ScriptEngineFactory {
 
 	/** The version of the jessop 'language' that this script engine implements */
@@ -139,7 +146,9 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 		for (JessopScriptBuilder jsb : jsbLoader) {
 			System.out.println(jsb.getLanguage());
 			newRegistry.put(jsb.getLanguage(), jsb.getClass()); // may not be able to re-use these objects, so just store the Class
+			// it'd be nice if we could dynamically register new JessopScriptEngineFactories here as well.
 		}
+		
 		System.out.println("JessopScriptBuilder end");
 
 		registry = newRegistry;
