@@ -12,6 +12,7 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import bsh.engine.BshScriptEngine;
 import junit.framework.TestCase;
 
 // !!!!!!!!!!!!!
@@ -50,7 +51,7 @@ public class ErrorHandlingTest extends TestCase {
 	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>\n" +
-	  "<% floob.flaherdiwordy = flimble; %>\n";  // floob is the canonical representation of a 'foo'...'bar' block
+	  "<% floob; %>\n";  // where 'floob' is the canonical representation of a 'foo'...'bar' block
 
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
@@ -167,7 +168,7 @@ public class ErrorHandlingTest extends TestCase {
 		} catch (ScriptException e) {
 			logger.info("caught ScriptException");
 			assertEquals("test.jessop", e.getFileName());
-			assertEquals(6, e.getLineNumber());
+			assertEquals(11, e.getLineNumber());
 		}
 	}
 
@@ -192,7 +193,7 @@ public class ErrorHandlingTest extends TestCase {
 		} catch (ScriptException e) {
 			logger.info("caught ScriptException");
 			assertEquals("test.jessop", e.getFileName());
-			assertEquals(6, e.getLineNumber());
+			assertEquals(5, e.getLineNumber());
 		}
 	}
 	
