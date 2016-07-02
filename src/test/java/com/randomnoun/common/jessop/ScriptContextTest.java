@@ -23,9 +23,9 @@ import junit.framework.TestCase;
 // if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
 // (add a space and delete it), resave it, and then run the unit test again.
 
-public class JessopContextTest extends TestCase {
+public class ScriptContextTest extends TestCase {
 
-	Logger logger = Logger.getLogger(JessopContextTest.class);
+	Logger logger = Logger.getLogger(ScriptContextTest.class);
 	
 	public void setUp() {
 		String logFormatPrefix = "[JessopContextTest] ";
