@@ -1,14 +1,11 @@
 package com.randomnoun.common.jessop;
 
-import java.io.PrintWriter;
-
 import org.apache.log4j.Logger;
 
-class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(JavascriptJessopScriptBuilder.class);
 	int outputLine = 1; // current output line;
-	public JavascriptJessopScriptBuilder(PrintWriter pw) {
-		super(pw);
+	public JavascriptJessopScriptBuilder() {
 	}
 	private void skipToLine(int line) {
 		while (outputLine < line) { print("\n"); }
@@ -20,7 +17,7 @@ class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder implemen
 			if (s.charAt(i)=='\n') { outputLine++; } 
 		}
 	}
-	public static String escapeJavascript(String string) {
+	private static String escapeJavascript(String string) {
     	StringBuilder sb = new StringBuilder(string.length());
 		for (int i = 0; i<string.length(); i++) {
 			char ch = string.charAt(i);
@@ -50,6 +47,15 @@ class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder implemen
 	public void emitScriptlet(int line, String s) {
 		skipToLine(line);
 		print(s);
+	}
+	@Override
+	public String getLanguage() {
+		return "javascript";
+	}
+	@Override
+	public String getDefaultScriptEngineName() {
+		// TODO Auto-generated method stub
+		return "rhino";
 	}
 	
 }

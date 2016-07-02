@@ -1,14 +1,11 @@
 package com.randomnoun.common.jessop;
 
-import java.io.PrintWriter;
-
 import org.apache.log4j.Logger;
 
-class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+public class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(LuaJessopScriptBuilder.class);
 	int outputLine = 1; // current output line;
-	public LuaJessopScriptBuilder(PrintWriter pw) {
-		super(pw);
+	public LuaJessopScriptBuilder() {
 	}
 	private void skipToLine(int line) {
 		while (outputLine < line) { print("\n"); }
@@ -20,7 +17,7 @@ class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implements Jess
 			if (s.charAt(i)=='\n') { outputLine++; } 
 		}
 	}
-	public static String escapeLua(String string) {
+	private static String escapeLua(String string) {
 		/* valid escapes ( https://www.lua.org/pil/2.4.html )
 \a	bell
 \b	back space
@@ -73,6 +70,14 @@ class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implements Jess
 	public void emitScriptlet(int line, String s) {
 		skipToLine(line);
 		print(s);
+	}
+	@Override
+	public String getLanguage() {
+		return "lua";
+	}
+	@Override
+	public String getDefaultScriptEngineName() {
+		return "luaj";
 	}
 	
 }

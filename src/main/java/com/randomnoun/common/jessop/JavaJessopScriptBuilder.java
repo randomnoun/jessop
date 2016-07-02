@@ -1,18 +1,13 @@
 package com.randomnoun.common.jessop;
 
-import java.io.PrintWriter;
-
 import org.apache.log4j.Logger;
-
 
 // exactly the same as the JavascriptJessopScriptBuilder
 // string coercion is a bit different
-class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(JavaJessopScriptBuilder.class);
 	int outputLine = 1; // current output line;
-	public JavaJessopScriptBuilder(PrintWriter pw) {
-		super(pw);
-	}
+
 	private void skipToLine(int line) {
 		while (outputLine < line) { print("\n"); }
 	}
@@ -23,7 +18,7 @@ class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder implements Jes
 			if (s.charAt(i)=='\n') { outputLine++; } 
 		}
 	}
-	public static String escapeJavascript(String string) {
+	private static String escapeJavascript(String string) {
     	StringBuilder sb = new StringBuilder(string.length());
 		for (int i = 0; i<string.length(); i++) {
 			char ch = string.charAt(i);
@@ -53,6 +48,14 @@ class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder implements Jes
 	public void emitScriptlet(int line, String s) {
 		skipToLine(line);
 		print(s);
+	}
+	@Override
+	public String getLanguage() {
+		return "java";
+	}
+	@Override
+	public String getDefaultScriptEngineName() {
+		return "beanshell";
 	}
 	
 }

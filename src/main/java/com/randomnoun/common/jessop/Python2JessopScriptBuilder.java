@@ -1,16 +1,13 @@
 package com.randomnoun.common.jessop;
 
-import java.io.PrintWriter;
-
 import org.apache.log4j.Logger;
 
-class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);
 	int outputLine = 1; // current output line
 	int outputCol = 1;  // current output column
 	int indent = 0;     // current number of spaces at start of line (we use 4-space indents)
-	public Python2JessopScriptBuilder(PrintWriter pw) {
-		super(pw);
+	public Python2JessopScriptBuilder() {
 	}
 	private void skipToLine(int line, int indent) {
 		if (outputLine > line) {
@@ -30,7 +27,7 @@ class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements 
 			else { outputCol++; }
 		}
 	}
-	public static String escapePython(String string) {
+	private static String escapePython(String string) {
 		/* valid escapes ( https://docs.python.org/2.0/ref/strings.html )
 \a	bell
 \b	back space
@@ -138,6 +135,14 @@ class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements 
 			print("\n"); 
 			indent += 4;
 		}
+	}
+	@Override
+	public String getLanguage() {
+		return "python2";
+	}
+	@Override
+	public String getDefaultScriptEngineName() {
+		return "jython";
 	}
 	
 }
