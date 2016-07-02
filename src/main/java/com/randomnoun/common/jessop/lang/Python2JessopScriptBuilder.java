@@ -7,9 +7,10 @@ import com.randomnoun.common.jessop.JessopScriptBuilder;
 
 public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);
-	int outputLine = 1; // current output line
-	int outputCol = 1;  // current output column
-	int indent = 0;     // current number of spaces at start of line (we use 4-space indents)
+	int outputLine = 1;        // current line number in the target script;
+	int outputCol = 1;         // current output column
+	int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)
+	int indent = 0;            // current number of spaces at start of line (we use 4-space indents)
 	public Python2JessopScriptBuilder() {
 	}
 	private void skipToLine(int line, int indent) {
@@ -74,12 +75,15 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 	@Override
 	public void emitText(int line, String s) {
 		skipToLine(line, indent);
+		s = suppressEol(s, declarations.isSuppressEol() && lastScriptletLine == line);
 		print("out.write(\"" + escapePython(s) + "\");");
+		lastScriptletLine = 0; // don't suppress eols on this line
 	}
 	@Override
 	public void emitExpression(int line, String s) {
 		skipToLine(line, indent);
 		print("out.write((str) (" + s + "));"); // coerce to String
+		lastScriptletLine = 0; // don't suppress eols on this line
 	}
 	@Override
 	public void emitScriptlet(int line, String s) {
@@ -133,11 +137,15 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 		indent = i;
 		if (s.substring(startLinePos, endLinePos).trim().endsWith(":")) {
 			logger.debug("last non-blank line endsWith ':', indenting by 4");
-			// this may mean some loop constructs will now fail
+			// this may mean some loop constructs will now have inaccurate line numbers
 			// e.g. <% for i in range (0,10): %><%= something %>
 			print("\n"); 
 			indent += 4;
 		}
+
+		// this should probably go before the indent processing above. maybe.
+		lastScriptletLine = line;
+		for (i=0; i<s.length(); i++) { if (s.charAt(i)=='\n') { lastScriptletLine++; } }
 	}
 	@Override
 	public String getLanguage() {

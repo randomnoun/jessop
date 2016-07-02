@@ -7,7 +7,9 @@ import com.randomnoun.common.jessop.JessopScriptBuilder;
 
 public class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 	Logger logger = Logger.getLogger(LuaJessopScriptBuilder.class);
-	int outputLine = 1; // current output line;
+	int outputLine = 1;        // current line number in the target script;
+	int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)
+
 	public LuaJessopScriptBuilder() {
 	}
 	private void skipToLine(int line) {
@@ -62,17 +64,22 @@ public class LuaJessopScriptBuilder extends AbstractJessopScriptBuilder implemen
 	@Override
 	public void emitText(int line, String s) {
 		skipToLine(line);
+		s = suppressEol(s, declarations.isSuppressEol() && lastScriptletLine == line);
 		print("out:write(\"" + escapeLua(s) + "\")");
+		lastScriptletLine = 0; // don't suppress eols on this line
 	}
 	@Override
 	public void emitExpression(int line, String s) {
 		skipToLine(line);
 		print("out:write((" + s + ") .. \"\")"); // coerce to String
+		lastScriptletLine = 0; // don't suppress eols on this line
 	}
 	@Override
 	public void emitScriptlet(int line, String s) {
 		skipToLine(line);
 		print(s);
+		lastScriptletLine = line;
+		for (int i=0; i<s.length(); i++) { if (s.charAt(i)=='\n') { lastScriptletLine++; } }
 	}
 	@Override
 	public String getLanguage() {
