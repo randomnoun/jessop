@@ -142,14 +142,12 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 		
 		Map<String, Class<? extends JessopScriptBuilder>> newRegistry = new HashMap<String, Class<? extends JessopScriptBuilder>>();
 		ServiceLoader<JessopScriptBuilder> jsbLoader = ServiceLoader.load(JessopScriptBuilder.class);
-		System.out.println("JessopScriptBuilder start");
 		for (JessopScriptBuilder jsb : jsbLoader) {
-			System.out.println(jsb.getLanguage());
+			// System.out.println(jsb.getLanguage());
 			newRegistry.put(jsb.getLanguage(), jsb.getClass()); // may not be able to re-use these objects, so just store the Class
 			// it'd be nice if we could dynamically register new JessopScriptEngineFactories here as well.
+			// will set the default language through a ScriptEngine var instead
 		}
-		
-		System.out.println("JessopScriptBuilder end");
 
 		registry = newRegistry;
 		return registry;

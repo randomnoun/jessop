@@ -61,7 +61,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			throw new ScriptException("Could not parse declaration '" + s + "'", null, line);
 		}
 		s = s.substring(declType.length()).trim();
-		logger.info("s=" + s);
+		logger.debug("s=" + s);
 		Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");
 		m = declAttrPattern.matcher(s);
 		while (m.find()) {
@@ -117,7 +117,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			} else if (attrName.equals("engine")) {
 				declarations.engine = attrValue;
 			}
-			logger.info("Found attr " + m.group(1) + "," + m.group(2));
+			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
 	}
 

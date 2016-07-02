@@ -10,6 +10,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.randomnoun.common.jessop.JessopScriptEngine.JessopCompiledScript;
@@ -21,11 +22,13 @@ import junit.framework.TestCase;
 // (add a space and delete it), resave it, and then run the unit test again.
 
 public class JessopTest extends TestCase {
+
+	Logger logger = Logger.getLogger(JessopTest.class);
 	
 	public void setUp() {
 		String logFormatPrefix = "[JessopTest] ";
 		Properties lp = new Properties();
-		lp.put("log4j.rootCategory", "DEBUG, CONSOLE");
+		lp.put("log4j.rootCategory", "INFO, CONSOLE");
 		lp.put("log4j.appender.CONSOLE", "org.apache.log4j.ConsoleAppender");
 		lp.put("log4j.appender.CONSOLE.layout", "org.apache.log4j.PatternLayout");
 		lp.put("log4j.appender.CONSOLE.layout.ConversionPattern", logFormatPrefix + "%d{ABSOLUTE} %-5p %c - %m%n");
@@ -41,11 +44,11 @@ public class JessopTest extends TestCase {
 	
 	public void testServiceLoader() {
 		ServiceLoader<ScriptEngineFactory> sefLoader = ServiceLoader.load(ScriptEngineFactory.class);
-		System.out.println("ScriptEngineFactories start");
+		logger.info("ScriptEngineFactories start");
 		for (ScriptEngineFactory sef : sefLoader) {
-			System.out.println(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.
+			logger.info(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.
 		}
-		System.out.println("ScriptEngineFactories end");
+		logger.info("ScriptEngineFactories end");
 	}
 	
 	public final static String COUNTING_SCRIPT = 
@@ -92,9 +95,9 @@ public class JessopTest extends TestCase {
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		System.out.println("Start eval");
+		logger.info("Start eval");
 		engine.eval(COUNTING_SCRIPT);
-		System.out.println("End eval");
+		logger.info("End eval");
 	}
 	
 	public void testJessopCompile() throws ScriptException {
@@ -104,9 +107,9 @@ public class JessopTest extends TestCase {
 		CompiledScript script = engine.compile(COUNTING_SCRIPT);
 		
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
-		System.out.println("Start source");
-		System.out.println(jessopScript.getSource());
-		System.out.println("End source");
+		logger.info("Start source");
+		logger.info(jessopScript.getSource());
+		logger.info("End source");
 		
 	}
 
@@ -115,11 +118,11 @@ public class JessopTest extends TestCase {
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		System.out.println("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
+		logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
 		
-		System.out.println("Start eval");
+		logger.info("Start eval");
 		engine.eval(LUA_COUNTING_SCRIPT);
-		System.out.println("End eval");
+		logger.info("End eval");
 	}
 
 	public void testJessopPython1() throws ScriptException {
@@ -130,11 +133,11 @@ public class JessopTest extends TestCase {
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		System.out.println("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
+		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
 		
-		System.out.println("Start eval");
+		logger.info("Start eval");
 		engine.eval(PYTHON_COUNTING_SCRIPT_1);
-		System.out.println("End eval");
+		logger.info("End eval");
 	}
 
 	public void testJessopPython2() throws ScriptException {
@@ -145,11 +148,11 @@ public class JessopTest extends TestCase {
 		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		System.out.println("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
+		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
 		
-		System.out.println("Start eval");
+		logger.info("Start eval");
 		engine.eval(PYTHON_COUNTING_SCRIPT_2);
-		System.out.println("End eval");
+		logger.info("End eval");
 	}
 	
 	
@@ -160,9 +163,9 @@ public class JessopTest extends TestCase {
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		System.out.println("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
 		
-		System.out.println("Start eval");
+		logger.info("Start eval");
 		engine.eval(JAVA_COUNTING_SCRIPT);
-		System.out.println("End eval");
+		logger.info("End eval");
 	}
 	
 }
