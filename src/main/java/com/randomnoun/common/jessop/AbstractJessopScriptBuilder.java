@@ -60,6 +60,11 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 		} else {
 			throw new ScriptException("Could not parse declaration '" + s + "'", null, line);
 		}
+		if (!declType.equals("jessop")) {
+			logger.warn("Unknown declaration type '" + declType + "'");
+			// just ignore unknown declarations
+			return;
+		}
 		s = s.substring(declType.length()).trim();
 		logger.debug("s=" + s);
 		Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");
