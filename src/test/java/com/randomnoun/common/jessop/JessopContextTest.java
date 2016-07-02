@@ -39,20 +39,6 @@ public class JessopContextTest extends TestCase {
 
 	}
 	
-	public void testThings() throws ScriptException {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
-		engine.eval("print('Hello World!');");
-	}
-	
-	public void testServiceLoader() {
-		ServiceLoader<ScriptEngineFactory> sefLoader = ServiceLoader.load(ScriptEngineFactory.class);
-		logger.info("ScriptEngineFactories start");
-		for (ScriptEngineFactory sef : sefLoader) {
-			logger.info(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.
-		}
-		logger.info("ScriptEngineFactories end");
-	}
-	
 	public final static String COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
@@ -94,7 +80,6 @@ public class JessopContextTest extends TestCase {
 	  "<% } %>";
 	
 	public void testJessop1() throws ScriptException {
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
@@ -123,8 +108,6 @@ public class JessopContextTest extends TestCase {
 	}
 
 	public void testJessopLua() throws ScriptException {
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
@@ -143,8 +126,6 @@ public class JessopContextTest extends TestCase {
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
@@ -179,8 +160,6 @@ public class JessopContextTest extends TestCase {
 	
 	
 	public void testJessopBeanshell() throws ScriptException {
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
