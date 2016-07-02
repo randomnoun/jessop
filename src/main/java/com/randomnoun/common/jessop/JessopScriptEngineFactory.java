@@ -3,12 +3,17 @@ package com.randomnoun.common.jessop;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
+// was thinking of creating one of these per jessop language; (e.g. jessop-javascript), but 
+// will just use declarations to define the language (and default to javascript if the declaration is missing)
 public class JessopScriptEngineFactory implements ScriptEngineFactory {
 
 	/** The version of the jessop 'language' that this script engine implements */
@@ -55,6 +60,7 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 		return null;
 	}
 
+	// this is language dependent
 	@Override
 	public String getMethodCallSyntax(String obj, String m, String... args) {
 		 String ret = obj;
@@ -69,11 +75,13 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 	     return ret;
 	}
 
+	// this is language dependent
 	@Override
 	public String getOutputStatement(String toDisplay) {
 		return "print(" + toDisplay + ")";
 	}
 
+	// this is language dependent
 	@Override
 	public String getProgram(String... statements) {
 		String retval = "<?\n";
@@ -90,10 +98,8 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 		se.setEngineFactory(this);
 		return se;
 	}
-
 	
 	// versioning
-	
 	private static Properties getBuildProperties() throws IOException {
 		InputStream is = JessopScriptEngineFactory.class.getClassLoader().getResourceAsStream("build.properties");
     	Properties props = new Properties();
@@ -120,5 +126,38 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 		}
 	}
 
+	// could make this static, but there aren't going to be too many ScriptEngineFactory's around, surely.
+	private Map<String, Class<? extends JessopScriptBuilder>> registry = null;
+	
+	// these methods are not part of the ScriptEngineFactory interface
+	private Map<String, Class<? extends JessopScriptBuilder>> getRegistry() {
+		if (registry!=null) { return registry; }
+		
+		Map<String, Class<? extends JessopScriptBuilder>> newRegistry = new HashMap<String, Class<? extends JessopScriptBuilder>>();
+		ServiceLoader<JessopScriptBuilder> jsbLoader = ServiceLoader.load(JessopScriptBuilder.class);
+		System.out.println("JessopScriptBuilder start");
+		for (JessopScriptBuilder jsb : jsbLoader) {
+			System.out.println(jsb.getLanguage());
+			newRegistry.put(jsb.getLanguage(), jsb.getClass()); // may not be able to re-use these objects, so just store the Class
+		}
+		System.out.println("JessopScriptBuilder end");
+
+		registry = newRegistry;
+		return registry;
+	}
+	
+	public JessopScriptBuilder getJessopScriptBuilderForLanguage(String language) {
+		Map<String, Class<? extends JessopScriptBuilder>> registry = getRegistry();
+		Class<? extends JessopScriptBuilder> c = registry.get(language);
+		if (c == null) { throw new IllegalArgumentException("No JessopScriptBuilder registered for language '" + language + "'"); }
+		try {
+			return c.newInstance();
+		} catch (InstantiationException e) {
+			throw new IllegalStateException("Could not instantiate JessopScriptBuilder for language '" + language + "'", e);
+		} catch (IllegalAccessException e) {
+			throw new IllegalStateException("Could not instantiate JessopScriptBuilder for language '" + language + "'", e);
+		}
+	}
+	
 	
 }
