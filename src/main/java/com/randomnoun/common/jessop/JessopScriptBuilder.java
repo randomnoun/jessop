@@ -124,8 +124,9 @@ public interface JessopScriptBuilder {
 	 * 
 	 * <p>(Most languages do this properly already, except for lua).
 	 * 
-	 * <p>This is called at runtime, not target script generation time, but I didn't want to 
-	 * create another interface just for this.
+	 * <p>This is called at runtime, not target script generation time, and should be 
+	 * associated with the target source engine (e.g. rhino), not the target language (e.g. javascript),
+	 * but I didn't want to create another interface just for this.
 	 */
 	ScriptException toScriptException(ScriptContext scriptContext, Throwable t);
 	
