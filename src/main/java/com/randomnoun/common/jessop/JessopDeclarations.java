@@ -1,9 +1,11 @@
 package com.randomnoun.common.jessop;
 
-/** Things that are defined in the <%@ jessop ... %> declaration.
+/** Things that are defined in the <%@ jessop ... %> declaration attributes.
  * 
  * <p>The AbstractJessopScriptBuilder currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
  * including the jessop declarationType.
+ *
+ * <p>We're just storing these values as Strings here; this is just a transfer object POJO.
  * 
  * <p>Note that the target language isn't currently stored in here; the AbstractJessopScriptBuilder will change
  * the JessopScriptBuilder implementation instead.
@@ -24,6 +26,10 @@ public class JessopDeclarations {
 	// to do things like css/js minification, or wiki markup processing, or whatever
 	// but I'm intentionally keeping this simple for now
 	// may want to use different declarationTypes for things like that
+
+	String engine;
+	boolean suppressEol;
+	String exceptionConverter;	
 	
 	public boolean isSuppressEol() {
 		return suppressEol;
@@ -33,9 +39,6 @@ public class JessopDeclarations {
 		this.suppressEol = suppressEol;
 	}
 
-	String engine;
-	boolean suppressEol;
-	
 	public String getEngine() {
 		return engine;
 	}
@@ -43,5 +46,15 @@ public class JessopDeclarations {
 	public void setEngine(String engine) {
 		this.engine = engine;
 	}
+
+	public String getExceptionConverter() {
+		return exceptionConverter;
+	}
+
+	public void setExceptionConverter(String exceptionConverter) {
+		this.exceptionConverter = exceptionConverter;
+	}
+	
+	
 	
 }
