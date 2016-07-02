@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -127,7 +128,12 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
 	}
-
+	
+	@Override
+	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
+		return (ScriptException) t;
+	}
+	
 	@Override
 	public abstract void emitText(int line, String s);
 	
