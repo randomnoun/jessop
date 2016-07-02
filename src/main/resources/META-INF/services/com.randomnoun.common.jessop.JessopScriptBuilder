@@ -1,5 +1,5 @@
 # built-in script builders
-com.randomnoun.common.jessop.JavaJessopScriptBuilder
-com.randomnoun.common.jessop.JavascriptJessopScriptBuilder
-com.randomnoun.common.jessop.Python2JessopScriptBuilder
-com.randomnoun.common.jessop.LuaJessopScriptBuilder
+com.randomnoun.common.jessop.lang.JavaJessopScriptBuilder
+com.randomnoun.common.jessop.lang.JavascriptJessopScriptBuilder
+com.randomnoun.common.jessop.lang.Python2JessopScriptBuilder
+com.randomnoun.common.jessop.lang.LuaJessopScriptBuilder
