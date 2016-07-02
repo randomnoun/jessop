@@ -122,6 +122,8 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			pw.flush();
 			String newScript = baos.toString();
 			
+			// the final JSB is the one used to convert exceptions in the target script at runtime
+			jsb = t.jsb;
 			JessopDeclarations declarations = jsb.getDeclarations();
 			
 			// get this from the jessop declaration eventally, but for now:
@@ -134,7 +136,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
 
 			// the newScript is compiled here, if the engine supports it
-			return new JessopCompiledScript(engine, filename, newScript);
+			return new JessopCompiledScript(engine, filename, newScript, jsb);
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);
