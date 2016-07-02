@@ -1,6 +1,14 @@
 package com.randomnoun.common.jessop.lang;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
 import org.apache.log4j.Logger;
+import org.luaj.vm2.LuaError;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
 import com.randomnoun.common.jessop.JessopScriptBuilder;
@@ -70,5 +78,18 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 	public String getDefaultScriptEngineName() {
 		return "beanshell";
 	}
+	
+	/* bsh's doesn't return filenames properly, and the line numbers are off by one */ 
+	@Override
+	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
+		if (t instanceof ScriptException) { 
+			ScriptException se = (ScriptException) t;
+			String filename = (String) scriptContext.getAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);
+			return (ScriptException) new ScriptException(se.getMessage(), 
+			  filename, se.getLineNumber() + 1).initCause(t);
+		}
+		return (ScriptException) new ScriptException(t.getMessage()).initCause(t);
+	}
+	
 	
 }
