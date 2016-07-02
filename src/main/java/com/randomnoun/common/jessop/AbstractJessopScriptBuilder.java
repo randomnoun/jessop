@@ -81,8 +81,11 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				newBuilder.setPrintWriter(pw);
 				newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 				tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
-				// should wait until all attributes are parsed, but hey
-				if (declarations.engine==null) { declarations.engine = newBuilder.getDefaultScriptEngineName(); }
+				// should probably wait until all attributes are parsed, but hey
+				if (declarations.engine==null) { 
+					declarations.engine = newBuilder.getDefaultScriptEngineName();
+					declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();
+				}
 				
 				/*
 				JessopScriptBuilder newBuilder;
@@ -120,6 +123,12 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				*/
 				
 			} else if (attrName.equals("engine")) {
+				// if we're changing engines, this will reset the default exception converter.
+				// we may want to keep a registry of engine names -> ExceptionConverters
+				// at a later stage
+				if (!attrValue.equals(declarations.getEngine())) {
+					declarations.setExceptionConverter(null);
+				}
 				declarations.setEngine(attrValue);
 				
 			} else if (attrName.equals("suppressEol")) {
@@ -127,11 +136,6 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			}
 			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
-	}
-	
-	@Override
-	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
-		return (ScriptException) t;
 	}
 	
 	@Override
@@ -143,7 +147,11 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 	@Override
 	public abstract void emitScriptlet(int line, String s);
 	
-
+	@Override
+	public String getDefaultExceptionConverterClassName() {
+		return null;
+	}
+	
 	/** Conditionally remove the first newline from the supplied string.
 	 * 
 	 * <p>This method is used to perform <tt>suppressEol</tt> declaration processing.
