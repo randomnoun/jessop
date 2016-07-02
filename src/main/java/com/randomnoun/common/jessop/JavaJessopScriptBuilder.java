@@ -18,7 +18,7 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 			if (s.charAt(i)=='\n') { outputLine++; } 
 		}
 	}
-	private static String escapeJavascript(String string) {
+	private static String escapeJava(String string) {
     	StringBuilder sb = new StringBuilder(string.length());
 		for (int i = 0; i<string.length(); i++) {
 			char ch = string.charAt(i);
@@ -37,7 +37,7 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 	@Override
 	public void emitText(int line, String s) {
 		skipToLine(line);
-		print("out.write(\"" + escapeJavascript(s) + "\");");
+		print("out.write(\"" + escapeJava(s) + "\");");
 	}
 	@Override
 	public void emitExpression(int line, String s) {
