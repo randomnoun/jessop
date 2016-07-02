@@ -133,6 +133,10 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				
 			} else if (attrName.equals("suppressEol")) {
 				declarations.setSuppressEol(Boolean.valueOf(attrValue));
+
+			} else if (attrName.equals("exceptionConverter")) {
+				declarations.setExceptionConverter(attrValue);
+			
 			}
 			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
