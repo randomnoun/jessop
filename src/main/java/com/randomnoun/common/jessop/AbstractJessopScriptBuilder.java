@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 /** This is an abstract class that supports generic support for creating template scripts from jessop source.
  * 
- * <p>This class is responsible for processing jessop declarations (e.g. <%@ jessop language="javascript" engine="rhino" %>),
+ * <p>This class is responsible for processing jessop declarations (e.g. <tt>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</tt>),
  * and switching to the correct language JessopScriptBuilder implementation.
  * 
  * <p>Note that having multiple languages in the same script file is not yet supported by jessop. 
@@ -29,6 +29,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 	Tokeniser tokeniser;
 	PrintWriter pw;
 
+	@Override
 	public void setPrintWriter(PrintWriter pw) {
 		this.pw = pw;
 	}
@@ -38,6 +39,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 		this.tokeniser = t;
 		this.declarations = declarations;
 	}
+	@Override
 	public JessopDeclarations getDeclarations() {
 		return declarations;
 	}
@@ -68,9 +70,9 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			String attrValue = m.group(2);
 			if (attrName.equals("language")) {
 				// change the JessopScriptBuilder based on the language
-				// have a registry of these somewhere.
-				
-				JessopScriptBuilder newBuilder = ((JessopScriptEngineFactory) tokeniser.jse.getFactory()).getJessopScriptBuilderForLanguage(attrValue);
+				// the registry of ScriptBuilders is kept in the EngineFactory
+				JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();
+				JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);
 				newBuilder.setPrintWriter(pw);
 				newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 				tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
@@ -118,8 +120,13 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 			logger.info("Found attr " + m.group(1) + "," + m.group(2));
 		}
 	}
-	
+
+	@Override
 	public abstract void emitText(int line, String s);
+	
+	@Override
 	public abstract void emitExpression(int line, String s);
+	
+	@Override
 	public abstract void emitScriptlet(int line, String s);
 }
