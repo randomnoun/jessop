@@ -24,10 +24,10 @@ import org.apache.log4j.Logger;
  */
 // this should be subclassed by specific languages (javascript etc)
 public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {
-	Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);
-	JessopDeclarations declarations;
-	Tokeniser tokeniser;
-	PrintWriter pw;
+	protected Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);
+	protected JessopDeclarations declarations;
+	protected Tokeniser tokeniser;
+	protected PrintWriter pw;
 
 	@Override
 	public void setPrintWriter(PrintWriter pw) {
