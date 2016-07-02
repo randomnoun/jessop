@@ -32,17 +32,17 @@ public class JessopCompiledScript extends CompiledScript {
 	/** compiled target language source, if the implementation engine supports it */
 	CompiledScript compiledSource;
 	
-	/** the JessopScriptBuilder that created the source. 
-	 * this is used to convert runtime exceptions only */
-	JessopScriptBuilder jsb;
+	/** the JessopExceptionConverter to use to convert runtime exceptions */
+	JessopExceptionConverter jec;
 	
-	public JessopCompiledScript(ScriptEngine engine, String filename, String source,
-		JessopScriptBuilder jsb) throws ScriptException {
+	public JessopCompiledScript(ScriptEngine engine, 
+		String filename, String source,
+		JessopExceptionConverter jec) throws ScriptException {
 		if (engine==null) { throw new NullPointerException("null engine"); }
 		this.filename = filename;
 		this.engine = engine;
 		this.source = source;
-		this.jsb = jsb;
+		this.jec = jec;
 		if (engine instanceof Compilable) {
 			try {
 				// could have another declaration to suppress compilation here
@@ -105,7 +105,11 @@ public class JessopCompiledScript extends CompiledScript {
 				result = engine.eval(source, context);
 			}
 		} catch (Throwable t) {
-			throw jsb.toScriptException(context, t);
+			if (jec==null) {
+				throw t;
+			} else {
+				throw jec.toScriptException(context, t);
+			}
 		}
 		out.flush();
 		return result;

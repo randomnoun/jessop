@@ -133,10 +133,22 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 				throw new ScriptException("java.scriptx engine '" + declarations.engine + "' not found");
 			}
 			
+			JessopExceptionConverter jec = null;
+			if (declarations.exceptionConverter!=null && !declarations.exceptionConverter.equals("")) {
+				try {
+					jec = (JessopExceptionConverter) 
+						Class.forName(declarations.exceptionConverter).newInstance();
+				} catch (Exception e) {
+					throw (ScriptException) new ScriptException(
+					  "exceptionConverter '" + declarations.exceptionConverter + "' not loaded").initCause(e);
+				}
+			}
+			 
+			
 			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
 
 			// the newScript is compiled here, if the engine supports it
-			return new JessopCompiledScript(engine, filename, newScript, jsb);
+			return new JessopCompiledScript(engine, filename, newScript, jec);
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);
