@@ -12,8 +12,6 @@ import javax.script.ScriptException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.randomnoun.common.jessop.JessopScriptEngine.JessopCompiledScript;
-
 import junit.framework.TestCase;
 
 // !!!!!!!!!!!!!
