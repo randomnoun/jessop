@@ -79,14 +79,14 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 		return "beanshell";
 	}
 	
-	/* bsh's doesn't return filenames properly, and the line numbers are off by one */ 
+	/* bsh's doesn't return filenames properly */ 
 	@Override
 	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
 		if (t instanceof ScriptException) { 
 			ScriptException se = (ScriptException) t;
 			String filename = (String) scriptContext.getAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);
 			return (ScriptException) new ScriptException(se.getMessage(), 
-			  filename, se.getLineNumber() + 1).initCause(t);
+			  filename, se.getLineNumber()).initCause(t);
 		}
 		return (ScriptException) new ScriptException(t.getMessage()).initCause(t);
 	}
