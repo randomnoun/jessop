@@ -100,7 +100,9 @@ public class JessopTest extends TestCase {
 	  "<% } %>";
 
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
-		return ((JessopCompiledScript) (((Compilable) engine).compile(jessopSource))).getSource();		
+		Compilable compilable = (Compilable) engine;
+		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
+		return compiledScript.getSource();
 	}
 	
 	public void testJessop1() throws ScriptException {
