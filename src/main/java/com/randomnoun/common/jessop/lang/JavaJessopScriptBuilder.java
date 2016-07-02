@@ -79,7 +79,7 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 		return "beanshell";
 	}
 	
-	/* bsh's doesn't return filenames properly */ 
+	/* bsh doesn't return filenames properly */ 
 	@Override
 	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {
 		if (t instanceof ScriptException) { 

@@ -2,6 +2,9 @@ package com.randomnoun.common.jessop;
 
 /** Things that are defined in the <%@ jessop ... %> declaration.
  * 
+ * <p>The AbstractJessopScriptBuilder currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
+ * including the jessop declarationType.
+ * 
  * <p>Note that the target language isn't currently stored in here; the AbstractJessopScriptBuilder will change
  * the JessopScriptBuilder implementation instead.
  * 
@@ -16,6 +19,11 @@ public class JessopDeclarations {
     // suppressEol="true" <-- if a line consists just of a '%>' token, then don't generate the newline after it in the output
 	//   (seeing as I'm mainly using this for code generators at the moment, and I don't like all this whitespace)
 	// NB: still want line numbers to match between jessop source and target language source.
+	
+	// might want to add a postProcessor attribute to this
+	// to do things like css/js minification, or wiki markup processing, or whatever
+	// but I'm intentionally keeping this simple for now
+	// may want to use different declarationTypes for things like that
 	
 	public boolean isSuppressEol() {
 		return suppressEol;
