@@ -4,20 +4,22 @@ import java.io.PrintWriter;
 
 import javax.script.ScriptException;
 
-/** Each language we intend to support within jessop must have an implementation of this interface. 
+/** Each target language we intend to support within jessop must have an implementation of this interface. 
  * Developers wishing to implement this interface should use the AbstractJessopScriptBuilder abstract class.
  * 
  * <p>Implementations of this class should return the language it supports (and the default script engine name) via the
  * {@link #getLanguage()} and {@link #getDefaultScriptEngineName()} methods.
  * 
- * <p>These values will be used to select the correct JessopScriptBuilder identified in the jessop source file declaration.
+ * <p>These values will be used to select the correct JessopScriptBuilder identified in the 
+ * <tt>&lt;%@ jessop language="xxx"%&gt;</tt>
+ * declaration in the jessop source file.
  * 
  * <p>When this class is instantiated, the caller will invoke {@link #setPrintWriter()} and {@link #setTokeniser()}.
  * 
- * <p>As the Tokeniser parse the jessop source file, it will invoke emit() methods on this class.
- * As these methods are called, this class should generate code via the printWriter in the output (language-specific) script.
+ * <p>As the Tokeniser parses the jessop source file, it will invoke emit() methods on this class.
+ * As these methods are called, this class should generate code in the target language via the printWriter.
  * 
- * <p>Care should be taken to ensure that code in the output script is on the same line number
+ * <p>Care should be taken to ensure that code in the target language script is on the same line number
  * as the corresponding code on the input script, to make error messages easier to handle.
  * 
  * @author knoxg
