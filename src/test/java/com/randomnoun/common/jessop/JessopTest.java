@@ -63,7 +63,7 @@ public class JessopTest extends TestCase {
 	  "<% end %>";
 
 	public final static String PYTHON_COUNTING_SCRIPT_1 = 
-	  "<%@ jessop language=\"python\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
+	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "just some text\n" +
 	  "<%\n" +
 	  "for i in range(1, 10):\n"+
@@ -76,7 +76,7 @@ public class JessopTest extends TestCase {
 	
 
 	public final static String PYTHON_COUNTING_SCRIPT_2 = 
-	  "<%@ jessop language=\"python\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
+	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "just some text\n" +
 	  "<% for i in range(1, 10): %>\n" +
 	  "<%= i %>\n";
