@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
  * <p>If the declaration is missing, then the default JavascriptJessopScriptBuilder is used, using the 'rhino' engine.
  * 
  * @author knoxg
- *
  */
 // this should be subclassed by specific languages (javascript etc)
 public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {
@@ -120,7 +119,10 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				*/
 				
 			} else if (attrName.equals("engine")) {
-				declarations.engine = attrValue;
+				declarations.setEngine(attrValue);
+				
+			} else if (attrName.equals("suppressEol")) {
+				declarations.setSuppressEol(Boolean.valueOf(attrValue));
 			}
 			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
@@ -134,4 +136,41 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 	
 	@Override
 	public abstract void emitScriptlet(int line, String s);
+	
+
+	/** Conditionally remove the first newline from the supplied string.
+	 * 
+	 * <p>This method is used to perform <tt>suppressEol</tt> declaration processing.
+	 * 
+	 * <p>When the <tt>suppressEol</tt> declaration is <tt>true</tt>, and the text to be emitted by the output script
+	 * immediately follows a scriptlet and begins with a newline (or whitespace followed by a newline), 
+	 * then we want to remove that (whitespace and) newline.
+	 * 
+	 * <p>If there are non-whitespace characters before the first newline, then it is not suppressed.
+	 * 
+	 * @param s text which is to be emitted by the output script
+	 * @param suppressEol if true, remove the beginning whitespace and newline, if it exists.
+	 * 
+	 * @return the supplied string, with the first newline conditionally removed
+	 */
+	protected String suppressEol(String s, boolean suppressEol) {
+		// ok. if s starts with a newline, 
+		// *and* suppressEol is true,
+		// *and* this text is being emitted on a line that has nothing but expressions (and whitespace), 
+		// then suppress the newline.
+		if (s.indexOf("\n")!=-1 && suppressEol) {
+			boolean isFirstLineJustWhitespace = true;
+			int pos = 0;
+			while (pos<s.length() && isFirstLineJustWhitespace) {
+				char ch = s.charAt(pos);
+				if (ch=='\n') { pos++; break; }
+				if (!Character.isWhitespace(ch)) { isFirstLineJustWhitespace = false; break; }
+				pos++;
+			}
+			if (isFirstLineJustWhitespace) {
+				s = s.substring(pos);
+			}
+		}
+		return s;
+	}
 }
