@@ -1,14 +1,14 @@
 package com.randomnoun.common.jessop;
 
-/** Things that are defined in the <%@ jessop ... %> declaration attributes.
+/** This object contains values that are defined in the <%@ jessop ... %> declaration attributes.
  * 
- * <p>The AbstractJessopScriptBuilder currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
- * including the jessop declarationType.
+ * <p>The {@link AbstractJessopScriptBuilder} currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
+ * including the <tt>jessop</tt> declarationType.
  *
- * <p>We're just storing these values as Strings here; this is just a transfer object POJO.
+ * <p>This class acts as a Plain Old Java Object (POJO) and does not perform any processing of directives.
  * 
- * <p>Note that the target language isn't currently stored in here; the AbstractJessopScriptBuilder will change
- * the JessopScriptBuilder implementation instead.
+ * <p>Note that the target language is not stored in this class; the {@link AbstractJessopScriptBuilder} will change
+ * the {@link JessopScriptBuilder} implementation instead.
  * 
  * @author knoxg
  * @version $Id$

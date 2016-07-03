@@ -47,10 +47,17 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	public static final String JESSOP_EXCEPTION_CONVERTER = "com.randommoun.common.jessop.exceptionConverter";
 
     /** Reserved key for a named value that controls whether the target script is compiled
-     * (providing the target engine allows it)
+     * (providing the target engine allows it).
+     * If not set, will default to 'true'.
      */
 	public static final String JESSOP_COMPILE_TARGET = "com.randommoun.common.jessop.compileTarget";
-	
+
+    /** Reserved key for a named value that controls whether the target script 
+     * will have EOLs suppressed after scriptlets that appear at the end of a line.
+     * If not set, will default to 'false'.
+     */
+	public static final String JESSOP_SUPPRESS_EOL = "com.randommoun.common.jessop.suppressEol";
+
 	// so I guess we implement this twice then
 	// let's always compile it if we can
 	
@@ -119,13 +126,15 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			String initialEngine = (String) get(JessopScriptEngine.JESSOP_ENGINE);
 			String initialExceptionConverter = (String) get(JessopScriptEngine.JESSOP_EXCEPTION_CONVERTER);
 			String initialCompileTarget = (String) get(JessopScriptEngine.JESSOP_COMPILE_TARGET);
+			String initialSuppressEol = (String) get(JessopScriptEngine.JESSOP_SUPPRESS_EOL);
 			if (initialLanguage == null) { initialLanguage = "javascript"; }
 
 			JessopDeclarations declarations = new JessopDeclarations();
-			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
-			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
-			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
 			if (filename!=null) { declarations.setFilename(filename); }
+			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
+			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
+			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
+			if (initialSuppressEol!=null) { declarations.setSuppressEol(Boolean.valueOf(initialSuppressEol)); }
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
 			PrintWriter pw = new PrintWriter(baos);
