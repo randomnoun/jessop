@@ -65,7 +65,7 @@ public interface JessopScriptBuilder {
 	 * @param t tokeniser that is processing the jessop source
 	 * @param declarations jessop declarations that are in effect
 	 */
-	void setTokeniser(Tokeniser t, JessopDeclarations declarations);
+	void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations);
 	
 	/** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some text output.
 	 * 
