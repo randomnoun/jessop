@@ -689,6 +689,6 @@ a:active {
   list-style: disc outside none;
   margin-bottom: 10px;
 }  
-TABLE.padded TD { padding-bottom: 10px; }
+TABLE.padded TD { padding-bottom: 10px; padding-right: 10px; vertical-align: top; }
 
 

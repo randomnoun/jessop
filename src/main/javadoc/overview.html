@@ -55,27 +55,31 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
 <table class="padded">
 <tr><th>Attribute name <th>JessopScriptEngine constant  <th>jessop-defined default  <th>Description
 <tr><td>filename  
-    <td>FILENAME  <td><i>null</i>
+    <td>{@link javax.script.ScriptEngine#FILENAME}  <td><i>null</i>
     <td>The filename of the jessop source script. This filename will be included in 
         ScriptExceptions that occur when the target language script is evaluated.
 <tr><td>language  
-    <td>JESSOP_LANGUAGE  <td>javascript  
+    <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_LANGUAGE}  
+    <td><tt>javascript</tt>  
     <td>The target language that is used within the jessop script for expressions and scriptlets
 <tr><td>engine  
-    <td>JESSOP_ENGINE  <td>rhino  
+    <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_ENGINE}  
+    <td><tt>rhino</tt>  
     <td>The name of the ScriptEngine engine that will be used to evaluate the target language script.
 <tr><td>exceptionConverter  
-    <td>JESSOP_EXCEPTION_CONVERTER  <td><i>null</i>  
+    <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_EXCEPTION_CONVERTER}  <td><i>null</i>  
     <td>The class name of a {@link com.randomnoun.common.jessop.JessopExceptionConverter} that will
         be used to convert exceptions raised by the target language's ScriptEngine to 
-        ScriptExceptions. (This should normally be the case, but exists as a workaround for
+        ScriptExceptions. (This should not normally be required, but exists as a workaround for
         the beanshell and luaj engines, which do not do this properly).
 <tr><td>compileTarget  
-    <td>JESSOP_COMPILE_TARGET  <td>true
+    <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_COMPILE_TARGET}
+    <td><tt>true</tt>
     <td>If true, and if the target language ScriptEngine supports it, will attempt to compile 
         the target script before evaluation. This may result in increased execution speed.
 <tr><td>suppressEol  
-    <td>JESSOP_SUPRESS_EOL  <td>false
+    <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_SUPRESS_EOL}  
+    <td><tt>false</tt>
     <td>This attribute will suppress any trailing whitespace and the newline character that
         appears after a <code>&lt;% ... %&gt;</code> scriptlet from appearing in the 
         evaluated target language script output. Whitespace/newline suppression will
