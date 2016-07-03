@@ -125,6 +125,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
 			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
 			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
+			if (filename!=null) { declarations.setFilename(filename); }
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
 			PrintWriter pw = new PrintWriter(baos);
@@ -132,7 +133,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			JessopScriptBuilder jsb = ((JessopScriptEngineFactory) getFactory()).getJessopScriptBuilderForLanguage(initialLanguage);
 			jsb.setPrintWriter(pw);
 			Tokeniser t = new Tokeniser(this, jsb);
-			jsb.setTokeniser(t, declarations);
+			jsb.setTokeniserAndDeclarations(t, declarations);
 			
 			// tokenise the script
 			int ch = script.read();
@@ -146,9 +147,8 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			// get the output from the PrintWriter
 			String newScript = baos.toString();
 			
-			// the final JSB is the one used to convert exceptions in the target script at runtime
-			jsb = t.jsb;
-			declarations = jsb.getDeclarations();
+			// the final JSB contains the final declarations that were in effect 
+			declarations = t.jsb.getDeclarations();
 			
 			// get this from the jessop declaration eventally, but for now:
 			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
@@ -170,7 +170,8 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			 
 			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
 			// the newScript is compiled here, if the engine supports it
-			return new JessopCompiledScript(engine, declarations.isCompileTarget(), filename, newScript, jec);
+			return new JessopCompiledScript(engine, declarations.isCompileTarget(), 
+				declarations.getFilename(), newScript, jec);
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);
