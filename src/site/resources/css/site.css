@@ -65,3 +65,10 @@ p.inline-code {
   color: #d14;
   padding: 2px 4px;
 }
+
+/* reflow-skin override */
+
+h1[id]::before, h2[id]::before, h3[id]::before, h4[id]::before, h5[id]::before, h6[id]::before, a[name]::before {
+    height: 30px;
+    margin: 10px 0;
+}
