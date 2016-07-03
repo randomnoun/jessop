@@ -31,11 +31,25 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	/** ScriptEngineFactory that created this class */
 	ScriptEngineFactory factory;
 	
-    /**
-     * Reserved key for a named value that identifies
-     * the initial language used for jessop scripts.
+    /** Reserved key for a named value that identifies the initial language used for jessop scripts.
+     * If not set, will default to 'javascript'
      */
 	public static final String JESSOP_LANGUAGE = "com.randommoun.common.jessop.language";
+	
+    /** Reserved key for a named value that identifies the initial ScriptEngine used for jessop scripts.
+     * If not set, will use the default engine for the default language.
+     */
+	public static final String JESSOP_ENGINE = "com.randommoun.common.jessop.engine";
+
+    /** Reserved key for a named value that sets the initial exception converter.
+     * If not set, will use the default converter for the default language
+     */
+	public static final String JESSOP_EXCEPTION_CONVERTER = "com.randommoun.common.jessop.exceptionConverter";
+
+    /** Reserved key for a named value that controls whether the target script is compiled
+     * (providing the target engine allows it)
+     */
+	public static final String JESSOP_COMPILE_TARGET = "com.randommoun.common.jessop.compileTarget";
 	
 	// so I guess we implement this twice then
 	// let's always compile it if we can
@@ -101,18 +115,26 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	public CompiledScript compile(Reader script) throws ScriptException {
 		try {
 			String filename = (String) get(ScriptEngine.FILENAME);
-			// logger.info("about to compile; filename=" + filename);
-			// String scriptEngineName = (String) get(ScriptEngine.NAME); // hmm. hmm i say. could use this to get the initial JessopScriptBuilder
-			// let's just use a new engine-scoped value
-			String language = (String) get(JessopScriptEngine.JESSOP_LANGUAGE);
-			if (language == null) { language = "javascript"; }
+			String initialLanguage = (String) get(JessopScriptEngine.JESSOP_LANGUAGE);
+			String initialEngine = (String) get(JessopScriptEngine.JESSOP_ENGINE);
+			String initialExceptionConverter = (String) get(JessopScriptEngine.JESSOP_EXCEPTION_CONVERTER);
+			String initialCompileTarget = (String) get(JessopScriptEngine.JESSOP_COMPILE_TARGET);
+			if (initialLanguage == null) { initialLanguage = "javascript"; }
+
+			JessopDeclarations declarations = new JessopDeclarations();
+			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
+			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
+			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
 			PrintWriter pw = new PrintWriter(baos);
 		    // new JavascriptJessopScriptBuilder(); // default for now
-			JessopScriptBuilder jsb = ((JessopScriptEngineFactory) getFactory()).getJessopScriptBuilderForLanguage(language);
+			JessopScriptBuilder jsb = ((JessopScriptEngineFactory) getFactory()).getJessopScriptBuilderForLanguage(initialLanguage);
 			jsb.setPrintWriter(pw);
 			Tokeniser t = new Tokeniser(this, jsb);
+			jsb.setTokeniser(t, declarations);
+			
+			// tokenise the script
 			int ch = script.read();
 			while (ch!=-1) {
 				t.parseChar((char) ch);
@@ -120,11 +142,13 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			}
 			t.parseEndOfFile();
 			pw.flush();
+			
+			// get the output from the PrintWriter
 			String newScript = baos.toString();
 			
 			// the final JSB is the one used to convert exceptions in the target script at runtime
 			jsb = t.jsb;
-			JessopDeclarations declarations = jsb.getDeclarations();
+			declarations = jsb.getDeclarations();
 			
 			// get this from the jessop declaration eventally, but for now:
 			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
@@ -144,11 +168,9 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 				}
 			}
 			 
-			
 			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
-
 			// the newScript is compiled here, if the engine supports it
-			return new JessopCompiledScript(engine, filename, newScript, jec);
+			return new JessopCompiledScript(engine, declarations.isCompileTarget(), filename, newScript, jec);
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);
