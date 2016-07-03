@@ -35,7 +35,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 	}
 	
 	@Override
-	public void setTokeniser(Tokeniser t, JessopDeclarations declarations) {
+	public void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations) {
 		this.tokeniser = t;
 		this.declarations = declarations;
 	}
@@ -79,7 +79,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();
 				JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);
 				newBuilder.setPrintWriter(pw);
-				newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
+				newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 				tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
 				// should probably wait until all attributes are parsed, but hey
 				if (declarations.engine==null) { 
@@ -133,6 +133,12 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				
 			} else if (attrName.equals("suppressEol")) {
 				declarations.setSuppressEol(Boolean.valueOf(attrValue));
+
+			} else if (attrName.equals("compileTarget")) {
+				declarations.setCompileTarget(Boolean.valueOf(attrValue));
+
+			} else if (attrName.equals("filename")) {
+				declarations.setFilename(attrValue);
 
 			} else if (attrName.equals("exceptionConverter")) {
 				declarations.setExceptionConverter(attrValue);
