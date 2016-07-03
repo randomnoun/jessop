@@ -27,7 +27,6 @@ public class Tokeniser {
 		this.jsb = jsb;
 		sb = new StringBuilder();
 		esb = new StringBuilder();
-		jsb.setTokeniser(this,  new JessopDeclarations());
 	}
 	public void setJessopScriptBuilder(JessopScriptBuilder jsb) {
 		// use this to switch languages within the tokeniser
