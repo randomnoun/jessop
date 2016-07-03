@@ -44,14 +44,14 @@ public class ScriptContextTest extends TestCase {
 	public final static String COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
-	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
+	  "<% for (var i = 1; i < maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
 	  "Hello, <%= name %>\n" +
-	  "<% for i=1,maxCount do %>\n" +
+	  "<% for i = 1, maxCount - 1 do %>\n" +
 	  "<%= i %>\n" +
 	  "<% end %>";
 
@@ -77,18 +77,73 @@ public class ScriptContextTest extends TestCase {
 	public final static String JAVA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"java\" engine=\"beanshell\" %>\n" +
 	  "Hello, <%= name %>\n" + 
-	  "<% for (int i=1; i<maxCount; i++) { %>\n" +
+	  "<% for (int i=1; i < maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 	
+	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
+		Compilable compilable = (Compilable) engine;
+		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
+		return compiledScript.getSource();
+	}
+	
+    /**
+     * Returns the HTML-escaped form of a string. The <tt>&amp;</tt>,
+     * <tt>&lt;</tt>, <tt>&gt;</tt>, and <tt>"</tt> characters are converted to
+     * <tt>&amp;amp;</tt>, <tt>&amp;lt;<tt>, <tt>&amp;gt;<tt>, and
+     * <tt>&amp;quot;</tt> respectively.
+     *
+     * @param string the string to convert
+     *
+     * @return the HTML-escaped form of the string
+     */
+    static public String escapeHtml(String string) {
+        if (string == null) {
+            return "";
+        }
+
+        char c;
+        StringBuilder sb = new StringBuilder(string.length());
+
+        for (int i = 0; i < string.length(); i++) {
+            c = string.charAt(i);
+
+            switch (c) {
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '\"':
+                    // interestingly, &quote; (with the e) works fine for HTML display,
+                    // but not inside hidden field values
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    
 	public void testJessop1() throws ScriptException {
+		String input = COUNTING_SCRIPT; 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
+		
+		logger.info("jessop input: " + escapeHtml(input));
+		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
-		engine.eval(COUNTING_SCRIPT, b);
+		engine.eval(input, b);
 		logger.info("End eval");
 	}
 	
@@ -97,7 +152,7 @@ public class ScriptContextTest extends TestCase {
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
 
 		Compilable compilableEngine = (Compilable) engine;
 		CompiledScript script = compilableEngine.compile(COUNTING_SCRIPT);
@@ -110,21 +165,22 @@ public class ScriptContextTest extends TestCase {
 	}
 
 	public void testJessopLua() throws ScriptException {
+		String input = LUA_COUNTING_SCRIPT; 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
 
-		logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
-		// LuajContext l;
-		
+		logger.info("jessop input: " + escapeHtml(input));
+		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
-		engine.eval(LUA_COUNTING_SCRIPT, b);
+		engine.eval(input, b);
 		logger.info("End eval");
 	}
 
 	public void testJessopPython1() throws ScriptException {
+		String input = PYTHON_COUNTING_SCRIPT_1; 
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
@@ -132,16 +188,17 @@ public class ScriptContextTest extends TestCase {
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
 
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
-		
+		logger.info("jessop input: " + escapeHtml(input));
+		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
-		engine.eval(PYTHON_COUNTING_SCRIPT_1, b);
+		engine.eval(input, b);
 		logger.info("End eval");
 	}
 
 	public void testJessopPython2() throws ScriptException {
+		String input = PYTHON_COUNTING_SCRIPT_2;
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
@@ -151,27 +208,28 @@ public class ScriptContextTest extends TestCase {
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
 
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
-		
+		logger.info("jessop input: " + escapeHtml(input));
+		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
-		engine.eval(PYTHON_COUNTING_SCRIPT_2, b);
+		engine.eval(input, b);
 		logger.info("End eval");
 	}
 	
 	
 	public void testJessopBeanshell() throws ScriptException {
+		String input = JAVA_COUNTING_SCRIPT;
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
+		b.put("maxCount", 4);
 
-		System.out.println("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
-		
+		logger.info("jessop input: " + escapeHtml(input));
+		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
-		engine.eval(JAVA_COUNTING_SCRIPT, b);
+		engine.eval(input, b);
 		logger.info("End eval");
 	}
 	
