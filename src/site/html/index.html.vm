@@ -44,7 +44,7 @@ language, you can embed python code within your jessop script (which executes us
 <li><b>scriptlets</b> to execute arbitrary code in the form <p class="inline-code">&lt;% if (name==null) { %&gt;</p><p class="inline"> No name </p><p class="inline-code">&lt;% } %&gt;</p>
 </ul> 
 
-<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more complete description of the 
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for a more complete description of the 
 <b>jessop</b> syntax.
 
 <h2>Usage example</h2>
