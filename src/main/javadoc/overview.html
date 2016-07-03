@@ -1,7 +1,152 @@
 <body>
 <p>The <b>jessop</b> project provides multi-language templates in the style of Java Server Pages.
 
-<p>There's probably a post on this somewhere on the  
+<h3>Syntax</h3>
+
+<p>The jessop syntax should be familiar to anyone who has written JSPs. A jessop
+<b>source script</b> may contain
+<!-- 
+  the doxia sink API doesn't support 'code' html tags, you can't put attributes on 'tt' tags,
+  and it automatically puts 'div's around inline-blocked 'pre' elements. christ. 
+  i hereby renew my pledge to find out who designed this, where they live, and then set fire to their loved ones.
+  -->
+<ul class="bullet">
+<li><b>unprocessed text</b>
+<li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>
+<li><b>expressions</b> to generate output in the form <code>&lt;%= name %&gt;</code> 
+<li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><tt> No name </tt><code>&lt;% } %&gt;</code>
+</ul> 
+
+<p>Other JSP features such as JSP-EL, beans, tag libraries, and access to HTTP session, request or 
+response objects are not implemented by this ScriptEngine (although if you really wanted to, you could 
+implement a Servlet to serve up jessop files with request/response variables defined).
+
+<p>Jessop operates by translating the jessop <b>source script</b> into a <b>target language script</b>,
+which is composed entirely of statements in the <b>target language</b>.
+
+<p>Care is taken to <b>preserve line numbers</b> between the source script and the target language script
+so that runtime errors that occur in the target language script can be easily traced back to the
+corresponding line in the source script. Some target languages, such as python, have overly strict
+whitespace conventions, and so line numbers may not be preserved in all cases. 
+
+<h3>Declarations</h3>
+
+<p><b>Declarations</b> consist of any text within a <code>&lt;%@ ... @%&gt;</code> block.
+
+<p>Declarations are used to supply information to the jessop engine, such as the target language
+being used, the target engine, the filename to use in exception messages and other 
+internal configuration options.
+
+<p>A script may have any number of declarations, but since jessop does not currently support
+mixing languages within the same source script, you should only have at most one declaration defined at 
+the top of the file.
+
+<p>Target languages may also define their own declarations (although this is not the case
+for any of the pre-defined languages)
+
+<p>The <b>jessop declaration</b> is in the form 
+<code>&lt;%@ jessop name1="value1" name2="value2" ... @%&gt;</code>. 
+
+<p>The developer may supply their own default declaration values to the ScriptEngine using 
+ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
+
+<p>Current <b>jessop declaration attributes</b> are:
+
+<table class="padded">
+<tr><th>Attribute name <th>JessopScriptEngine constant  <th>jessop-defined default  <th>Description
+<tr><td>filename  
+    <td>FILENAME  <td><i>null</i>
+    <td>The filename of the jessop source script. This filename will be included in 
+        ScriptExceptions that occur when the target language script is evaluated.
+<tr><td>language  
+    <td>JESSOP_LANGUAGE  <td>javascript  
+    <td>The target language that is used within the jessop script for expressions and scriptlets
+<tr><td>engine  
+    <td>JESSOP_ENGINE  <td>rhino  
+    <td>The name of the ScriptEngine engine that will be used to evaluate the target language script.
+<tr><td>exceptionConverter  
+    <td>JESSOP_EXCEPTION_CONVERTER  <td><i>null</i>  
+    <td>The class name of a {@link com.randomnoun.common.jessop.JessopExceptionConverter} that will
+        be used to convert exceptions raised by the target language's ScriptEngine to 
+        ScriptExceptions. (This should normally be the case, but exists as a workaround for
+        the beanshell and luaj engines, which do not do this properly).
+<tr><td>compileTarget  
+    <td>JESSOP_COMPILE_TARGET  <td>true
+    <td>If true, and if the target language ScriptEngine supports it, will attempt to compile 
+        the target script before evaluation. This may result in increased execution speed.
+<tr><td>suppressEol  
+    <td>JESSOP_SUPRESS_EOL  <td>false
+    <td>This attribute will suppress any trailing whitespace and the newline character that
+        appears after a <code>&lt;% ... %&gt;</code> scriptlet from appearing in the 
+        evaluated target language script output. Whitespace/newline suppression will
+        only occur if the scriptlet appears at the end of a line in the jessop source. 
+        <p>The suppressEol attribute is used for jessop scripts used for code generation.
+</table>   
+
+
+<h3>Unprocessed text</h3>
+
+<p><b>Unprocessed text</b> consists of any text that appears in the jessop source that is not
+contained in a declaration, expression, or scriptlet.
+
+<p>When unprocessed text is encountered in the jessop source script, the text is converted into code
+that prints that text to the output PrintWriter. The text is escaped if necessary in order to 
+represent it in the target language's native string type.
+
+<p>e.g. if the jessop target language is 'javascript', then the unprocessed text
+
+<pre>Lovely day isn't it</pre>
+
+will be converted into
+
+<pre>out.print('Lovely day isn\'t it\n');</pre>
+
+
+<h3>Expressions</h3>
+
+<p><b>Expressions</b> consist of any text within a <code>&lt;%= ... @%&gt;</code> block.
+
+<p>When expressions are encountered in the jessop source script, they are converted into code in the
+target language script that will evaluate the block output, and the print that value to the output PrintWriter.
+
+<p>e.g. if the jessop target language is 'javascript', then the expression block
+
+<pre>&lt;%= name @%&gt;</pre>
+
+will be converted into
+
+<pre>out.print(name);</pre>
+
+
+
+<h3>Scriptlets</h3>
+
+<p><b>Scriptlets</b> consist of any text within a <code>&lt;% ... @%&gt;</code> block.
+
+<p>The term 'scriptlets' is the same term used in the Java Server Pages (JSP) specification.
+
+<p>Scriptlet blocks should contain code written in the target language. When scriptlets are encountered 
+in the jessop source script, this code is copied into the target language script verbatim.
+
+<p>e.g. if the jessop target language is 'javascript', then the expression block
+
+<pre>&lt;% if (name==null) { %&gt; No name &lt;% } %&gt;</pre>
+
+will be converted into
+
+<pre>if (name==null) { out.print(name); }</pre>
+
+<p>There are no constraints placed on what actions a scriptlet may perform;
+a scriptlet may define new variables or functions, call functions, or even call Java code if
+the target scripting language supports it, including undesired actions such as terminated 
+the JVM via a System.exit() call.  
+
+If you are running scripts defined by other users and do wish to restrict what 
+actions a scriptlet may perform, run the ScriptEngine within a SecurityManager.
+
+<h3>More information</h3>
+
+<p>There's probably a much more opinionated post on this somewhere on the  
 <a href="http://www.randomnoun.com/wp">randomnoun blog</a>. 
 
 <!-- 
