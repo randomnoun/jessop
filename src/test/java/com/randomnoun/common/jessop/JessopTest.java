@@ -16,8 +16,9 @@ import org.apache.log4j.PropertyConfigurator;
 import junit.framework.TestCase;
 
 // !!!!!!!!!!!!!
-// if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
-// (add a space and delete it), resave it, and then run the unit test again.
+// if this unit test fails in eclipse because it can't find the 'jessop' engine, 
+// a) try modifing the MANIFEST.MF file (add a space and delete it), resave it
+// b) try performing a maven install on the top-level project
 
 /** Simple jessop tests (tests language declaration, few different languages, simple loop/output in target language) 
  * 

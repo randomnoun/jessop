@@ -15,9 +15,10 @@ import org.apache.log4j.PropertyConfigurator;
 
 import junit.framework.TestCase;
 
-// !!!!!!!!!!!!!
-// if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
-// (add a space and delete it), resave it, and then run the unit test again.
+//!!!!!!!!!!!!!
+//if this unit test fails in eclipse because it can't find the 'jessop' engine, 
+//a) try modifing the MANIFEST.MF file (add a space and delete it), resave it
+//b) try performing a maven install on the top-level project
 
 /** This unit test checks whether suppressEol declarations work as expected
  * 
@@ -29,7 +30,7 @@ public class SuppressEolTest extends TestCase {
 	Logger logger = Logger.getLogger(SuppressEolTest.class);
 	
 	public void setUp() {
-		String logFormatPrefix = "[JessopTest] ";
+		String logFormatPrefix = "[SuppressEolTest] ";
 		Properties lp = new Properties();
 		lp.put("log4j.rootCategory", "INFO, CONSOLE");
 		lp.put("log4j.appender.CONSOLE", "org.apache.log4j.ConsoleAppender");
