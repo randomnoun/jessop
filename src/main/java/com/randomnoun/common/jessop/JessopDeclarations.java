@@ -28,8 +28,10 @@ public class JessopDeclarations {
 	// may want to use different declarationTypes for things like that
 
 	String engine;
-	boolean suppressEol;
-	String exceptionConverter;	
+	String exceptionConverter;
+	String filename;
+	boolean suppressEol = false;
+	boolean compileTarget = true;
 	
 	public boolean isSuppressEol() {
 		return suppressEol;
@@ -53,6 +55,22 @@ public class JessopDeclarations {
 
 	public void setExceptionConverter(String exceptionConverter) {
 		this.exceptionConverter = exceptionConverter;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public boolean isCompileTarget() {
+		return compileTarget;
+	}
+
+	public void setCompileTarget(boolean compileTarget) {
+		this.compileTarget = compileTarget;
 	}
 	
 	
