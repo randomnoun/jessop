@@ -680,9 +680,11 @@ a:active {
 }
 
 /* the (new) oracle jdk7 javadoc processor puts the overview within a <div style="footer"> block, which breaks LI elements */ 
-UL.bullet LI {
-  font-size: 12px;
+.footer UL.bullet LI {
+  font-size: 9pt;
   list-style: disc outside none;
+  margin-bottom: 10px;
 }  
+TABLE.padded TD { padding-bottom: 10px; }
 
 
