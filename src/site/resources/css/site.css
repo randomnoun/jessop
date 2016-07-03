@@ -48,4 +48,20 @@
     decoration: none;
 }
 
+p.inline, p.inline-code {
+  display: inline-block;
+  font-size: 1em;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  padding: 2px 4px;
+  font-size: 90%;
+  border-radius: 4px;
+  color: #333;
+  white-space: nowrap;
+}
 
+p.inline-code {
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  color: #d14;
+  padding: 2px 4px;
+}

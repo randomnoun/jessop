@@ -32,11 +32,16 @@ jessop script (which executes using the 'rhino' engine), or by enabling the '<b>
 language, you can embed python code within your jessop script (which executes using the
 'jython' engine).
 
-<p>The jessop syntax should be familiar to anyone who has written JSPs; a file may contain
+<p>The jessop syntax should be familiar to anyone who has written JSPs. A file may contain
+<!-- 
+  the doxia sink API doesn't support 'code' html tags, you can't put attributes on 'tt' tags,
+  and it automatically puts 'div's around inline-blocked 'pre' elements. christ. 
+  i hereby renew my pledge to find out who designed this, where they live, and then set fire to their loved ones.
+  -->
 <ul>
-<li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>
-<li><b>expressions</b> to generate output in the form <code>&lt;%= name %&gt;</code> 
-<li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><tt> No name </tt><code>&lt;% } %&gt;</code>
+<li>a <b>declaration</b> in the form <p class="inline-code">&lt;%@ jessop language="javascript" engine="rhino" %&gt;</p>
+<li><b>expressions</b> to generate output in the form <p class="inline-code">&lt;%= name %&gt;</p> 
+<li><b>scriptlets</b> to execute arbitrary code in the form <p class="inline-code">&lt;% if (name==null) { %&gt;</p><p class="inline"> No name </p><p class="inline-code">&lt;% } %&gt;</p>
 </ul> 
 
 <p>See the <a href="apidocs/index.html">Javadoc overview</a> for more complete description of the 
@@ -63,6 +68,7 @@ import java.util.Scanner;
 public class JessopExample {
 
     public void main(String args[]) throws FileNotFoundException, ScriptException {
+
         // read the input file
         String filename = args[1];
         String input = new Scanner(new File(filename)).useDelimiter("\\Z").next();
@@ -247,7 +253,7 @@ Hello, Baron von Count
  
 <p>Additional languages and engines can be added by implementing the 
 <a href="apidocs/com/randomnoun/common/jessop/JessopScriptBuilder.html">JessopScriptBuilder</a>
-interface, and registered using the standared Java 
+interface, registered using the standared Java 
 <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html">ServiceLoader</a> 
 mechanism.
 
@@ -255,6 +261,8 @@ mechanism.
 <p>See the <a href="apidocs/index.html">Javadoc overview</a> for a description of the 
 <b>jessop</b> syntax.
 
+<h2>License</h2>
+<b>jessop</b> is licensed under the <a href="license.html">Simplified BSD 2-clause license</a>.
 
 <!--
 Kind of hoping that this works
