@@ -22,8 +22,8 @@
  <custom>
     <reflowSkin>
       <!-- uncomment this for local dev and change protocolRelativeURLs to false (creates file:// URLs)   
-      <absoluteResourceURL>file:///C:/Documents and Settings/knoxg/workspace-3.7.1-sts-2.8.1/jessop/target/site</absoluteResourceURL>
-      -->
+      <absoluteResourceURL>file:///C:/Documents and Settings/knoxg/workspace-4.4.1-sts-3.6.2-rn/jessop/target/site</absoluteResourceURL>
+       -->
       <protocolRelativeURLs>true</protocolRelativeURLs>
       <smoothScroll>true</smoothScroll>
       <theme>default</theme>
@@ -70,8 +70,10 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
           <toc>false</toc>
           <markPageHeader>false</markPageHeader>
           <sections>
-            <columns>2</columns>
-            <body/>
+            <columns>1</columns><!-- overview, code example -->
+            <columns>2</columns><!-- input / output examples -->
+            <columns>2</columns><!-- pom / download -->
+            <body/><!--  the rest -->
           </sections>
         </index>
         <contribute>

@@ -1,0 +1,261 @@
+<!-- 
+
+  This file will be preprocessed by the Velocity template engine, which should replace
+  the project.groupId strings below.
+  
+  The rest of this file is in some kind of bastardised crippled HTML + velocity.
+  
+  It's this kind of fscking awful templating system that drove me into writing this 
+  project in the first place.
+  
+-->
+#set( $repos = "http://central.maven.org/maven2/" )
+#set( $jarBasename = ${project.artifactId} + "-" + ${project.version} + ".jar" )
+#set( $srcBasename = ${project.artifactId} + "-" + ${project.version} + "-sources.jar" )
+#set( $url = ${project.groupId} )
+#set( $url = $url.replace(".", "/") )
+#set( $jarUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $jarBasename )
+#set( $srcUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $srcBasename )
+
+<h2>Overview</h2>
+
+<p><b>Jessop</b> is a multi-language templating language in the style of Java Server Pages.</p>
+
+<p>It is <b>multi-language</b> in the sense that the although input files are written in your desired
+output language (whether that be English, HTML/CSS, or in the case of code generators,
+other programming languages), the statements, conditions
+and expressions within the language are written in <b>any language that the JVM Scripting Engine
+supports</b>.
+
+<p><i>e.g.</i> by enabling the '<b>javascript</b>' target language, you can embed javascript code within your
+jessop script (which executes using the 'rhino' engine), or by enabling the '<b>python</b>' target 
+language, you can embed python code within your jessop script (which executes using the
+'jython' engine).
+
+<p>The jessop syntax should be familiar to anyone who has written JSPs; a file may contain
+<ul>
+<li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>
+<li><b>expressions</b> to generate output in the form <code>&lt;%= name %&gt;</code> 
+<li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><tt> No name </tt><code>&lt;% } %&gt;</code>
+</ul> 
+
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more complete description of the 
+<b>jessop</b> syntax.
+
+<h2>Usage example</h2>
+
+<p>The following code will read an input file and evaluate it using the 'jessop' ScriptEngine.</p>
+
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more example programs.
+
+<pre>
+package com.example.contrived.jessop;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
+import java.util.Scanner;
+
+public class JessopExample {
+
+    public void main(String args[]) throws FileNotFoundException, ScriptException {
+        // read the input file
+        String filename = args[1];
+        String input = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        
+        // initialise the jessop ScriptEngine
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
+        if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
+        
+        // set some variables which are used in the jessop script
+        Bindings b = engine.createBindings();
+        b.put("name", "Baron von Count");
+        b.put("maxCount", 4);
+        
+        // evaluate the script
+        engine.eval(input);
+    }
+
+}
+</pre>
+
+<h2>Example input/output</h2>
+
+<hr/>
+
+<h3>Javascript</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;javascript&quot; engine=&quot;rhino&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;% for (var i = 1; i &lt; maxCount; i++) { %&gt;
+&lt;%= i %&gt;
+&lt;% } %&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Baron von Count
+
+1
+
+2
+
+3
+</pre>
+
+<h3>Java</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;java&quot; engine=&quot;beanshell&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;% for (int i=1; i &lt; maxCount; i++) { %&gt;
+&lt;%= i %&gt;
+&lt;% } %&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Baron von Count
+
+1
+
+2
+
+3
+</pre>
+
+</h3>
+
+<h3>Lua</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;lua&quot; engine=&quot;luaj&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;% for i = 1, maxCount - 1 do %&gt;
+&lt;%= i %&gt;
+&lt;% end %&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Baron von Count
+
+1
+
+2
+
+3
+</pre>
+
+<h3>Python</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;python2&quot; engine=&quot;jython&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;%
+for i in range(1, maxCount):
+%&gt;
+&lt;%= i %&gt;
+&lt;%
+pass;
+%&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Baron von Count
+
+1
+
+2
+
+3
+</pre>
+
+<h2></h2>
+
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more example programs.  
+
+<p>The <a href="xref-test/index.html">unit tests</a> accompanying this project include further examples. 
+
+<hr/>
+
+<h2>Usage</h2>
+
+<p>To use this Maven project, include it in your <a href="http://maven.apache.org/pom.html">project model</a>
+
+<pre>
+&lt;project&gt;
+  ...
+  &lt;dependencies&gt;
+    ...
+    &lt;dependency&gt;
+      &lt;groupId&gt;${project.groupId}&lt;/groupId&gt;
+      &lt;artifactId&gt;${project.artifactId}&lt;/artifactId&gt;
+      &lt;version&gt;${project.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    ...    
+  &lt;/dependencies&gt;
+  ...
+&lt;/project&gt;
+</pre>
+
+<h2>Download</h2>
+
+<p>If you're not using maven, you can download the binary and source JARs using these links:</p>
+
+<!-- 
+  Using P element's here because doxia doesn't work well with DIVs. 
+  Can't nest P elements, unfortunately, hence the weird sup/sub element formatting here. 
+-->
+<p class="download-button"><a href="${jarUrl}"><img width="41" height="40" style="margin: 5px; float:left;" src="images/download-arrow.png"></img></a>
+<sup class="big"><a href="${jarUrl}">Download compiled JAR</a></sup>
+<sub class="small"><a href="${jarUrl}">${jarBasename}</a></sub>
+</p>
+
+<p class="download-button"><a href="${srcUrl}"><img width="41" height="40" style="margin: 5px; float:left;" src="images/download-arrow.png"></img></a>
+<sup class="big"><a href="${srcUrl}">Download source JAR</a></sup>
+<sub class="small"><a href="${srcUrl}">${srcBasename}</a></sub>
+</p>
+
+<p>Artifacts are contained within the <a href="${repos}">maven central repository</a>
+
+<hr/>
+
+<h2>Target languages</h2>
+
+<p>Jessop has initial support for four target languages (using four script engines).</p> 
+
+<p>You will need to add the appropriate maven dependency to target these languages and engines.</p>
+
+<table>
+<tr><th>Language<th>Engine<th>Engine groupId<th>Engine artifactId<th>Artifact version
+<tr><td>javascript <td>rhino     <td colspan="3"><i>(Bundled with JVM)</i>
+<tr><td>lua        <td>luaj      <td>org.luaj      <td>luaj-jse   <td>3.0.1
+<tr><td>python     <td>jython    <td>org.python    <td>jython     <td>2.5.3
+<tr><td>java       <td>beanshell <td>org.beanshell <td>bsh        <td>2.0b5
+</table>
+ 
+<p>Additional languages and engines can be added by implementing the 
+<a href="apidocs/com/randomnoun/common/jessop/JessopScriptBuilder.html">JessopScriptBuilder</a>
+interface, and registered using the standared Java 
+<a href="https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html">ServiceLoader</a> 
+mechanism.
+
+<h2>Syntax</h2>
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for a description of the 
+<b>jessop</b> syntax.
+
+
+<!--
+Kind of hoping that this works
+-->
