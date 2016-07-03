@@ -87,7 +87,6 @@ public class SuppressEolTest extends TestCase {
 		return compiledScript.getSource();
 	}
 	
-	/*
 	public void testJessop1() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
@@ -146,7 +145,6 @@ public class SuppressEolTest extends TestCase {
 		engine.eval(PYTHON_COUNTING_SCRIPT_2);
 		logger.info("End eval");
 	}
-	*/
 	
 	public void testJessopBeanshell() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
