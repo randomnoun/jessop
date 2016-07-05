@@ -70,8 +70,9 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
           <toc>false</toc>
           <markPageHeader>false</markPageHeader>
           <sections>
-            <columns>1</columns><!-- overview, code example -->
+            <columns>1</columns><!-- overview -->
             <columns>2</columns><!-- input / output examples -->
+            <columns>1</columns><!-- code example -->
             <columns>2</columns><!-- pom / download -->
             <body/><!--  the rest -->
           </sections>
