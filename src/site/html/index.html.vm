@@ -155,7 +155,7 @@ Hello, Baron von Count
 
 <hr/>
 
-<h2>Usage example</h2>
+<h2>Example Java code</h2>
 
 <p>The following Java code will read an input file and evaluate it using the 'jessop' ScriptEngine.</p>
 
