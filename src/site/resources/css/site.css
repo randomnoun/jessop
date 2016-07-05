@@ -67,8 +67,13 @@ p.inline-code {
 }
 
 /* reflow-skin override */
-
+/* unsure why it was putting these massive whitespace blocks before each of these elements */
 h1[id]::before, h2[id]::before, h3[id]::before, h4[id]::before, h5[id]::before, h6[id]::before, a[name]::before {
-    height: 30px;
-    margin: 10px 0;
+	content: "";
+    height: 0px;
+    margin: 0;
 }
+/* set margin on the header elements themselves */
+h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0;
+}  
