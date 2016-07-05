@@ -61,11 +61,15 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
 <tr><td>language  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_LANGUAGE JESSOP_LANGUAGE}  
     <td><tt>javascript</tt>  
-    <td>The target language that is used within the jessop script for expressions and scriptlets
+    <td>The target language used within the jessop script for expressions and scriptlets
+        <p>This must be the same string returned by the 
+        {@link com.randomnoun.common.jessop.JessopScriptBuilder#getLanguage()}} method.
 <tr><td>engine  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_ENGINE JESSOP_ENGINE}  
     <td><tt>rhino</tt>  
-    <td>The name of the ScriptEngine engine that will be used to evaluate the target language script.
+    <td>The name of the ScriptEngine used to evaluate the target language script.
+        <p>This should be the same string that the ScriptEngine uses to identify itself; see
+        {@link javax.script.ScriptEngineManager.ScriptEngineManager().getEngineByName(String)}.
 <tr><td>exceptionConverter  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_EXCEPTION_CONVERTER JESSOP_EXCEPTION_CONVERTER}  <td><i>null</i>  
     <td>The class name of a {@link com.randomnoun.common.jessop.JessopExceptionConverter} that will
