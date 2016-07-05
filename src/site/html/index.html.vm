@@ -12,10 +12,12 @@
 #set( $repos = "http://central.maven.org/maven2/" )
 #set( $jarBasename = ${project.artifactId} + "-" + ${project.version} + ".jar" )
 #set( $srcBasename = ${project.artifactId} + "-" + ${project.version} + "-sources.jar" )
+#set( $distBasename = ${project.artifactId} + "-" + ${project.version} + "-dist.zip" )
 #set( $url = ${project.groupId} )
 #set( $url = $url.replace(".", "/") )
 #set( $jarUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $jarBasename )
 #set( $srcUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $srcBasename )
+#set( $distUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $distBasename )
 
 <h2>Overview</h2>
 
@@ -46,48 +48,6 @@ language, you can embed python code within your jessop script (which executes us
 
 <p>See the <a href="apidocs/index.html">Javadoc overview</a> for a more complete description of the 
 <b>jessop</b> syntax.
-
-<h2>Usage example</h2>
-
-<p>The following code will read an input file and evaluate it using the 'jessop' ScriptEngine.</p>
-
-<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more example programs.
-
-<pre>
-package com.example.contrived.jessop;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
-import java.util.Scanner;
-
-public class JessopExample {
-
-    public void main(String args[]) throws FileNotFoundException, ScriptException {
-
-        // read the input file
-        String filename = args[1];
-        String input = new Scanner(new File(filename)).useDelimiter("\\Z").next();
-        
-        // initialise the jessop ScriptEngine
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-        if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-        
-        // set some variables which are used in the jessop script
-        Bindings b = engine.createBindings();
-        b.put("name", "Baron von Count");
-        b.put("maxCount", 4);
-        
-        // evaluate the script
-        engine.eval(input);
-    }
-
-}
-</pre>
 
 <h2>Example input/output</h2>
 
@@ -187,11 +147,55 @@ Hello, Baron von Count
 3
 </pre>
 
-<h2></h2>
+<h2></h2><!-- to move back to lhs column -->
 
 <p>See the <a href="apidocs/index.html">Javadoc overview</a> for more example programs.  
 
 <p>The <a href="xref-test/index.html">unit tests</a> accompanying this project include further examples. 
+
+<hr/>
+
+<h2>Usage example</h2>
+
+<p>The following Java code will read an input file and evaluate it using the 'jessop' ScriptEngine.</p>
+
+<p>See the <a href="apidocs/index.html">Javadoc overview</a> for more example programs.
+
+<pre>
+package com.example.contrived.jessop;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
+import java.util.Scanner;
+
+public class JessopExample {
+
+    public void main(String args[]) throws FileNotFoundException, ScriptException {
+
+        // read the input file
+        String filename = args[1];
+        String input = new Scanner(new File(filename)).useDelimiter("\\Z").next();
+        
+        // initialise the jessop ScriptEngine
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
+        if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
+        
+        // set some variables which are used in the jessop script
+        Bindings b = engine.createBindings();
+        b.put("name", "Baron von Count");
+        b.put("maxCount", 4);
+        
+        // evaluate the script
+        engine.eval(input);
+    }
+
+}
+</pre>
 
 <hr/>
 
@@ -223,15 +227,28 @@ Hello, Baron von Count
   Using P element's here because doxia doesn't work well with DIVs. 
   Can't nest P elements, unfortunately, hence the weird sup/sub element formatting here. 
 -->
+<table>
+<tr><td>
 <p class="download-button"><a href="${jarUrl}"><img width="41" height="40" style="margin: 5px; float:left;" src="images/download-arrow.png"></img></a>
 <sup class="big"><a href="${jarUrl}">Download compiled JAR</a></sup>
 <sub class="small"><a href="${jarUrl}">${jarBasename}</a></sub>
 </p>
+<td>To compile or run, add this JAR to your CLASSPATH.
 
+<tr><td>
 <p class="download-button"><a href="${srcUrl}"><img width="41" height="40" style="margin: 5px; float:left;" src="images/download-arrow.png"></img></a>
 <sup class="big"><a href="${srcUrl}">Download source JAR</a></sup>
 <sub class="small"><a href="${srcUrl}">${srcBasename}</a></sub>
 </p>
+<td>To debug in an IDE, set this JAR as the Java Source attachment for ${jarBasename}
+
+<tr><td>
+<p class="download-button"><a href="${distUrl}"><img width="41" height="40" style="margin: 5px; float:left;" src="images/download-arrow.png"></img></a>
+<sup class="big"><a href="${distUrl}">Download distribution ZIP</a></sup>
+<sub class="small"><a href="${distUrl}">${distBasename}</a></sub>
+</p>
+<td>To build jessop from source, unpackage this archive and run <tt>mvn compile</tt>
+</table>
 
 <p>Artifacts are contained within the <a href="${repos}">maven central repository</a>
 
