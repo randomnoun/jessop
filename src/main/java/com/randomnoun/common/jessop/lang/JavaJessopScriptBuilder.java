@@ -4,15 +4,7 @@ package com.randomnoun.common.jessop.lang;
  * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
  */
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
 import org.apache.log4j.Logger;
-import org.luaj.vm2.LuaError;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
 import com.randomnoun.common.jessop.JessopScriptBuilder;

@@ -6,7 +6,6 @@ package com.randomnoun.common.jessop;
 
 import java.io.PrintWriter;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptException;
 
 /** Each target language we intend to support within jessop must have an implementation of this interface. 

@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
