@@ -52,6 +52,10 @@ public class Tokeniser {
 						eline = line;
 					}
 					state = 2;
+				} else if (ch=='<') {
+					// normal '<' followed by an possible initial '<'
+					sb.append(ch);
+					state = 1;
 				} else {
 					// just a normal tag
 					sb.append('<');
