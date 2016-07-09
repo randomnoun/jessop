@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -9,6 +13,9 @@ import org.apache.log4j.Logger;
 // so should I have a Lexer here as well ? hmm. skip it for now.
 
 public class Tokeniser {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(Tokeniser.class);
 	int state;         // parse state
 	int charOffset;    // character number (from start of file); starts at 0

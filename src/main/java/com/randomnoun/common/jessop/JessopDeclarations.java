@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 /** This object contains values that are defined in the <%@ jessop ... %> declaration attributes.
  * 
  * <p>The {@link AbstractJessopScriptBuilder} currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
@@ -14,6 +18,9 @@ package com.randomnoun.common.jessop;
  * @version $Id$
  */
 public class JessopDeclarations {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 
 	// things we might want to add later:
 	// contentType="text/html; charset=utf-8"

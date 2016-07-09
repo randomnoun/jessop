@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop.engine;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -7,6 +11,9 @@ import javax.script.ScriptException;
 import com.randomnoun.common.jessop.JessopExceptionConverter;
 
 public class BeanshellExceptionConverter implements JessopExceptionConverter {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 
 	/* bsh doesn't return filenames properly */ 
 	@Override

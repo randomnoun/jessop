@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import java.io.PrintWriter;
 
 import javax.script.ScriptContext;

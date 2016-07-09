@@ -1,11 +1,18 @@
 package com.randomnoun.common.jessop.lang;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import org.apache.log4j.Logger;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
 import com.randomnoun.common.jessop.JessopScriptBuilder;
 
 public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);
 	int outputLine = 1;        // current line number in the target script;
 	int outputCol = 1;         // current output column

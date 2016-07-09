@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,9 +25,13 @@ import org.apache.log4j.Logger;
  * <p>If the declaration is missing, then the default JavascriptJessopScriptBuilder is used, using the 'rhino' engine.
  * 
  * @author knoxg
+ * @version $Id$
  */
 // this should be subclassed by specific languages (javascript etc)
 public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 	protected Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);
 	protected JessopDeclarations declarations;
 	protected Tokeniser tokeniser;

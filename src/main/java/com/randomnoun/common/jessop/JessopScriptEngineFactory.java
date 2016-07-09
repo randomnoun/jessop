@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -22,6 +26,9 @@ import javax.script.ScriptEngineFactory;
 // actually getNames() could return jessop-xxx variants based on what's in the registry, couldn't it.
 // can't see how to get the value of that name though, so that's unfortunate
 public class JessopScriptEngineFactory implements ScriptEngineFactory {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 
 	/** The version of the jessop 'language' that this script engine implements */
 	public static final String JESSOP_LANGUAGE_VERSION = "1.0";

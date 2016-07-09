@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop.lang;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +20,9 @@ import com.randomnoun.common.jessop.JessopScriptBuilder;
 // exactly the same as the JavascriptJessopScriptBuilder
 // string coercion is a bit different
 public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(JavaJessopScriptBuilder.class);
 	int outputLine = 1;        // current line number in the target script;
 	int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)

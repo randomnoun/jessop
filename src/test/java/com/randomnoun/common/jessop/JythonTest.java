@@ -1,5 +1,9 @@
 package com.randomnoun.common.jessop;
 
+/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
+ * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
+ */
+
 import java.util.List;
 
 import javax.script.ScriptEngine;
@@ -20,6 +24,9 @@ import junit.framework.TestCase;
  * @version $Id$
  */
 public class JythonTest extends TestCase {
+
+    /** A revision marker to be used in exception stack traces. */
+    public static final String _revision = "$Id$";
 
 	public static void listEngines(){ // Note 1
         ScriptEngineManager mgr = new ScriptEngineManager();
