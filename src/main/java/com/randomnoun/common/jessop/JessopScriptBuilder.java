@@ -25,7 +25,7 @@ import javax.script.ScriptException;
  * As these methods are called, this class should generate code in the target language via the printWriter.
  * 
  * <p>Care should be taken to ensure that code in the target language script is on the same line number
- * as the corresponding code on the input script, to make error messages easier more developer-friendly.
+ * as the corresponding code on the input script, to make error messages more developer-friendly.
  * 
  * @author knoxg
  * @version $Id$
