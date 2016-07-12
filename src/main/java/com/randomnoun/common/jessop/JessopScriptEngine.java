@@ -64,6 +64,14 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
 	public static final String JESSOP_DEFAULT_EXCEPTION_CONVERTER = null;
 
+    /** Reserved key for a named value that sets the initial bindings converter.
+     * If not set, will use the default converter for the default language
+     */
+	public static final String JESSOP_BINDINGS_CONVERTER = "com.randommoun.common.jessop.bindingsConverter";
+
+	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
+	public static final String JESSOP_DEFAULT_BINDINGS_CONVERTER = "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
+
 	
     /** Reserved key for a named value that controls whether the target script is compiled
      * (providing the target engine allows it).
@@ -154,22 +162,23 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			// jessop defaults
 			declarations.setEngine(JESSOP_DEFAULT_ENGINE);
 			declarations.setExceptionConverter(JESSOP_DEFAULT_EXCEPTION_CONVERTER);
+			declarations.setBindingsConverter(JESSOP_DEFAULT_BINDINGS_CONVERTER);
 			declarations.setCompileTarget(Boolean.valueOf(JESSOP_DEFAULT_COMPILE_TARGET));
 			declarations.setSuppressEol(Boolean.valueOf(JESSOP_DEFAULT_SUPPRESS_EOL));
 
+			// ScriptEngine defaults
 			String filename = (String) get(ScriptEngine.FILENAME);
 			String initialLanguage = (String) get(JessopScriptEngine.JESSOP_LANGUAGE);
 			String initialEngine = (String) get(JessopScriptEngine.JESSOP_ENGINE);
 			String initialExceptionConverter = (String) get(JessopScriptEngine.JESSOP_EXCEPTION_CONVERTER);
+			String initialBindingsConverter = (String) get(JessopScriptEngine.JESSOP_BINDINGS_CONVERTER);
 			String initialCompileTarget = (String) get(JessopScriptEngine.JESSOP_COMPILE_TARGET);
 			String initialSuppressEol = (String) get(JessopScriptEngine.JESSOP_SUPPRESS_EOL);
 			if (initialLanguage==null) { initialLanguage = JESSOP_DEFAULT_LANGUAGE; }
-			
-			// then ScriptEngine-defined defaults
 			if (filename!=null) { declarations.setFilename(filename); }
-			
 			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
 			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
+			if (initialBindingsConverter!=null) { declarations.setBindingsConverter(initialBindingsConverter); }
 			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
 			if (initialSuppressEol!=null) { declarations.setSuppressEol(Boolean.valueOf(initialSuppressEol)); }
 			
@@ -203,6 +212,17 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 				throw new ScriptException("java.scriptx engine '" + declarations.engine + "' not found");
 			}
 			
+			JessopBindingsConverter jbc = null;
+			if (declarations.bindingsConverter !=null && !declarations.bindingsConverter.equals("")) {
+				try {
+					jbc = (JessopBindingsConverter) 
+						Class.forName(declarations.bindingsConverter).newInstance();
+				} catch (Exception e) {
+					throw (ScriptException) new ScriptException(
+					  "bindingsConverter '" + declarations.bindingsConverter + "' not loaded").initCause(e);
+				}
+			}
+			
 			JessopExceptionConverter jec = null;
 			if (declarations.exceptionConverter!=null && !declarations.exceptionConverter.equals("")) {
 				try {
@@ -217,7 +237,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
 			// the newScript is compiled here, if the engine supports it
 			return new JessopCompiledScript(engine, declarations.isCompileTarget(), 
-				declarations.getFilename(), newScript, jec);
+				declarations.getFilename(), newScript, jec, jbc);
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);

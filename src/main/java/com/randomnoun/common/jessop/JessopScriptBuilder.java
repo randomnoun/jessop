@@ -57,6 +57,16 @@ public interface JessopScriptBuilder {
 	 */
 	String getDefaultExceptionConverterClassName();                             
 
+	/** Returns the name of the default bindingsConverter class that should be used for the default script engine,
+	 * or null if no converter is required.
+	 * 
+	 * <p>Changing the engine in the jessop declaration will reset the the converter to null. 
+	 * 
+	 * @return the name of the default bindingsConverter class that should be used for the default script engine
+	 */
+	String getDefaultBindingsConverterClassName();                             
+
+	
 	/** Sets the printWriter that this class will write to during emit() methods
 	 * 
 	 * @param pw the printWriter that this class will write to during emit() methods

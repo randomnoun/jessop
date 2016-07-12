@@ -36,6 +36,7 @@ public class JessopDeclarations {
 
 	String engine;
 	String exceptionConverter;
+	String bindingsConverter;
 	String filename;
 	boolean suppressEol = false;
 	boolean compileTarget = true;
@@ -78,6 +79,14 @@ public class JessopDeclarations {
 
 	public void setCompileTarget(boolean compileTarget) {
 		this.compileTarget = compileTarget;
+	}
+
+	public String getBindingsConverter() {
+		return bindingsConverter;
+	}
+
+	public void setBindingsConverter(String bindingsConverter) {
+		this.bindingsConverter = bindingsConverter;
 	}
 	
 	

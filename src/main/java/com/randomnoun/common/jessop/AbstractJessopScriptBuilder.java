@@ -92,6 +92,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				if (declarations.engine==null) { 
 					declarations.engine = newBuilder.getDefaultScriptEngineName();
 					declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();
+					declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();
 				}
 				
 				/*
@@ -149,7 +150,10 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 
 			} else if (attrName.equals("exceptionConverter")) {
 				declarations.setExceptionConverter(attrValue);
-			
+
+			} else if (attrName.equals("bindingsConverter")) {
+				declarations.setBindingsConverter(attrValue);
+
 			}
 			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
@@ -168,7 +172,12 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 	public String getDefaultExceptionConverterClassName() {
 		return null;
 	}
-	
+
+	@Override
+	public String getDefaultBindingsConverterClassName() {
+		return null;
+	}
+
 	/** Conditionally remove the first newline from the supplied string.
 	 * 
 	 * <p>This method is used to perform <tt>suppressEol</tt> declaration processing.

@@ -71,8 +71,14 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 	}
 	@Override
 	public String getDefaultScriptEngineName() {
-		// TODO Auto-generated method stub
 		return "rhino";
 	}
+	@Override
+	public String getDefaultBindingsConverterClassName() {
+		// TODO use a different class if we're using org.mozilla rhino vs jvm rhino
+		return "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
+	}
+	
+	
 	
 }
