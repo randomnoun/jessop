@@ -108,9 +108,6 @@ public class DefaultDeclarationTest extends TestCase {
 
     
 	public void testJessop1() throws ScriptException {
-		com.sun.script.javascript.RhinoScriptEngine rse;
-		
-		
 		String input = COUNTING_SCRIPT; 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
