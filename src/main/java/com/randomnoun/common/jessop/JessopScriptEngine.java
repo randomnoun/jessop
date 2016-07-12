@@ -44,28 +44,47 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
      */
 	public static final String JESSOP_LANGUAGE = "com.randommoun.common.jessop.language";
 	
+	/** Default value for the JESSOP_LANGUAGE key; has the value "javascript" */
+	public static final String JESSOP_DEFAULT_LANGUAGE = "javascript";
+	
     /** Reserved key for a named value that identifies the initial ScriptEngine used for jessop scripts.
      * If not set, will use the default engine for the default language.
      */
 	public static final String JESSOP_ENGINE = "com.randommoun.common.jessop.engine";
 
+	/** Default value for the JESSOP_ENGINE key; has the value "rhino" */
+	public static final String JESSOP_DEFAULT_ENGINE = "rhino";
+	
+	
     /** Reserved key for a named value that sets the initial exception converter.
      * If not set, will use the default converter for the default language
      */
 	public static final String JESSOP_EXCEPTION_CONVERTER = "com.randommoun.common.jessop.exceptionConverter";
 
+	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
+	public static final String JESSOP_DEFAULT_EXCEPTION_CONVERTER = null;
+
+	
     /** Reserved key for a named value that controls whether the target script is compiled
      * (providing the target engine allows it).
      * If not set, will default to 'true'.
      */
 	public static final String JESSOP_COMPILE_TARGET = "com.randommoun.common.jessop.compileTarget";
 
+	/** Default value for the JESSOP_ENGINE key; has the value "false" */
+	public static final String JESSOP_DEFAULT_COMPILE_TARGET = "false";
+
+	
     /** Reserved key for a named value that controls whether the target script 
      * will have EOLs suppressed after scriptlets that appear at the end of a line.
      * If not set, will default to 'false'.
      */
 	public static final String JESSOP_SUPPRESS_EOL = "com.randommoun.common.jessop.suppressEol";
 
+	/** Default value for the JESSOP_SUPPRESS_EOL key; has the value "false" */
+	public static final String JESSOP_DEFAULT_SUPPRESS_EOL = "false";
+
+	
 	// so I guess we implement this twice then
 	// let's always compile it if we can
 	
@@ -129,16 +148,26 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	@Override
 	public CompiledScript compile(Reader script) throws ScriptException {
 		try {
+			// if (initialLanguage == null) { initialLanguage = "javascript"; }
+
+			JessopDeclarations declarations = new JessopDeclarations();
+			// jessop defaults
+			declarations.setEngine(JESSOP_DEFAULT_ENGINE);
+			declarations.setExceptionConverter(JESSOP_DEFAULT_EXCEPTION_CONVERTER);
+			declarations.setCompileTarget(Boolean.valueOf(JESSOP_DEFAULT_COMPILE_TARGET));
+			declarations.setSuppressEol(Boolean.valueOf(JESSOP_DEFAULT_SUPPRESS_EOL));
+
 			String filename = (String) get(ScriptEngine.FILENAME);
 			String initialLanguage = (String) get(JessopScriptEngine.JESSOP_LANGUAGE);
 			String initialEngine = (String) get(JessopScriptEngine.JESSOP_ENGINE);
 			String initialExceptionConverter = (String) get(JessopScriptEngine.JESSOP_EXCEPTION_CONVERTER);
 			String initialCompileTarget = (String) get(JessopScriptEngine.JESSOP_COMPILE_TARGET);
 			String initialSuppressEol = (String) get(JessopScriptEngine.JESSOP_SUPPRESS_EOL);
-			if (initialLanguage == null) { initialLanguage = "javascript"; }
-
-			JessopDeclarations declarations = new JessopDeclarations();
+			if (initialLanguage==null) { initialLanguage = JESSOP_DEFAULT_LANGUAGE; }
+			
+			// then ScriptEngine-defined defaults
 			if (filename!=null) { declarations.setFilename(filename); }
+			
 			if (initialEngine!=null) { declarations.setEngine(initialEngine); }
 			if (initialExceptionConverter!=null) { declarations.setExceptionConverter(initialExceptionConverter); }
 			if (initialCompileTarget!=null) { declarations.setCompileTarget(Boolean.valueOf(initialCompileTarget)); }
