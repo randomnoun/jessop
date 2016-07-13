@@ -134,6 +134,8 @@
 						<compilerArgs>
 							<arg>-XDignore.symbol.file</arg>
 						</compilerArgs>
+						<!--  for mvn plugin < 3.1  -->
+						<compilerArgument>-XDignore.symbol.file</compilerArgument>
 					</configuration>
 				</plugin>
 
