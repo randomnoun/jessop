@@ -129,6 +129,7 @@
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
+						<!--  so it turns out that /etc/mavenrc was wrong. sheesh. -->
 						<fork>true</fork>
 						<forceJavacCompilerUse>true</forceJavacCompilerUse>
 						<encoding>UTF-8</encoding>
