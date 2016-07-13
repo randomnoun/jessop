@@ -129,6 +129,10 @@
 						<source>1.7</source>
 						<target>1.7</target>
 						<encoding>UTF-8</encoding>
+						<!--  allow linking against rt.jar (for sun internal classes) -->
+						<compilerArgs>
+							<arg>-XDignore.symbol.file</arg>
+						</compilerArgs>
 					</configuration>
 				</plugin>
 
