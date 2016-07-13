@@ -9,7 +9,7 @@ import javax.script.ScriptEngine;
 
 import com.randomnoun.common.jessop.JessopBindingsConverter;
 
-import sun.org.mozilla.javascript.internal.*;
+import sun.org.mozilla.javascript.*;
 
 public class JvmRhinoBindingsConverter implements JessopBindingsConverter {
 
