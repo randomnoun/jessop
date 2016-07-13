@@ -125,6 +125,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3</version>
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
@@ -134,14 +135,6 @@
 						<compilerArgs>
 							<arg>-XDignore.symbol.file</arg>
 						</compilerArgs>
-						<!--  for mvn plugin < 3.1  -->
-						<compilerArguments>
-						    <verbose />
-						    <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
-						</compilerArguments>
-						<compilerArgument>-XDignore.symbol.file</compilerArgument>
-						
-						
 					</configuration>
 				</plugin>
 
