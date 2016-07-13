@@ -89,11 +89,11 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 				newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 				tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
 				// should probably wait until all attributes are parsed, but hey
-				if (declarations.engine==null) { 
+				//if (declarations.engine==null) { 
 					declarations.engine = newBuilder.getDefaultScriptEngineName();
 					declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();
 					declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();
-				}
+				//}
 				
 				/*
 				JessopScriptBuilder newBuilder;
