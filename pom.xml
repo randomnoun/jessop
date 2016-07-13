@@ -131,6 +131,7 @@
 						<target>1.7</target>
 						<fork>true</fork>
 						<encoding>UTF-8</encoding>
+						<verbose>true</verbose>
 						<!--  allow linking against rt.jar (for sun internal classes) -->
 						<compilerArgs>
 							<arg>-XDignore.symbol.file</arg>
