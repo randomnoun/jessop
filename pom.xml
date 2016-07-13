@@ -136,6 +136,7 @@
 						</compilerArgs>
 						<!--  for mvn plugin < 3.1  -->
 						<compilerArgument>-XDignore.symbol.file</compilerArgument>
+						<bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
 					</configuration>
 				</plugin>
 
