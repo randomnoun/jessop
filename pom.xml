@@ -138,8 +138,8 @@
 						<compilerArguments>
 						    <verbose />
 						    <bootclasspath>${java.home}/lib/rt.jar</bootclasspath>
-						    <compilerArgument>-XDignore.symbol.file</compilerArgument>
 						</compilerArguments>
+						<compilerArgument>-XDignore.symbol.file</compilerArgument>
 						
 						
 					</configuration>
