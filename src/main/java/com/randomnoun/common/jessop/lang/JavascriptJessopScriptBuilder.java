@@ -4,6 +4,10 @@ package com.randomnoun.common.jessop.lang;
  * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
  */
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
+
 import org.apache.log4j.Logger;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
@@ -71,14 +75,71 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 	}
 	@Override
 	public String getDefaultScriptEngineName() {
+		// possibly use 'js' here. let's see.
+		// the phobos jsr223 wrapper calls itself 'rhino-nonjdk', as well as 'rhino'
 		return "rhino";
 	}
 	@Override
 	public String getDefaultBindingsConverterClassName() {
-		// TODO use a different class if we're using org.mozilla rhino vs jvm rhino
-		return "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
+
+		boolean isComSunRhino = false; // rhino engine is under the com.sun package 
+		// let's see what class we get if we try to load the 'rhino' engine, then work from there
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
+		if (engine!=null && engine.getClass().getName().equals("com.sun.script.javascript.RhinoScriptEngine")) {
+			// it's either oracle or openjdk
+			isComSunRhino = true;
+		}
+		String result = null;
+		if (!isComSunRhino) {
+			// maybe we've got com.sun.phobos:phobos-rhino 
+			// or org.rhq:rhq-scripting-javascript 
+			// or de.christophkraemer:rhino-script-engine 
+			// or any of the other JSR223 wrappers for rhino in central 
+			// at http://search.maven.org/#search%7Cga%7C1%7Cc%3A%22RhinoScriptEngine%22
+			try {
+				/*Class c =*/ Class.forName("org.mozilla.javascript.NativeObject");
+				// this exists, so use the mozilla rhino binding converter
+				result = "com.randomnoun.common.jessop.engine.rhino.RhinoBindingsConverter";
+			} catch (ClassNotFoundException cnfe) { }
+		}
+		
+		// ok, it's probably oracle or openjdk at this stage
+		if (result == null) {
+			try {
+				/*Class c =*/ Class.forName("sun.org.mozilla.javascript.internal.NativeObject");
+				// this exists, so use the oracle binding converter
+				result = "com.randomnoun.common.jessop.engine.rhinoOracle.RhinoOracleBindingsConverter";
+			} catch (ClassNotFoundException cnfe2) { }
+		}
+		
+		if (result == null) {
+			try {
+				/*Class c =*/ Class.forName("sun.org.mozilla.javascript.NativeObject");
+				// this exists, so use the openjdk binding converter
+				result = "com.randomnoun.common.jessop.engine.rhinoOpenjdk.RhinoOpenJdkBindingsConverter";
+			} catch (ClassNotFoundException cnfe3) {
+				// logger.warn("No known rhino implementation on classpath; setting JessopBindingsConverter to null");
+				result = null;
+			}
+		}
+		
+		return result;
 	}
 	
-	
+	// going to use this for debugging only
+	public void testEngine() {
+		// this should match the engine in use, so let's see what 'rhino' gives us
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
+		if (engine!=null) {
+			ScriptEngineFactory factory = engine.getFactory();
+			logger.info("default rhino ScriptEngine is " + engine.getClass().getName());
+			logger.info("ENGINE=" + factory.getParameter(ScriptEngine.ENGINE));
+			logger.info("ENGINE_VERSION=" + factory.getParameter(ScriptEngine.ENGINE_VERSION));
+			logger.info("LANGUAGE=" + factory.getParameter(ScriptEngine.LANGUAGE_VERSION));
+			logger.info("LANGUAGE_VERSION=" + factory.getParameter(ScriptEngine.LANGUAGE_VERSION));
+		} else {
+			logger.warn("default 'rhino' ScriptEngine not found");
+		}
+	}
 	
 }

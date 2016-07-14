@@ -23,6 +23,8 @@ import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
 
+import com.randomnoun.common.jessop.lang.JavascriptJessopScriptBuilder;
+
 /** The jessop ScriptEngine class.
  * 
  * @author knoxg
@@ -70,8 +72,14 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	public static final String JESSOP_BINDINGS_CONVERTER = "com.randommoun.common.jessop.bindingsConverter";
 
 	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
-	public static final String JESSOP_DEFAULT_BINDINGS_CONVERTER = "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
+	// so this isn't final any more, since it might change depending on what's on the classpath
+	public static String JESSOP_DEFAULT_BINDINGS_CONVERTER; //  = "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
 
+	static {
+		JavascriptJessopScriptBuilder jjsb = new JavascriptJessopScriptBuilder(); 
+		JESSOP_DEFAULT_BINDINGS_CONVERTER = jjsb.getDefaultBindingsConverterClassName();
+	}
+	
 	
     /** Reserved key for a named value that controls whether the target script is compiled
      * (providing the target engine allows it).
