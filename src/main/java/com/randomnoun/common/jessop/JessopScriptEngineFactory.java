@@ -31,6 +31,9 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
     public static final String _revision = "$Id$";
 
 	/** The version of the jessop 'language' that this script engine implements */
+    // may lag the release version if the syntax doesn't change
+    // 1.0    - initial release
+    // 1.0.2  - declarations can now have a bindingsConverter; syntax is still the same though
 	public static final String JESSOP_LANGUAGE_VERSION = "1.0";
 	
 	@Override
@@ -70,8 +73,15 @@ public class JessopScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public Object getParameter(String key) {
-		// TODO Auto-generated method stub
-		return null;
+		if (key.equals(ScriptEngine.ENGINE)) { return getEngineName(); }
+		else if (key.equals(ScriptEngine.ENGINE_VERSION)) { return getEngineVersion(); }
+		else if (key.equals(ScriptEngine.LANGUAGE)) { return getLanguageName(); }
+		else if (key.equals(ScriptEngine.LANGUAGE_VERSION)) { return getLanguageVersion(); }
+		else if (key.equals("THREADING")) { return "MULTITHREADED"; } // probably depends on impl language
+		else { 
+			throw new IllegalArgumentException("Invalid key"); 
+		}
+		
 	}
 
 	// this is language dependent
