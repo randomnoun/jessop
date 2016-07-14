@@ -10,7 +10,7 @@
 	<groupId>com.randomnoun.common</groupId>
 	<artifactId>jessop</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<description>Multi-language templates in the style of Java Server Pages</description>
 	<url>http://code.randomnoun.com/jessop/index.html</url>
 	<inceptionYear>2016-09-16</inceptionYear>
@@ -90,7 +90,6 @@
 		<url>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</url>
 		<connection>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</connection>
 		<developerConnection>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</developerConnection>
-    <tag>jessop-1_0_4</tag>
   </scm>
 	<licenses>
 		<license>
