@@ -116,7 +116,7 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 			try {
 				/*Class c =*/ Class.forName("sun.org.mozilla.javascript.NativeObject");
 				// this exists, so use the openjdk binding converter
-				result = "com.randomnoun.common.jessop.engine.rhinoOpenjdk.RhinoOpenJdkBindingsConverter";
+				result = "com.randomnoun.common.jessop.engine.rhinoOpenjdk.RhinoOpenjdkBindingsConverter";
 			} catch (ClassNotFoundException cnfe3) {
 				// logger.warn("No known rhino implementation on classpath; setting JessopBindingsConverter to null");
 				result = null;
