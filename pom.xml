@@ -50,6 +50,40 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
+		
+		<!-- so openjdk 1.7.0 packages this in a different package than oracle-jdk rhino 
+		the rhino jar here is not in maven central, but is the rhino.jar bundled with 
+		  java version "1.7.0_79"
+          OpenJDK Runtime Environment (IcedTea 2.5.6) (7u79-2.5.6-0ubuntu1.14.04.1)
+          OpenJDK 64-Bit Server VM (build 24.79-b02, mixed mode)
+        on ubuntu 14.04.4 LTS
+		-->
+		<dependency>
+			<groupId>net.java.openjdk.icedtea</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.0.79-randomnoun</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<!-- and compile for the genuine rhino, whilst we're at it -->
+		<dependency>
+		    <groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.7R2</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<!--  see also https://github.com/cevou/rhino-script-engine -->
+		<!-- 
+		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7.7.1</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		 -->
+		
 	</dependencies>
 
 	<scm>
