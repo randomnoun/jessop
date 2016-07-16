@@ -70,12 +70,12 @@ public class ScriptContextStructTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% end %>";
 
-	/*
+	
 	public final static String PYTHON_COUNTING_SCRIPT_1 = 
 	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
-	  "Hello, <%= muppets[0].name %>\n" +
+	  "Hello, <%= muppets[0]['name'] %>\n" +
 	  "<%\n" +
-	  "for i in range(1, favouriteNumber[muppets[0].name]):\n"+
+	  "for i in range(1, favouriteNumber[muppets[0]['name']]):\n"+
 	  "%>\n" +
 	  "<%= i %>\n" +
 	  "<%\n" +
@@ -83,20 +83,20 @@ public class ScriptContextStructTest extends TestCase {
 	  "%>\n" +
 	  "not in loop\n";
 	
-
+	
 	public final static String PYTHON_COUNTING_SCRIPT_2 = 
 	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
-	  "Hello, <%= muppets[0].name %>\n" +
-	  "<% for i in range(1, favouriteNumber[muppets[0].name]): %>\n" +
+	  "Hello, <%= muppets[0]['name'] %>\n" +
+	  "<% for i in range(1, favouriteNumber[muppets[0]['name']]): %>\n" +
 	  "<%= i %>\n";
 
 	public final static String JAVA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"java\" engine=\"beanshell\" %>\n" +
-	  "Hello, <%= muppets[0].name %>\n" + 
-	  "<% for (int i=1; i < favouriteNumber[muppets[0].name]; i++) { %>\n" +
+	  "Hello, <%= muppets.get(0).get(\"name\") %>\n" + 
+	  "<% for (int i=1; i < favouriteNumber.get(muppets.get(0).get(\"name\")); i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
-	*/
+	
 	
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
@@ -215,7 +215,7 @@ public class ScriptContextStructTest extends TestCase {
 		logger.info("End eval");
 	}
 
-	/*
+	
 	public void testJessopPython1() throws ScriptException {
 		String input = PYTHON_COUNTING_SCRIPT_1; 
 		// -Dpython.console.encoding=UTF-8
@@ -231,7 +231,8 @@ public class ScriptContextStructTest extends TestCase {
 		engine.eval(input, b);
 		logger.info("End eval");
 	}
-
+	
+	
 	public void testJessopPython2() throws ScriptException {
 		String input = PYTHON_COUNTING_SCRIPT_2;
 		// -Dpython.console.encoding=UTF-8
@@ -263,6 +264,6 @@ public class ScriptContextStructTest extends TestCase {
 		engine.eval(input, b);
 		logger.info("End eval");
 	}
-	*/
+	
 	
 }
