@@ -62,7 +62,7 @@ public class ScriptContextStructTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% } %>";
 
-	
+	// might be nice to be able to do muppets[0] here, or even muppets[0].name
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
 	  "Hello, <%= muppets:get(0):get('name') %>\n"  +
@@ -71,6 +71,7 @@ public class ScriptContextStructTest extends TestCase {
 	  "<% end %>";
 
 	
+	// might be nice to be able to do muppets[0].name 
 	public final static String PYTHON_COUNTING_SCRIPT_1 = 
 	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "Hello, <%= muppets[0]['name'] %>\n" +
