@@ -12,14 +12,13 @@ import java.util.Properties;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
-import javax.script.CompiledScript;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+// import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import junit.framework.TestCase;
 
