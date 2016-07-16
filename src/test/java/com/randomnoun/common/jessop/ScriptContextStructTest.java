@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 // import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
+
 import junit.framework.TestCase;
 
 //!!!!!!!!!!!!!
@@ -147,7 +148,8 @@ public class ScriptContextStructTest extends TestCase {
         return sb.toString();
     }
 
-    public Bindings getBindings(ScriptEngine engine) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public Bindings getBindings(ScriptEngine engine) {
     	List muppets = new ArrayList();
     	Map muppet = new HashMap();
     	muppet.put("name",  "Baron von Count");
