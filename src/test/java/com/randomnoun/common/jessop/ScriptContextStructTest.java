@@ -19,6 +19,7 @@ import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import junit.framework.TestCase;
 
@@ -61,14 +62,15 @@ public class ScriptContextStructTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% } %>";
 
-	/*
+	
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
-	  "Hello, <%= muppets[0].name %>\n" +
-	  "<% for i = 1, favouriteNumber[muppets[0].name] - 1 do %>\n" +
+	  "Hello, <%= muppets:get(0):get('name') %>\n"  +
+	  "<% for i = 1, favouriteNumber:get(muppets:get(0):get('name')) - 1 do %>\n" +
 	  "<%= i %>\n" +
 	  "<% end %>";
 
+	/*
 	public final static String PYTHON_COUNTING_SCRIPT_1 = 
 	  "<%@ jessop language=\"python2\" engine=\"jython\" %>\n" +  // might add languageVersion later (jython is python2.7)
 	  "Hello, <%= muppets[0].name %>\n" +
@@ -195,13 +197,17 @@ public class ScriptContextStructTest extends TestCase {
 		logger.info("End source");
 		
 	}
+	*/
 
 	public void testJessopLua() throws ScriptException {
 		String input = LUA_COUNTING_SCRIPT; 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = getBindings(engine);
-
+		//b.put("muppets", CoerceJavaToLua.coerce(b.get("muppets")));
+		//Map muppet = new HashMap(); muppet.put("name", "x");
+		//b.put("muppet", CoerceJavaToLua.coerce(muppet));
+		
 		logger.info("jessop input: " + escapeHtml(input));
 		logger.info("target language source: " + getSource(engine, input));
 		logger.info("Start eval");
@@ -209,6 +215,7 @@ public class ScriptContextStructTest extends TestCase {
 		logger.info("End eval");
 	}
 
+	/*
 	public void testJessopPython1() throws ScriptException {
 		String input = PYTHON_COUNTING_SCRIPT_1; 
 		// -Dpython.console.encoding=UTF-8
