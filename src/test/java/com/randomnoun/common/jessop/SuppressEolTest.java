@@ -46,7 +46,7 @@ public class SuppressEolTest extends TestCase {
 
 	}
 	
-	public final static String COUNTING_SCRIPT = 
+	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" suppressEol=\"true\"%>\n" +
 	  "just some text\n" +
 	  "<% for (var i=1; i<10; i++) { %>\n" +
@@ -96,7 +96,7 @@ public class SuppressEolTest extends TestCase {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		logger.info("Start eval");
-		engine.eval(COUNTING_SCRIPT);
+		engine.eval(JAVASCRIPT_COUNTING_SCRIPT);
 		logger.info("End eval");
 	}
 	
@@ -104,7 +104,7 @@ public class SuppressEolTest extends TestCase {
 		Compilable engine = (Compilable) new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		
-		CompiledScript script = engine.compile(COUNTING_SCRIPT);
+		CompiledScript script = engine.compile(JAVASCRIPT_COUNTING_SCRIPT);
 		
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
 		logger.info("Start source");

@@ -48,7 +48,7 @@ public class DefaultDeclarationTest extends TestCase {
 
 	}
 	
-	public final static String COUNTING_SCRIPT = 
+	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  // "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
 	  "<% for (var i = 1; i < maxCount; i++) { %>\n" +
@@ -107,8 +107,8 @@ public class DefaultDeclarationTest extends TestCase {
     }
 
     
-	public void testJessop1() throws ScriptException {
-		String input = COUNTING_SCRIPT; 
+	public void testJessopJavascript() throws ScriptException {
+		String input = JAVASCRIPT_COUNTING_SCRIPT; 
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		Bindings b = engine.createBindings();
@@ -130,7 +130,7 @@ public class DefaultDeclarationTest extends TestCase {
 		b.put("maxCount", 4);
 
 		Compilable compilableEngine = (Compilable) engine;
-		CompiledScript script = compilableEngine.compile(COUNTING_SCRIPT);
+		CompiledScript script = compilableEngine.compile(JAVASCRIPT_COUNTING_SCRIPT);
 		
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
 		logger.info("Start source");
