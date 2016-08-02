@@ -3,3 +3,4 @@ com.randomnoun.common.jessop.lang.JavaJessopScriptBuilder
 com.randomnoun.common.jessop.lang.JavascriptJessopScriptBuilder
 com.randomnoun.common.jessop.lang.Python2JessopScriptBuilder
 com.randomnoun.common.jessop.lang.LuaJessopScriptBuilder
+com.randomnoun.common.jessop.lang.RubyJessopScriptBuilder
