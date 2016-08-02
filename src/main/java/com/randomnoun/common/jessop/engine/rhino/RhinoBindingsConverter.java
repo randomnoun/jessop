@@ -1,15 +1,12 @@
 package com.randomnoun.common.jessop.engine.rhino;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 
 import com.randomnoun.common.jessop.JessopBindingsConverter;
 
-//exactly the same as RhinoOpenJdkBindingsConverter except for this import statement
+// exactly the same as the other rhino BindingsConverters except for this import statement
 import org.mozilla.javascript.*;
 
 public class RhinoBindingsConverter implements JessopBindingsConverter {
@@ -17,27 +14,27 @@ public class RhinoBindingsConverter implements JessopBindingsConverter {
 	@Override
 	public Bindings toScriptBindings(ScriptEngine engine,
 			ScriptContext newContext, Bindings bindings, int engineScope) {
-		// RhinoScriptEngine rse = (RhinoScriptEngine) engine;
-		// arg. getRuntimeScope is package private.
-				
-		// arg. indexedProps are private, and ExternalScriptable is package private
-		// Scriptable newScope = new ExternalScriptable(newContext, null);
-		
-		// ok then.
-		Bindings newBindings = engine.createBindings();
-		for (String k : bindings.keySet()) {
-			Object v = bindings.get(k);
-			newBindings.put(k, toScriptObject(v));
+		Context cx = Context.enter();
+		try {
+			// so hopefully initStandardObjects() is less expensive than cloning all these maps/lists
+			// this will be a different scope to that used at runtime, which hopefully won't be a problem later
+			ScriptableObject newScope = cx.initStandardObjects();
+			Bindings newBindings = engine.createBindings();
+			for (String k : bindings.keySet()) {
+				Object v = bindings.get(k);
+				newBindings.put(k, ScriptUtils.javaToJS(v, newScope)); 
+				// newBindings.put(k, toScriptObject(newScope, v));
+			}
+			return newBindings;
+		} finally {
+			Context.exit();
 		}
-		return newBindings;
-		
-		
 	}
 	
-	
-	// would prefer to have a custom NativeObject / NativeArray
-	// 'backed' by the original Map / List, but this'll do for now
-	// (most backing impls seem to require a Scriptable object here, which we don't have access to)
+
+	// old code (clones all Map and List entries as NativeObjects 
+	/*
+	@SuppressWarnings({ "restriction", "rawtypes" })
 	private Object toScriptObject(Object o) {
 		Object result;
 		if (o instanceof Map) {
@@ -73,7 +70,7 @@ public class RhinoBindingsConverter implements JessopBindingsConverter {
 		}
 		return result;
 	}
-	
+	*/
 	
 	
 
