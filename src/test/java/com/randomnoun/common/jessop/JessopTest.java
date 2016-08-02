@@ -70,7 +70,7 @@ public class JessopTest extends TestCase {
 
 	}
 	
-	public final static String COUNTING_SCRIPT = 
+	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "just some text\n" +
 	  "<% for (var i=1; i<10; i++) { %>\n" +
@@ -110,25 +110,25 @@ public class JessopTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% } %>";
 
+	public final static String RUBY_COUNTING_SCRIPT = 
+	  "<%@ jessop language=\"ruby\" engine=\"jruby\" %>\n" +
+	  "just some text\n" + 
+	  "<% (1..10).each do |i| %>\n" +
+	  "<%= i %>\n" +
+	  "<% end %>";
+
+
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
 		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
 		return compiledScript.getSource();
 	}
 	
-	public void testJessop1() throws ScriptException {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("Start eval");
-		engine.eval(COUNTING_SCRIPT);
-		logger.info("End eval");
-	}
-	
 	public void testJessopCompile() throws ScriptException {
 		Compilable engine = (Compilable) new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		
-		CompiledScript script = engine.compile(COUNTING_SCRIPT);
+		CompiledScript script = engine.compile(JAVASCRIPT_COUNTING_SCRIPT);
 		
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
 		logger.info("Start source");
@@ -137,8 +137,7 @@ public class JessopTest extends TestCase {
 		
 	}
 
-	public void testJessopLua() throws ScriptException {
-		String input = LUA_COUNTING_SCRIPT;
+	public void _testScript(String input) throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		logger.info("jessop input: " + input);
@@ -146,51 +145,38 @@ public class JessopTest extends TestCase {
 		logger.info("Start eval");
 		engine.eval(input);
 		logger.info("End eval");
+	}
+
+	public void testJessopJavascript() throws ScriptException {
+		_testScript(JAVASCRIPT_COUNTING_SCRIPT);
+	}
+
+	public void testJessopLua() throws ScriptException {
+		_testScript(LUA_COUNTING_SCRIPT);
 	}
 
 	public void testJessopPython1() throws ScriptException {
-		String input = PYTHON_COUNTING_SCRIPT_1;
+		
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("jessop input: " + input);
-		logger.info("target language source: " + getSource(engine, input));
-		
-		logger.info("Start eval");
-		engine.eval(input);
-		logger.info("End eval");
+		_testScript(PYTHON_COUNTING_SCRIPT_1);
 	}
 
 	public void testJessopPython2() throws ScriptException {
-		String input = PYTHON_COUNTING_SCRIPT_2;
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("jessop input: " + input);
-		logger.info("target language source: " + getSource(engine, input));
-		
-		logger.info("Start eval");
-		engine.eval(input);
-		logger.info("End eval");
+		_testScript(PYTHON_COUNTING_SCRIPT_2);
 	}
-	
 	
 	public void testJessopBeanshell() throws ScriptException {
-		String input = JAVA_COUNTING_SCRIPT;
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		logger.info("jessop input: " + input);
-		logger.info("target language source: " + getSource(engine, input));
-		
-		logger.info("Start eval");
-		engine.eval(input);
-		logger.info("End eval");
+		_testScript(JAVA_COUNTING_SCRIPT);
 	}
+
+	public void testJessopJRuby() throws ScriptException {
+		_testScript(RUBY_COUNTING_SCRIPT);
+	}
+
 	
 }

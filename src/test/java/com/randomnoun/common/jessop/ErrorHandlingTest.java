@@ -51,7 +51,7 @@ public class ErrorHandlingTest extends TestCase {
 	// with some nonsense thrown on the end to create a runtime error.
 	// note that some languages allow undeclared variables, so we have even more contrived nonsense for them.
 	
-	public final static String COUNTING_SCRIPT = 
+	public final static String JAVSCRIPT_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
 	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
@@ -96,24 +96,16 @@ public class ErrorHandlingTest extends TestCase {
 	  "<% } %>\n" +
 	  "<% floob.flaherdiwordy = flimble; %>\n";
 	
-	public void testJessop1() throws ScriptException {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		engine.put(JessopScriptEngine.FILENAME, "test.jessop");
-		Bindings b = engine.createBindings();
-		b.put(JessopScriptEngine.FILENAME, "test.jessop"); // ScriptContext.ENGINE_SCOPE
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
-		try {
-			logger.info("Start eval");
-			engine.eval(COUNTING_SCRIPT, b);
-			fail("script runtime exception expected");
-		} catch (ScriptException e) {
-			logger.info("caught ScriptException");
-			assertEquals("test.jessop", e.getFileName());
-			assertEquals(6, e.getLineNumber());
-		}
-	}
+	// see https://github.com/jruby/jruby/wiki/Embedding-with-JSR-223
+	// for the reason why bindings are exposed as global vars in ruby
+	public final static String RUBY_COUNTING_SCRIPT_GLOBAL = 
+	  "<%@ jessop language=\"ruby\" engine=\"jruby\" %>\n" +
+	  "Hello, <%= $name %>\n" + 
+	  "<% (1..$maxCount).each do |i| %>\n" +
+	  "<%= i %>\n" +
+	  "<% end %>\n" +
+	  "<% floob %>\n";
+
 	
 	public void testJessopCompile() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
@@ -124,7 +116,7 @@ public class ErrorHandlingTest extends TestCase {
 		b.put("maxCount", 3);
 
 		Compilable compilableEngine = (Compilable) engine;
-		CompiledScript script = compilableEngine.compile(COUNTING_SCRIPT);
+		CompiledScript script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT);
 		
 		// compilation should still succeed
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
@@ -133,78 +125,8 @@ public class ErrorHandlingTest extends TestCase {
 		logger.info("End source");
 		
 	}
-
-	public void testJessopLua() throws ScriptException {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		engine.put(JessopScriptEngine.FILENAME, "test.jessop");
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
-
-		logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
-		// LuajContext l;
-		try {
-			logger.info("Start eval");
-			engine.eval(LUA_COUNTING_SCRIPT, b);
-			fail("script runtime exception expected");
-		} catch (ScriptException e) {
-			logger.info("caught ScriptException");
-			assertEquals("test.jessop", e.getFileName());
-			assertEquals(6, e.getLineNumber());
-		}
-	}
-
-	public void testJessopPython1() throws ScriptException {
-		// -Dpython.console.encoding=UTF-8
-		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
-		System.setProperty("python.console.encoding", "UTF-8");
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		engine.put(JessopScriptEngine.FILENAME, "test.jessop");
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
-
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
-		try {
-			logger.info("Start eval");
-			engine.eval(PYTHON_COUNTING_SCRIPT_1, b);
-			fail("script runtime exception expected");
-		} catch (ScriptException e) {
-			logger.info("caught ScriptException");
-			assertEquals("test.jessop", e.getFileName());
-			assertEquals(11, e.getLineNumber());
-		}
-	}
-
-	public void testJessopPython2() throws ScriptException {
-		// -Dpython.console.encoding=UTF-8
-		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
-		System.setProperty("python.console.encoding", "UTF-8");
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		engine.put(JessopScriptEngine.FILENAME, "test.jessop");
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 3);
-
-		logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
-		try {
-			logger.info("Start eval");
-			engine.eval(PYTHON_COUNTING_SCRIPT_2, b);
-			fail("script runtime exception expected");
-		} catch (ScriptException e) {
-			logger.info("caught ScriptException");
-			assertEquals("test.jessop", e.getFileName());
-			assertEquals(5, e.getLineNumber());
-		}
-	}
 	
-	
-	public void testJessopBeanshell() throws ScriptException {
+	public void _testScript(String input, int expectedLine) {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
 		engine.put(JessopScriptEngine.FILENAME, "test.jessop");
@@ -212,17 +134,54 @@ public class ErrorHandlingTest extends TestCase {
 		b.put(JessopScriptEngine.FILENAME, "test.jessop"); // ScriptContext.ENGINE_SCOPE
 		b.put("name", "Baron von Count");
 		b.put("maxCount", 3);
-
-		logger.info("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
 		try {
 			logger.info("Start eval");
-			engine.eval(JAVA_COUNTING_SCRIPT, b);
+			engine.eval(input, b);
 			fail("script runtime exception expected");
 		} catch (ScriptException e) {
 			logger.info("caught ScriptException");
 			assertEquals("test.jessop", e.getFileName());
-			assertEquals(6, e.getLineNumber());
+			assertEquals(expectedLine, e.getLineNumber());
 		}
 	}
 	
+	public void testJessop1() throws ScriptException {
+		_testScript(JAVSCRIPT_COUNTING_SCRIPT, 6);
+	}
+	
+	
+
+	public void testJessopLua() throws ScriptException {
+		// logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
+		_testScript(LUA_COUNTING_SCRIPT, 6);
+	}
+
+	public void testJessopPython1() throws ScriptException {
+		// -Dpython.console.encoding=UTF-8
+		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
+		System.setProperty("python.console.encoding", "UTF-8");
+		// logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_1))).getSource());
+		_testScript(PYTHON_COUNTING_SCRIPT_1, 11);
+	}
+
+	public void testJessopPython2() throws ScriptException {
+		// -Dpython.console.encoding=UTF-8
+		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
+		System.setProperty("python.console.encoding", "UTF-8");
+		// logger.info("python source: " + ((JessopCompiledScript) (((Compilable) engine).compile(PYTHON_COUNTING_SCRIPT_2))).getSource());
+		_testScript(PYTHON_COUNTING_SCRIPT_2, 5);
+	}
+	
+	
+	public void testJessopBeanshell() throws ScriptException {
+		// logger.info("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
+		_testScript(JAVA_COUNTING_SCRIPT, 6);
+	}
+
+	public void testJessopJRuby() throws ScriptException {
+		// logger.info("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
+		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL, 6);
+	}
+
+
 }

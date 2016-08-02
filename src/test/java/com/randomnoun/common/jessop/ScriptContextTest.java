@@ -4,6 +4,10 @@ package com.randomnoun.common.jessop;
  * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.script.Bindings;
@@ -48,7 +52,7 @@ public class ScriptContextTest extends TestCase {
 
 	}
 	
-	public final static String COUNTING_SCRIPT = 
+	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
 	  "<% for (var i = 1; i < maxCount; i++) { %>\n" +
@@ -87,6 +91,15 @@ public class ScriptContextTest extends TestCase {
 	  "<% for (int i=1; i < maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
+	
+	// see https://github.com/jruby/jruby/wiki/Embedding-with-JSR-223
+	// for the reason why bindings are exposed as global vars in ruby
+	public final static String RUBY_COUNTING_SCRIPT_GLOBAL = 
+	  "<%@ jessop language=\"ruby\" engine=\"jruby\" %>\n" +
+	  "Hello, <%= $name %>\n" + 
+	  "<% (1..$maxCount).each do |i| %>\n" +
+	  "<%= i %>\n" +
+	  "<% end %>";
 	
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
@@ -138,14 +151,18 @@ public class ScriptContextTest extends TestCase {
         return sb.toString();
     }
 
-    
-	public void testJessop1() throws ScriptException {
-		String input = COUNTING_SCRIPT; 
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Bindings getBindings(ScriptEngine engine) {
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
 		b.put("maxCount", 4);
+		return b;
+    }
+	
+	public void _testScript(String input) throws ScriptException {
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
+		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
+		Bindings b = getBindings(engine);
 		
 		logger.info("jessop input: " + escapeHtml(input));
 		logger.info("target language source: " + getSource(engine, input));
@@ -157,12 +174,10 @@ public class ScriptContextTest extends TestCase {
 	public void testJessopCompile() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 4);
+		Bindings b = getBindings(engine);
 
 		Compilable compilableEngine = (Compilable) engine;
-		CompiledScript script = compilableEngine.compile(COUNTING_SCRIPT);
+		CompiledScript script = compilableEngine.compile(JAVASCRIPT_COUNTING_SCRIPT);
 		
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
 		logger.info("Start source");
@@ -170,74 +185,41 @@ public class ScriptContextTest extends TestCase {
 		logger.info("End source");
 		
 	}
-
+    
+	public void testJessopJavascript() throws ScriptException {
+		_testScript(JAVASCRIPT_COUNTING_SCRIPT); 
+	}
+	
 	public void testJessopLua() throws ScriptException {
-		String input = LUA_COUNTING_SCRIPT; 
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 4);
-
-		logger.info("jessop input: " + escapeHtml(input));
-		logger.info("target language source: " + getSource(engine, input));
-		logger.info("Start eval");
-		engine.eval(input, b);
-		logger.info("End eval");
+		_testScript(LUA_COUNTING_SCRIPT); 
 	}
 
 	public void testJessopPython1() throws ScriptException {
-		String input = PYTHON_COUNTING_SCRIPT_1; 
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 4);
-
-		logger.info("jessop input: " + escapeHtml(input));
-		logger.info("target language source: " + getSource(engine, input));
-		logger.info("Start eval");
-		engine.eval(input, b);
-		logger.info("End eval");
+		_testScript(PYTHON_COUNTING_SCRIPT_1); 
 	}
 
 	public void testJessopPython2() throws ScriptException {
-		String input = PYTHON_COUNTING_SCRIPT_2;
 		// -Dpython.console.encoding=UTF-8
 		// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde
 		System.setProperty("python.console.encoding", "UTF-8");
-		
-		// can either specify the language here (e.g. jessop-rhino), or just 'jessop' to get language from the script itself
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 4);
-
-		logger.info("jessop input: " + escapeHtml(input));
-		logger.info("target language source: " + getSource(engine, input));
-		logger.info("Start eval");
-		engine.eval(input, b);
-		logger.info("End eval");
+		_testScript(PYTHON_COUNTING_SCRIPT_2);
 	}
 	
 	
 	public void testJessopBeanshell() throws ScriptException {
-		String input = JAVA_COUNTING_SCRIPT;
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
-		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count");
-		b.put("maxCount", 4);
-
-		logger.info("jessop input: " + escapeHtml(input));
-		logger.info("target language source: " + getSource(engine, input));
-		logger.info("Start eval");
-		engine.eval(input, b);
-		logger.info("End eval");
+		_testScript(JAVA_COUNTING_SCRIPT);
 	}
+
+	
+	public void testJessopJRuby() throws ScriptException {
+		// if this is set, then we don't need to prefix vars with '$' in our script, but may have other side-affects
+		// see https://github.com/jruby/jruby/wiki/Embedding-with-JSR-223
+		// System.setProperty("org.jruby.embed.localvariable.behavior", "transient"); // this should be a ScriptEngine property, not a System property
+		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL);
+	}
+
 	
 }
