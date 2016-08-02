@@ -83,6 +83,23 @@
 			<optional>true</optional>
 		</dependency>
 		 -->
+		<!-- JSR223 for rhino
+		<dependency>
+			<groupId>org.apache.bsf</groupId>
+			<artifactId>bsf-all</artifactId>
+			<version>3.0-beta3</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency> 
+		-->
+		
+		<dependency>
+		    <groupId>org.jruby</groupId>
+		    <artifactId>jruby-complete</artifactId>
+		    <version>9.1.2.0</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
 		
 	</dependencies>
 
@@ -97,6 +114,13 @@
 			<url>http://www.randomnoun.com/licences/bsd-simplified.txt</url>
 			<distribution>repo</distribution>
 			<comments>Simplified BSD License (BSD 2-clause license).</comments>
+		</license>
+		<license>
+		    <!-- for the ScriptableMap, ScriptableList and ScriptUtils classes in ringojs -->
+		    <name>Apache License Version 2.0</name>
+		    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		    <distribution>repo</distribution>
+			<comments>Apache License Version 2.0.</comments>
 		</license>
 	</licenses>
 	<mailingLists>
