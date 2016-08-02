@@ -1,14 +1,17 @@
 <html><body>
-Engine-specific classes (exception converters).
+Engine-specific classes (exception converters and bindings converters).
 
 <h1>Description</h1>
 
 <p>This package contains implementations of the 
 {@link com.randomnoun.common.jessop.JessopExceptionConverter} interface.
 
-<p>The only reason these things exist is because the 'bsh' and 'luaj' script engines 
-don't throw ScriptExceptions properly.
+<p>The only reason these things exist is because the most script engines 
+don't include file names or numbers in their ScriptExceptions correctly.
 
-<p>If we need some other kinds of per-engine processing, it'll probably go into this package somewhere.
+<p>We now also have BindingsConverters, which make any java.util.Map and 
+java.util.List objects in the context bindings look more like whatever the
+their native scripting engine equivalents are. e.g. @{link java.util.List}s become 
+javascript arrays in the rhino engine.
 
 </body></html>
