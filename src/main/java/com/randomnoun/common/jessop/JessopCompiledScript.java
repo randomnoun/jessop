@@ -5,6 +5,7 @@ package com.randomnoun.common.jessop;
  */
 
 import java.io.PrintWriter;
+import java.io.Writer;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -126,7 +127,12 @@ public class JessopCompiledScript extends CompiledScript {
 			}
 		}
 		// get this from the jessop declaration eventually, but for now
-		PrintWriter out = new PrintWriter(context.getWriter(), true);
+		PrintWriter out;
+		if (context.getWriter()==null) {  // jruby has a 'null' default writer
+			out = new PrintWriter(System.out, true);
+		} else {
+			out = new PrintWriter(context.getWriter(), true);
+		}
 		context.setAttribute("out",  out, ScriptContext.ENGINE_SCOPE); // should be something like SCRIPT_SCOPE, really
 		context.setAttribute(ScriptEngine.FILENAME,  filename, ScriptContext.ENGINE_SCOPE); // for engines that need this at runtime
 		Object result;
