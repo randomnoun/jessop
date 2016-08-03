@@ -66,7 +66,7 @@ Hello, &lt;%= name %&gt;
 <h3>Output</h3>
 
 <pre>
-Hello, Baron von Count
+Hello, Count von Count
 
 1
 
@@ -88,7 +88,7 @@ Hello, &lt;%= name %&gt;
 <h3>Output</h3>
 
 <pre>
-Hello, Baron von Count
+Hello, Count von Count
 
 1
 
@@ -112,7 +112,7 @@ Hello, &lt;%= name %&gt;
 <h3>Output</h3>
 
 <pre>
-Hello, Baron von Count
+Hello, Count von Count
 
 1
 
@@ -134,7 +134,7 @@ Hello, &lt;%= $name %&gt;
 <h3>Output</h3>
 
 <pre>
-Hello, Baron von Count
+Hello, Count von Count
 
 1
 
@@ -160,7 +160,7 @@ pass;
 <h3>Output</h3>
 
 <pre>
-Hello, Baron von Count
+Hello, Count von Count
 
 1
 
@@ -209,7 +209,7 @@ public class JessopExample {
         
         // set some variables which are used in the jessop script
         Bindings b = engine.createBindings();
-        b.put("name", "Baron von Count");
+        b.put("name", "Count von Count");
         b.put("maxCount", 4);
         
         // evaluate the script
