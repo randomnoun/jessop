@@ -278,7 +278,7 @@ public class JessopExample {
 
 <h2>Target languages</h2>
 
-<p>Jessop has initial support for four target languages (using four script engines).</p> 
+<p>Jessop has initial support for five target languages (using five script engines).</p> 
 
 <p>You will need to add the appropriate maven dependency to target these languages and engines.</p>
 
