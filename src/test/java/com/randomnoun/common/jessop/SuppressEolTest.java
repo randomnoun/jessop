@@ -47,7 +47,7 @@ public class SuppressEolTest extends TestCase {
 	}
 	
 	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
-	  "<%@ jessop language=\"javascript\" engine=\"rhino\" suppressEol=\"true\"%>\n" +
+	  "<%@ jessop language=\"javascript\" suppressEol=\"true\"%>\n" + // was engine=\"rhino\", but we may want nashorn 
 	  "just some text\n" +
 	  "<% for (var i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +

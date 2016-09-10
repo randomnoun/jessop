@@ -71,7 +71,7 @@ public class JessopTest extends TestCase {
 	}
 	
 	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
-	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
+	  "<%@ jessop language=\"javascript\" %>\n" +  // was engine=\"rhino\", but we may want nashorn 
 	  "just some text\n" +
 	  "<% for (var i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +

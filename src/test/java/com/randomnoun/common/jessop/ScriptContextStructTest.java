@@ -56,7 +56,7 @@ public class ScriptContextStructTest extends TestCase {
 	
 	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  // maybe it's a js string after all.
-	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
+	  "<%@ jessop language=\"javascript\" %>\n" + // was engine=\"rhino\", but we may want nashorn 
 	  "<% var t = 'Baron von Count'; %>\n" + // t is not defined ?
 	  "Hello, <%= muppets[0].name %>. <%= typeof t %>. <%= (t == muppets[0].name) %>\n" +
 	  "<% for (var i = 1; i < favouriteNumber[muppets[0].name]; i++) { %>\n" +

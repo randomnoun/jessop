@@ -53,7 +53,7 @@ public class ScriptContextTest extends TestCase {
 	}
 	
 	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
-	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
+	  "<%@ jessop language=\"javascript\" %>\n" + // was engine=\"rhino\", but we may want nashorn 
 	  "Hello, <%= name %>\n" +
 	  "<% for (var i = 1; i < maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
