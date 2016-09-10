@@ -75,16 +75,29 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 	}
 	@Override
 	public String getDefaultScriptEngineName() {
-		// possibly use 'js' here. let's see.
 		// the phobos jsr223 wrapper calls itself 'rhino-nonjdk', as well as 'rhino'
-		return "rhino";
+		
+		// if we have nashorn, then use that, otherwise rhino
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		if (engine!=null) {
+			return "nashorn";
+		} else {
+			return "rhino";
+		}
 	}
 	@Override
 	public String getDefaultBindingsConverterClassName() {
 
-		boolean isComSunRhino = false; // rhino engine is under the com.sun package 
+		boolean isComSunRhino = false; // rhino engine is under the com.sun package
+		
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		if (engine!=null) {
+			// jdk.nashorn.api.scripting.NashornScriptEngine
+			return null; // nashorn doesn't need a bindingsconverter
+		}
+		
 		// let's see what class we get if we try to load the 'rhino' engine, then work from there
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
+		engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
 		if (engine!=null && engine.getClass().getName().equals("com.sun.script.javascript.RhinoScriptEngine")) {
 			// it's either oracle or openjdk
 			isComSunRhino = true;
