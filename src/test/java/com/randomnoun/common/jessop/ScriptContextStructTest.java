@@ -222,8 +222,10 @@ public class ScriptContextStructTest extends TestCase {
 		_testScript(JAVA_COUNTING_SCRIPT);
 	}
 	
+	/*
 	public void testJessopJRuby() throws ScriptException {
 		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL);
 	}
+	*/
 	
 }

@@ -214,12 +214,14 @@ public class ScriptContextTest extends TestCase {
 	}
 
 	
+	/*
 	public void testJessopJRuby() throws ScriptException {
 		// if this is set, then we don't need to prefix vars with '$' in our script, but may have other side-affects
 		// see https://github.com/jruby/jruby/wiki/Embedding-with-JSR-223
 		// System.setProperty("org.jruby.embed.localvariable.behavior", "transient"); // this should be a ScriptEngine property, not a System property
 		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL);
 	}
+	*/
 
 	
 }

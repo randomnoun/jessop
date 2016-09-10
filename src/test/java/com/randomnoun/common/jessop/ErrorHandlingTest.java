@@ -178,10 +178,12 @@ public class ErrorHandlingTest extends TestCase {
 		_testScript(JAVA_COUNTING_SCRIPT, 6);
 	}
 
+	/*
 	public void testJessopJRuby() throws ScriptException {
 		// logger.info("java source: " + ((JessopCompiledScript) (((Compilable) engine).compile(JAVA_COUNTING_SCRIPT))).getSource());
 		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL, 6);
 	}
+	*/
 
 
 }
