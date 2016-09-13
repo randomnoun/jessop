@@ -64,7 +64,7 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 			// so apparently lua allows any character in a string whatsoever. looking forward to seeing this breaking.
 			// have seen some examples of, e.g. \006 to represent chars, but nothing in the lua spec
 			   
-			} else if (ch<32 && (ch>126 && ch <= 255)) {
+			} else if (ch<32 || (ch>126 && ch <= 255)) {
 				String hex = Integer.toString(ch, 16);
 				sb.append("\\x" + "00".substring(0, 2-hex.length()) + hex);
 				sb.append(ch);

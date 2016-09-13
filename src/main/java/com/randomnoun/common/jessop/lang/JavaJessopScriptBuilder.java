@@ -38,7 +38,7 @@ public class JavaJessopScriptBuilder extends AbstractJessopScriptBuilder impleme
 			char ch = string.charAt(i);
 			if (ch=='\n') {
 			   sb.append("\\n");	
-			} else if (ch=='\\' || ch=='"' || ch=='\'' || ch<32 && ch>126) {
+			} else if (ch=='\\' || ch=='"' || ch=='\'' || ch<32 || ch>126) {
 				String hex = Integer.toString(ch, 16);
 				sb.append("\\u" + "0000".substring(0, 4-hex.length()) + hex);
 			} else {
