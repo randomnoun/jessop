@@ -48,10 +48,12 @@ public class JessopTest extends TestCase {
 
 	}
 	
+	/*
 	public void testThings() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
 		engine.eval("print('Hello World!');");
 	}
+	*/
 	
 	public void testServiceLoader() {
 		ServiceLoader<ScriptEngineFactory> sefLoader = ServiceLoader.load(ScriptEngineFactory.class);
@@ -72,14 +74,14 @@ public class JessopTest extends TestCase {
 	
 	public final static String JAVASCRIPT_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"javascript\" %>\n" +  // was engine=\"rhino\", but we may want nashorn 
-	  "just some text\n" +
+	  "just some text\r\n" +
 	  "<% for (var i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
 
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
-	  "just some text\n" +
+	  "just some text\r\n" +
 	  "<% for i=1,10 do %>\n" +
 	  "<%= i %>\n" +
 	  "<% end %>";
