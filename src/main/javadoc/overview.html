@@ -142,14 +142,14 @@ in the jessop source script, this code is copied into the target language script
 
 will be converted into
 
-<pre>if (name==null) { out.print(name); }</pre>
+<pre>if (name==null) { out.print(' No name '); }</pre>
 
 <p>There are no constraints placed on what actions a scriptlet may perform;
 a scriptlet may define new variables or functions, call functions, or even call Java code if
 the target scripting language supports it, including undesired actions such as terminated 
 the JVM via a System.exit() call.  
 
-If you are running scripts defined by other users and do wish to restrict what 
+<p>If you are running scripts defined by other users and do wish to restrict what 
 actions a scriptlet may perform, run the ScriptEngine within a SecurityManager.
 
 <h3>More information</h3>
