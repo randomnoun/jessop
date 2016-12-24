@@ -85,6 +85,13 @@ public class SuppressEolTest extends TestCase {
 	  "<% for (int i=1; i<10; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>";
+	
+	public final static String LISP_COUNTING_SCRIPT = 
+	  "<%@ jessop language=\"lisp\" engine=\"ABCL\" suppressEol=\"true\"%>\n" +
+	  "just some text\n" + 
+	  "<% (loop for a from 1 to 10 do %>\n" + // inclusive
+	  "<%= a %>\n" +
+	  "<% ) %>";
 
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
@@ -160,5 +167,16 @@ public class SuppressEolTest extends TestCase {
 		engine.eval(JAVA_COUNTING_SCRIPT);
 		logger.info("End eval");
 	}
+
+	public void testJessopLisp() throws ScriptException {
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
+		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
+		System.out.println("lisp source: " + getSource(engine, LISP_COUNTING_SCRIPT));
+		
+		logger.info("Start eval");
+		engine.eval(LISP_COUNTING_SCRIPT);
+		logger.info("End eval");
+	}
+
 	
 }

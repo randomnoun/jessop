@@ -100,6 +100,14 @@ public class ScriptContextTest extends TestCase {
 	  "<% (1..$maxCount).each do |i| %>\n" +
 	  "<%= i %>\n" +
 	  "<% end %>";
+
+	public final static String LISP_COUNTING_SCRIPT =
+	  "<%@ jessop language=\"lisp\" engine=\"ABCL\" %>\n" +
+	  "Hello, <%= name %>\n" + 
+	  "<% (loop for i from 1 to maxCount do %>\n" + // inclusive
+	  "<%= i %>\n" +
+	  "<% ) %>";
+
 	
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
@@ -213,6 +221,9 @@ public class ScriptContextTest extends TestCase {
 		_testScript(JAVA_COUNTING_SCRIPT);
 	}
 
+	public void testJessopLisp() throws ScriptException {
+		_testScript(LISP_COUNTING_SCRIPT);
+	}
 	
 	/*
 	public void testJessopJRuby() throws ScriptException {

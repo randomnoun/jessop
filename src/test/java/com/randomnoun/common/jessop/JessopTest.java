@@ -119,6 +119,13 @@ public class JessopTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% end %>";
 
+	public final static String LISP_COUNTING_SCRIPT = 
+	  "<%@ jessop language=\"lisp\" engine=\"ABCL\" %>\n" +
+	  "just some text\n" + 
+	  "<% (loop for a from 1 to 10 do %>\n" + // inclusive
+	  "<%= a %>\n" +
+	  "<% ) %>";
+
 
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
@@ -181,6 +188,10 @@ public class JessopTest extends TestCase {
 		_testScript(RUBY_COUNTING_SCRIPT);
 	}
 	*/
+	
+	public void testLisp() throws ScriptException {
+		_testScript(LISP_COUNTING_SCRIPT);
+	}
 
 	
 }

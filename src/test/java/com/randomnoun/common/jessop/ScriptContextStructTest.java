@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 // import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
-
+// import org.armedbear.lisp.LispObject;
 
 import junit.framework.TestCase;
 
@@ -108,6 +108,27 @@ public class ScriptContextStructTest extends TestCase {
 	  "<%= i %>\n" +
 	  "<% end %>";
 	
+	public final static String LISP_COUNTING_SCRIPT =
+	  "<%@ jessop language=\"lisp\" engine=\"ABCL\" %>\n" +
+
+      // this would be preferable, but would require a BindingsConverter that I haven't written yet
+	  //"Hello, <%= (gethash 'name (nth muppets 0)) %>\n" + 
+	  
+	  // this works but is verbose
+	  //"Hello, <%= (jcall \"get\" (jcall \"get\" muppets 0) \"name\") %>\n" +
+	  //"<% (loop for i from 1 to (jcall \"get\" favouriteNumber (jcall \"get\" (jcall \"get\" muppets 0) \"name\") ) do %>\n" + // inclusive
+	  //"<%= i %>\n" +
+	  //"<% ) %>";
+
+	  // doesn't work; returns Hello, NIL
+	  // "Hello, <%= (gethash 'name (jss:hashmap-to-hashtable (nth 0 (jss:jlist-to-list muppets)))) %>\n" +
+	  
+	  // works, but still fairly verbose
+	  // adding (in-package :jss) causes 'The variable MUPPETS is unbound.' 
+	  "<% (require 'abcl-contrib)(require :jss) %>" +  
+	  "Hello, <%= (#\"get\" (nth 0 (jss:jlist-to-list muppets)) \"name\") %>\n";
+
+	
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
 		Compilable compilable = (Compilable) engine;
 		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
@@ -174,7 +195,7 @@ public class ScriptContextStructTest extends TestCase {
     	favouriteNumber.put("Waldorf", 7);
     	
 		Bindings b = engine.createBindings();
-		b.put("muppets", muppets);
+		b.put("muppets", muppets); // LispObject.getInstance(muppets, true));
 		b.put("favouriteNumber", favouriteNumber);
 		
 		return b;
@@ -221,7 +242,11 @@ public class ScriptContextStructTest extends TestCase {
 	public void testJessopBeanshell() throws ScriptException {
 		_testScript(JAVA_COUNTING_SCRIPT);
 	}
-	
+
+	public void testJessopLisp() throws ScriptException {
+		_testScript(LISP_COUNTING_SCRIPT);
+	}
+
 	/*
 	public void testJessopJRuby() throws ScriptException {
 		_testScript(RUBY_COUNTING_SCRIPT_GLOBAL);
