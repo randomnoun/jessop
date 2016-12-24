@@ -34,7 +34,7 @@ public class JessopExample {
 		// maybe put a function in here, to be called by the script
 		// or a compound object
 		Bindings b = engine.createBindings();
-		b.put("name", "Baron von Count"); // I have been told it is actually "Count von Count"
+		b.put("name", "Count von Count"); // I have been told it is actually "Count von Count"
 		b.put("maxCount", 4);
 		engine.eval(input);
 	}
