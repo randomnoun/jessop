@@ -20,8 +20,7 @@ public interface JessopExceptionConverter {
 	 * <p>(Most languages do this properly already, except for lua).
 	 * 
 	 * <p>This is called at runtime, not target script generation time, and should be 
-	 * associated with the target source engine (e.g. rhino), not the target language (e.g. javascript),
-	 * but I didn't want to create another interface just for this.
+	 * associated with the target source engine (e.g. rhino), not the target language (e.g. javascript).
 	 */
 	ScriptException toScriptException(ScriptContext scriptContext, Throwable t);
 

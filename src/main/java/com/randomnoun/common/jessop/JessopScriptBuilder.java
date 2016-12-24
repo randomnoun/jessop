@@ -33,12 +33,12 @@ import javax.script.ScriptException;
 public interface JessopScriptBuilder {
 	// lines are source line numbers; try to keep these intact in the generated script
 	
-	/** Returns the name of the langauge that this scriptBuilder can parse; e.g. "javascript" or "python2".
+	/** Returns the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".
 	 * 
 	 * <p>This is used to register this JessopScriptBuilder in the registry and is used to lookup the JessopScriptBuilder
 	 * from the language defined in the jessop script declaration.
 	 * 
-	 * @return the name of the langauge that this scriptBuilder can parse; e.g. "javascript" or "python2".
+	 * @return the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".
 	 */
 	String getLanguage();                                             
 	
