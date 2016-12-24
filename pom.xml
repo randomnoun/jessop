@@ -69,7 +69,6 @@
 		<dependency>
 		    <groupId>rhino</groupId>
 			<artifactId>js</artifactId>
-			<version>1.7R2</version>
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
@@ -101,6 +100,20 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!--  armed bear lisp -->
+		<dependency>
+		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
+			<artifactId>abcl</artifactId>
+			<version>1.4.0</version><!--  0.25.0 -->
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
+			<artifactId>abcl-contrib</artifactId>
+			<version>1.4.0</version><!--  0.25.0 -->
+			<optional>true</optional>
+		</dependency>
+	
 	</dependencies>
 
 	<scm>
