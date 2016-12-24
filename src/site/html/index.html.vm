@@ -99,28 +99,6 @@ Hello, Count von Count
 
 </h3>
 
-<h3>Lua</h3>
-
-<pre>
-&lt;%@ jessop language=&quot;lua&quot; engine=&quot;luaj&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;% for i = 1, maxCount - 1 do %&gt;
-&lt;%= i %&gt;
-&lt;% end %&gt;
-</pre>
-
-<h3>Output</h3>
-
-<pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre>
-
 <h3>Ruby</h3>
 
 <pre>
@@ -168,6 +146,51 @@ Hello, Count von Count
 
 3
 </pre>
+
+<h3>Lua</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;lua&quot; engine=&quot;luaj&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;% for i = 1, maxCount - 1 do %&gt;
+&lt;%= i %&gt;
+&lt;% end %&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Count von Count
+
+1
+
+2
+
+3
+</pre>
+
+<h3>Lisp</h3>
+
+<pre>
+&lt;%@ jessop language=&quot;lisp&quot; engine=&quot;ABCL&quot; %&gt;
+Hello, &lt;%= name %&gt;
+&lt;% (loop for i from 1 to maxCount do %&gt;
+&lt;%= i %&gt;
+&lt;% ) %&gt;
+</pre>
+
+<h3>Output</h3>
+
+<pre>
+Hello, Count von Count
+
+1
+
+2
+
+3
+</pre>
+
 
 <h2></h2><!-- to move back to lhs column -->
 
@@ -286,9 +309,10 @@ public class JessopExample {
 <tr><th>Language<th>Engine<th>Engine groupId<th>Engine artifactId<th>Artifact version
 <tr><td>javascript <td>rhino     <td colspan="3"><i>(Bundled with JVM)</i>
 <tr><td>java       <td>beanshell <td>org.beanshell <td>bsh        <td>2.0b5
-<tr><td>lua        <td>luaj      <td>org.luaj      <td>luaj-jse   <td>3.0.1
 <tr><td>python     <td>jython    <td>org.python    <td>jython     <td>2.5.3
 <tr><td>ruby       <td>jruby     <td>org.jruby     <td>jruby-complete <td>9.1.2.0
+<tr><td>lua        <td>luaj      <td>org.luaj      <td>luaj-jse   <td>3.0.1
+<tr><td>lisp       <td>abcl      <td>org.abcl      <td>abcl       <td>1.4.0
 </table>
  
 <p>Additional languages and engines can be added by implementing the 
