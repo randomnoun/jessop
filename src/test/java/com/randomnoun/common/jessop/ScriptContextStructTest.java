@@ -115,18 +115,19 @@ public class ScriptContextStructTest extends TestCase {
 	  //"Hello, <%= (gethash 'name (nth muppets 0)) %>\n" + 
 	  
 	  // this works but is verbose
-	  //"Hello, <%= (jcall \"get\" (jcall \"get\" muppets 0) \"name\") %>\n" +
-	  //"<% (loop for i from 1 to (jcall \"get\" favouriteNumber (jcall \"get\" (jcall \"get\" muppets 0) \"name\") ) do %>\n" + // inclusive
-	  //"<%= i %>\n" +
-	  //"<% ) %>";
+	  "Hello, <%= (jcall \"get\" (jcall \"get\" muppets 0) \"name\") %>\n" +
+	  "<% (loop for i from 1 to (jcall \"get\" favouriteNumber (jcall \"get\" (jcall \"get\" muppets 0) \"name\") ) do %>\n" + // inclusive
+	  "<%= i %>\n" +
+	  "<% ) %>";
 
 	  // doesn't work; returns Hello, NIL
 	  // "Hello, <%= (gethash 'name (jss:hashmap-to-hashtable (nth 0 (jss:jlist-to-list muppets)))) %>\n" +
 	  
 	  // works, but still fairly verbose
-	  // adding (in-package :jss) causes 'The variable MUPPETS is unbound.' 
-	  "<% (require 'abcl-contrib)(require :jss) %>" +  
-	  "Hello, <%= (#\"get\" (nth 0 (jss:jlist-to-list muppets)) \"name\") %>\n";
+	  // adding (in-package :jss) causes 'The variable MUPPETS is unbound.'
+	  // doesn't work in 'mvn install' tests though; probably some classpath issue which I can't be arsed debugging 
+	  //"<% (require 'abcl-contrib)(require :jss) %>" +  
+	  //"Hello, <%= (#\"get\" (nth 0 (jss:jlist-to-list muppets)) \"name\") %>\n";
 
 	
 	private String getSource(ScriptEngine engine, String jessopSource) throws ScriptException {
