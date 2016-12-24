@@ -105,12 +105,14 @@
 		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
 			<artifactId>abcl</artifactId>
 			<version>1.4.0</version><!--  0.25.0 -->
+			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
 			<artifactId>abcl-contrib</artifactId>
 			<version>1.4.0</version><!--  0.25.0 -->
+			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
 	
