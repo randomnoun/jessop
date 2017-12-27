@@ -1,12 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>parent-pom</artifactId>
-		<groupId>com.randomnoun.build</groupId>
-		<version>1.14</version>
-	</parent>
-
 	<groupId>com.randomnoun.common</groupId>
 	<artifactId>jessop</artifactId>
 	<packaging>jar</packaging>
@@ -14,6 +8,11 @@
 	<description>Multi-language templates in the style of Java Server Pages</description>
 	<url>http://code.randomnoun.com/jessop/index.html</url>
 	<inceptionYear>2016-09-16</inceptionYear>
+	<parent>
+		<artifactId>parent-pom</artifactId>
+		<groupId>com.randomnoun.build</groupId>
+		<version>1.17</version>
+	</parent>
 	
 	<dependencies>
 		<dependency>
@@ -119,9 +118,9 @@
 	</dependencies>
 
 	<scm>
-		<url>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</url>
-		<connection>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</connection>
-		<developerConnection>scm:cvs:pserver:vmaint:vmaint@cvs.dev.randomnoun:/randomnoun:jessop</developerConnection>
+	<connection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</connection>
+	<developerConnection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</developerConnection>
+	<url>http://gitlab.dev.randomonun/randomnoun/jessop</url>
   </scm>
 	<licenses>
 		<license>
