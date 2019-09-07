@@ -61,9 +61,6 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 			if (pos !=- 1) {
 			   sb.append("\\" + backslashChars.charAt(pos));
 			
-			// so apparently lua allows any character in a string whatsoever. looking forward to seeing this breaking.
-			// have seen some examples of, e.g. \006 to represent chars, but nothing in the lua spec
-			   
 			} else if (ch<32 || (ch>126 && ch <= 255)) {
 				String hex = Integer.toString(ch, 16);
 				sb.append("\\x" + "00".substring(0, 2-hex.length()) + hex);
@@ -109,7 +106,7 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 		
 		logger.debug("scriptlet is '" + s + "'");
 		print(s);
-		/*
+		/* 
 		  <%
 		      for i=1..10:
 		        something
@@ -122,7 +119,10 @@ public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder impl
 		  <%
 		      pass;  # empty statement on a line could indicate end of block
 		  %>
+		   
 		      
+		 * This sort of thing is why whitespace-significant languages should burn in hellfire,
+		 * (I'm looking at you, yaml), and why things like jinja are apparently necessary
 		 */
 		
 		// get the amount of indentation on the last non-blank line
