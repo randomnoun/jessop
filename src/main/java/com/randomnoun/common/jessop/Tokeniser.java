@@ -21,6 +21,7 @@ public class Tokeniser {
 	int charOffset;    // character number (from start of file); starts at 0
 	int line;          // source line number; starts at 1
 	int eline;         // expression start line. Whenever we emit anything, reset the eline to line
+	String unclosed;   // used in the error message if we hit EOF in an invalid state
 	StringBuilder sb;  // output stringBuilder
 	StringBuilder esb; // expression (or directive) stringBuilder
 
@@ -58,27 +59,34 @@ public class Tokeniser {
 						sb.setLength(0);
 						eline = line;
 					}
+					unclosed = "<%";
 					state = 2;
 				} else if (ch=='<') {
 					// normal '<' followed by an possible initial '<'
 					sb.append(ch);
+					unclosed = null;
 					state = 1;
 				} else {
 					// just a normal tag
 					sb.append('<');
 					sb.append(ch);
+					unclosed = null;
 					state = 0;
 				}
 				break;
 				
 			case 2: // parsed initial '<%'
 				if (ch == '=') {  // <%= ... %>
+					unclosed = "<%=";
 					state = 3;
 				} else if (ch=='@') { // <%@ ... %> declaration 
+					unclosed = "<%@";
 					state = 5;
 				} else if (ch=='!') { // <%! ... %> block
+					unclosed = "<%!";
 					state = 6;
 				} else if (ch=='-') { // <%-- ... --%> block
+					unclosed = "<%--";
 					state = 7;
 				} else {        // <%  ... %>   NB: no space required after '<%'
 					esb.append(ch);
@@ -106,7 +114,7 @@ public class Tokeniser {
 				if (ch=='"') {
 					state = 16;  // start of directive attribute
 					esb.append(ch);
-				} else if (ch=='%') { // closing % of <@ ... %>
+				} else if (ch=='%') { // closing % of <%@ ... %>
 					state = 15;
 				} else {
 					esb.append(ch);
@@ -159,6 +167,7 @@ public class Tokeniser {
 				
 			case 11:
 				if (ch=='>') {   // closing '--%>' of <%-- ... --%>
+					unclosed = null;
 					state = 0;
 				} else {
 					state = 8; 
@@ -170,6 +179,7 @@ public class Tokeniser {
 					jsb.emitExpression(eline, esb.toString());
 					esb.setLength(0);
 					eline = line;
+					unclosed = null;
 					state = 0;
 				} else {
 					esb.append(ch);
@@ -182,6 +192,7 @@ public class Tokeniser {
 					jsb.emitScriptlet(eline, esb.toString());
 					esb.setLength(0);
 					eline = line;
+					unclosed = null;
 					state = 0;
 				} else {
 					esb.append(ch);
@@ -194,6 +205,7 @@ public class Tokeniser {
 					jsb.emitDeclaration(eline, esb.toString());
 					esb.setLength(0);
 					eline = line;
+					unclosed = null;
 					state = 0;
 				} else {
 					esb.append(ch);
@@ -216,11 +228,10 @@ public class Tokeniser {
 	}
 	
 	public void parseEndOfFile() throws ScriptException {
-		// emit anythign that's left, raise exceptions if in invalid state
+		// emit anything that's left, raise exceptions if in invalid state
 		// logger.debug("state " + state + " EOF");
-		if (state!=0) {
-			// @TODO better error messages
-			throw new ScriptException("unexpected EOF (parse state=" + state + ")", null, line); // charOffset
+		if (state != 0 && unclosed != null) {
+			throw new ScriptException("unexpected EOF (unclosed '" + unclosed + "')", null, line); // charOffset
 		}
 		if (sb.length()>0) {
 			jsb.emitText(eline, sb.toString());
