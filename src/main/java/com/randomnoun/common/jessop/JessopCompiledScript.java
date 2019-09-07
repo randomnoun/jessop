@@ -82,11 +82,20 @@ public class JessopCompiledScript extends CompiledScript {
 	/** {@inheritDoc} */
 	@Override
 	public Object eval(ScriptContext context) throws ScriptException {
+		// NOTE TO FUTURE SELF
+		// it is around this point that I think the rhino initStandardObjects() is called.
+		// it's impossible to farging step through because I don't have the src for the oracle rhino impl.
+		// what I would dearly love is to have it call initSafeStandardObjects() instead, so that
+		// people can't escape the rhino sandbox. Is that too much to ask ? Is it ?
+		// may be able to wrap this entire method in a ContextFactory.call() to set an alternate Context
+		// see http://mozilla.github.io/rhino/javadoc/org/mozilla/javascript/ContextFactory.html#call(org.mozilla.javascript.ContextAction)
+        // the rhino code is a intricate maze of twisty passages, all of which look alike.
+		
 		if (context==null) { 
 			context = engine.getContext();
 		} else {
 			// some engines may require us to wrap/unwrap maps and lists to 
-			// other data structures in order to treat that as native maps/dicts and arrays 
+			// other data structures in order to treat them as native maps/dicts and arrays 
 			// in that engine's language
 			
 			// may have to convert this context to whatever this engine expects (here's looking at you, lua)
