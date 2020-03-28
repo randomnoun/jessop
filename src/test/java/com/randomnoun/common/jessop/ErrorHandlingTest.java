@@ -59,6 +59,15 @@ public class ErrorHandlingTest extends TestCase {
 	  "<% } %>\n" +
 	  "<% floob; %>\n";  // where 'floob' is the canonical representation of a 'foo'...'bar' block
 
+	public final static String JAVSCRIPT_COUNTING_SCRIPT_NASHORN = 
+	  "<%@ jessop language=\"javascript\" engine=\"nashorn\" %>\n" +
+	  "Hello, <%= name %>\n" +
+	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
+	  "<%= i %>\n" +
+	  "<% } %>\n" +
+	  "<% floob; %>\n";  // where 'floob' is the canonical representation of a 'foo'...'bar' block
+
+	
 	public final static String LUA_COUNTING_SCRIPT = 
 	  "<%@ jessop language=\"lua\" engine=\"luaj\" %>\n" +
 	  "Hello, <%= name %>\n" +
@@ -116,7 +125,12 @@ public class ErrorHandlingTest extends TestCase {
 		b.put("maxCount", 3);
 
 		Compilable compilableEngine = (Compilable) engine;
-		CompiledScript script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT);
+		CompiledScript script;
+		try {
+			script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT);
+		} catch (ScriptException se) { // java.scriptx engine 'rhino' not found
+			script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT_NASHORN);
+		}
 		
 		// compilation should still succeed
 		JessopCompiledScript jessopScript = (JessopCompiledScript) script;
@@ -146,7 +160,17 @@ public class ErrorHandlingTest extends TestCase {
 	}
 	
 	public void testJessop1() throws ScriptException {
-		_testScript(JAVSCRIPT_COUNTING_SCRIPT, 6);
+		boolean hasRhino = false;
+		try { 
+			hasRhino = new ScriptEngineManager().getEngineByName("rhino") != null;
+		} catch (Exception e) {
+			// ignore
+		}
+		if (hasRhino) {
+			_testScript(JAVSCRIPT_COUNTING_SCRIPT, 6);
+		} else {
+			_testScript(JAVSCRIPT_COUNTING_SCRIPT_NASHORN, 6);
+		}
 	}
 	
 	
