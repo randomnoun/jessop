@@ -8,26 +8,29 @@
   It's this kind of fscking awful templating system that drove me into writing this 
   project in the first place.
   
+  https://search.maven.org/artifact/com.randomnoun.common/jessop/1.0.8/jar
+  https://search.maven.org/remotecontent?filepath=com/randomnoun/common/jessop/1.0.8/jessop-1.0.8.jar
+  https://repo1.maven.org/maven2/com/randomnoun/common/1.0.9-SNAPSHOT/jessop-1.0.9-SNAPSHOT.jar
+  
 -->
-#set( $repos = "http://central.maven.org/maven2/" )
+#set( $repos = "https://repo1.maven.org/maven2/" )
 #set( $jarBasename = ${project.artifactId} + "-" + ${project.version} + ".jar" )
 #set( $srcBasename = ${project.artifactId} + "-" + ${project.version} + "-sources.jar" )
 #set( $distBasename = ${project.artifactId} + "-" + ${project.version} + "-dist.zip" )
-#set( $url = ${project.groupId} )
-#set( $url = $url.replace(".", "/") )
-#set( $jarUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $jarBasename )
-#set( $srcUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $srcBasename )
-#set( $distUrl = $repos + $url + "/" + ${project.artifactId} + "/" + ${project.version} + "/" + $distBasename )
+#set( $groupIdPath = ${project.groupId} )
+#set( $groupIdPath = $groupIdPath.replace(".", "/") )
+#set( $jarUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $jarBasename )
+#set( $srcUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $srcBasename )
+#set( $distUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $distBasename )
 
 <h2>Overview</h2>
 
-<p><b>Jessop</b> is a multi-language templating language in the style of Java Server Pages.</p>
+<p><b>Jessop</b> is a polyglot templating language in the style of Java Server Pages (JSPs).</p>
 
-<p>It is <b>multi-language</b> in the sense that the although input files are written in your desired
-output language (whether that be English, HTML/CSS, or in the case of code generators,
-other programming languages), the statements, conditions
-and expressions within the language are written in <b>any language that the JVM Scripting Engine
-supports</b>.
+<p>Like all templating languages, the output can be any text stream ( e.g. English text, HTML/CSS or 
+if generating boilerplate, other programming code),
+but the statements, conditions and expressions within the language can be 
+written in any language that the Java scripting engine ( javax.script ) supports.
 
 <p><i>e.g.</i> by enabling the '<b>javascript</b>' target language, you can embed javascript code within your
 jessop script (which executes using the 'rhino' engine), or by enabling the '<b>python</b>' target 
@@ -295,7 +298,7 @@ public class JessopExample {
 <td>To build jessop from source, unpackage this archive and run <tt>mvn compile</tt>
 </table>
 
-<p>Artifacts are contained within the <a href="${repos}">maven central repository</a>
+<p>Artifacts are contained within the <a href="https://search.maven.org/">maven central repository</a>
 
 <hr/>
 
