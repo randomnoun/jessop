@@ -117,11 +117,12 @@
 	
 	</dependencies>
 
+	<!--  these are on github now. except for the bits on gitlab. -->
 	<scm>
-	<connection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</connection>
-	<developerConnection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</developerConnection>
-	<url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
-  </scm>
+		<connection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</connection>
+		<developerConnection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</developerConnection>
+		<url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
+  	</scm>
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
@@ -250,6 +251,17 @@
 	
 	<reporting>
 		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+		          <webAccessUrl>https://github.com/randomnoun/jessop</webAccessUrl>
+		          <anonymousConnection>scm:git:ssh://git@github.com:randomnoun/jessop.git</anonymousConnection>
+		          <developerConnection>scm:git:ssh://git@github.com:randomnoun/jessop.git</developerConnection>
+		        </configuration>
+            </plugin>           
+        
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
