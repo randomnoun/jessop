@@ -119,8 +119,8 @@
 
 	<!--  these are on github now. except for the bits on gitlab. -->
 	<scm>
-		<connection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</connection>
-		<developerConnection>scm:git:ssh://git@gitlab.dev.randomnoun:2222/randomnoun/jessop.git</developerConnection>
+		<connection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</connection>
+		<developerConnection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</developerConnection>
 		<url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
   	</scm>
 	<licenses>
