@@ -115,6 +115,7 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
   
     <links>
       <item name="Download" href="index.html#Usage" />
+      <item name="Github" href="https://github.com/randomnoun/jessop" />
     </links>
 
     <breadcrumbs>
@@ -123,6 +124,7 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
   
     <menu name="Main" inherit="top">
       <item name="Home" href="index.html" />
+      <item name="Github project" href="https://github.com/randomnoun/jessop" />
       <item name="Release notes" href="changes-report.html" />
     </menu>
     <menu name="Download" inherit="top">
