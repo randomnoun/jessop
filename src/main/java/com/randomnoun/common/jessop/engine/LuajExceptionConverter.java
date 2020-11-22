@@ -17,9 +17,6 @@ import com.randomnoun.common.jessop.JessopExceptionConverter;
 
 public class LuajExceptionConverter implements JessopExceptionConverter {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
-
 	/* because lua's special */ 
 	@Override
 	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {

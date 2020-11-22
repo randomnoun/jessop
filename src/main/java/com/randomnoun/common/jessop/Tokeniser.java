@@ -14,8 +14,6 @@ import org.apache.log4j.Logger;
 
 public class Tokeniser {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(Tokeniser.class);
 	int state;         // parse state
 	int charOffset;    // character number (from start of file); starts at 0

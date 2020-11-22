@@ -11,7 +11,6 @@ import javax.script.ScriptEngine;
 /** Convert Java bindings to more scripting-language-friendly objects.
  *  
  * @author knoxg
- * @version $Id$
  */
 public interface JessopBindingsConverter {
 

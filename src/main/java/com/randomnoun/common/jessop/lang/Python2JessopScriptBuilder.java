@@ -11,8 +11,6 @@ import com.randomnoun.common.jessop.JessopScriptBuilder;
 
 public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);
 	int outputLine = 1;        // current line number in the target script;
 	int outputCol = 1;         // current output column

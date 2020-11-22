@@ -24,13 +24,10 @@ import org.apache.log4j.Logger;
  * <p>If the declaration is missing, then the default JavascriptJessopScriptBuilder is used, using the 'rhino' engine.
  * 
  * @author knoxg
- * @version $Id$
  */
 // this should be subclassed by specific languages (javascript etc)
 public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 	protected Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);
 	protected JessopDeclarations declarations;
 	protected Tokeniser tokeniser;

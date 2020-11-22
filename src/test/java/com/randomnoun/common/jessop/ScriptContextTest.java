@@ -1,20 +1,12 @@
 package com.randomnoun.common.jessop;
 
-/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
- * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
- */
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
@@ -22,21 +14,12 @@ import org.apache.log4j.PropertyConfigurator;
 
 import junit.framework.TestCase;
 
-//!!!!!!!!!!!!!
-//if this unit test fails in eclipse because it can't find the 'jessop' engine, 
-//a) try modifing the MANIFEST.MF file (add a space and delete it), resave it
-//b) try performing a maven install on the top-level project
-
 /** This unit test checks whether Bindings set on ScriptContexts are available to the target language within
  * jessop scripts
  * 
  * @author knoxg
- * @version $Id$
  */
 public class ScriptContextTest extends TestCase {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	Logger logger = Logger.getLogger(ScriptContextTest.class);
 	
@@ -159,7 +142,6 @@ public class ScriptContextTest extends TestCase {
         return sb.toString();
     }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Bindings getBindings(ScriptEngine engine) {
 		Bindings b = engine.createBindings();
 		b.put("name", "Baron von Count");
@@ -182,7 +164,7 @@ public class ScriptContextTest extends TestCase {
 	public void testJessopCompile() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
-		Bindings b = getBindings(engine);
+		/*Bindings b =*/ getBindings(engine);
 
 		Compilable compilableEngine = (Compilable) engine;
 		CompiledScript script = compilableEngine.compile(JAVASCRIPT_COUNTING_SCRIPT);

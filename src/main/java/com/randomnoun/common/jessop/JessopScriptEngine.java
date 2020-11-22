@@ -28,12 +28,8 @@ import com.randomnoun.common.jessop.lang.JavascriptJessopScriptBuilder;
 /** The jessop ScriptEngine class.
  * 
  * @author knoxg
- * @version $Id$
  */
 public class JessopScriptEngine extends AbstractScriptEngine implements Compilable {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	/** Logger instance for this class */
 	Logger logger = Logger.getLogger(JessopScriptEngine.class);

@@ -21,12 +21,8 @@ import junit.framework.TestCase;
  * <p>Turns out that some of the builds in mvn central don't actually work.
  * 
  * @author knoxg
- * @version $Id$
  */
 public class JythonTest extends TestCase {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	public static void listEngines(){ // Note 1
         ScriptEngineManager mgr = new ScriptEngineManager();

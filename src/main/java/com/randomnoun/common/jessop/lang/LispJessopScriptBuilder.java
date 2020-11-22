@@ -14,8 +14,6 @@ import com.randomnoun.common.jessop.JessopScriptBuilder;
 
 public class LispJessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 	Logger logger = Logger.getLogger(LispJessopScriptBuilder.class);
 	int outputLine = 1;        // current line number in the target script;
 	int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)

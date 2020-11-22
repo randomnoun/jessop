@@ -19,16 +19,12 @@ import javax.script.ScriptEngineFactory;
 /** A class to implement the {@link javax.script.ScriptEngineFactory} interface for the jessop templating language.
  * 
  * @author knoxg
- * @version $Id$
  */
 // was thinking of creating one of these per jessop language; (e.g. jessop-javascript), but 
 // will just use declarations to define the language (and default to javascript if the declaration is missing)
 // actually getNames() could return jessop-xxx variants based on what's in the registry, couldn't it.
 // can't see how to get the value of that name though, so that's unfortunate
 public class JessopScriptEngineFactory implements ScriptEngineFactory {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	/** The version of the jessop 'language' that this script engine implements */
     // may lag the release version if the syntax doesn't change

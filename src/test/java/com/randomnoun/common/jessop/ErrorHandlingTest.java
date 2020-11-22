@@ -18,20 +18,12 @@ import org.apache.log4j.PropertyConfigurator;
 
 import junit.framework.TestCase;
 
-// !!!!!!!!!!!!!
-// if this unit test fails in eclipse because it can't find the 'jessop' engine, just modify the MANIFEST.MF file 
-// (add a space and delete it), resave it, and then run the unit test again.
-
 /** This unit test checks error handling in scripts, and checks that line numbers in the target script 
  * match line numbers in the source script
  * 
  * @author knoxg
- * @version $Id$
  */
 public class ErrorHandlingTest extends TestCase {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	Logger logger = Logger.getLogger(ErrorHandlingTest.class);
 	

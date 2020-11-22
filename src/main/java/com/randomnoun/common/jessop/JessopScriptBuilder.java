@@ -28,7 +28,6 @@ import javax.script.ScriptException;
  * as the corresponding code on the input script, to make error messages more developer-friendly.
  * 
  * @author knoxg
- * @version $Id$
  */
 public interface JessopScriptBuilder {
 	// lines are source line numbers; try to keep these intact in the generated script

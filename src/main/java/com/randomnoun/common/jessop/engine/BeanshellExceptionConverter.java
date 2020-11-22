@@ -12,9 +12,6 @@ import com.randomnoun.common.jessop.JessopExceptionConverter;
 
 public class BeanshellExceptionConverter implements JessopExceptionConverter {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
-
 	/* bsh doesn't return filenames properly */ 
 	@Override
 	public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {

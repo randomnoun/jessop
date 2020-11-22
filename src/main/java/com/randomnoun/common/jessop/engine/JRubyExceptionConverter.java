@@ -5,15 +5,11 @@ package com.randomnoun.common.jessop.engine;
  */
 
 import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import com.randomnoun.common.jessop.JessopExceptionConverter;
 
 public class JRubyExceptionConverter implements JessopExceptionConverter {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	/* jruby doesn't return filenames or line numbers in the ScriptException object, 
 	 * but these are contained in the jruby RaiseException object */

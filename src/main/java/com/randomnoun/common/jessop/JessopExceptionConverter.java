@@ -11,7 +11,6 @@ import javax.script.ScriptException;
  * don't throw ScriptExceptions properly
  *  
  * @author knoxg
- * @version $Id$
  */
 public interface JessopExceptionConverter {
 

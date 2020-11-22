@@ -18,21 +18,12 @@ import org.apache.log4j.PropertyConfigurator;
 
 import junit.framework.TestCase;
 
-//!!!!!!!!!!!!!
-//if this unit test fails in eclipse because it can't find the 'jessop' engine, 
-//a) try modifing the MANIFEST.MF file (add a space and delete it), resave it
-//b) try performing a maven install on the top-level project
-
 /** This unit test checks whether Bindings set on ScriptContexts are available to the target language within
  * jessop scripts
  * 
  * @author knoxg
- * @version $Id$
  */
 public class DefaultDeclarationTest extends TestCase {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	Logger logger = Logger.getLogger(DefaultDeclarationTest.class);
 	

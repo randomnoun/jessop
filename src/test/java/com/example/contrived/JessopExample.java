@@ -6,23 +6,18 @@ package com.example.contrived;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import javax.script.Bindings;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
-import java.util.Scanner;
 
 /** Simple jessop example  
  * 
  * @author knoxg
- * @version $Id$
  */
 public class JessopExample {
-
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	public void main(String args[]) throws FileNotFoundException, ScriptException {
 		String filename = args[1];

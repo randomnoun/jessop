@@ -15,12 +15,9 @@ package com.randomnoun.common.jessop;
  * the {@link JessopScriptBuilder} implementation instead.
  * 
  * @author knoxg
- * @version $Id$
  */
 public class JessopDeclarations {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 
 	// things we might want to add later:
 	// contentType="text/html; charset=utf-8"

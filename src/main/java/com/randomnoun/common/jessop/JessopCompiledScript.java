@@ -5,7 +5,6 @@ package com.randomnoun.common.jessop;
  */
 
 import java.io.PrintWriter;
-import java.io.Writer;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -20,12 +19,9 @@ import javax.script.ScriptException;
  * the compiled form of the generated script.
  * 
  * @author knoxg
- * @version $Id$
  */
 public class JessopCompiledScript extends CompiledScript {
 
-    /** A revision marker to be used in exception stack traces. */
-    public static final String _revision = "$Id$";
 	
 	/** target implementation engine (e.g. rhino, jython) */
 	ScriptEngine engine;    

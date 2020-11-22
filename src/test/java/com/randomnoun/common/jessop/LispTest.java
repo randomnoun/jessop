@@ -92,7 +92,7 @@ public class LispTest {
 	     
 	      //Implementing a Java interface in Lisp
 	      lispEngine.eval("(defun compare-to (&rest args) 42)");
-	      Comparable c = ((Invocable) lispEngine).getInterface(java.lang.Comparable.class);
+	      Comparable<?> c = ((Invocable) lispEngine).getInterface(java.lang.Comparable.class);
 	      System.out.println("compareTo: " + c.compareTo(null));
 	     
 	      //Compilation!
