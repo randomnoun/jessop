@@ -19,21 +19,20 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/** Convert Java bindings to more scripting-language-friendly objects.</em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *  </em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @version $Id$</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../com/randomnoun/common/jessop/JessopBindingsConverter.html">JessopBindingsConverter</a> {
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  	<em class="jxr_javadoccomment">/** Convert a set of bindings to a more scripting-language-friendly object.</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">	 * </em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">	 * &lt;p&gt;This is called twice, once for bindings at ScriptContext.GLOBAL_SCOPE, </em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">	 * and again for bindings at ScriptContext.ENGINE_SCOPE.</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">	 */</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  	Bindings toScriptBindings(ScriptEngine engine, ScriptContext newContext,
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  		Bindings bindings, <strong class="jxr_keyword">int</strong> engineScope);
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  	<em class="jxr_comment">// may add a toJavaObject() to do the reverse later on</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  	
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  }
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../com/randomnoun/common/jessop/JessopBindingsConverter.html">JessopBindingsConverter</a> {
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  	<em class="jxr_javadoccomment">/** Convert a set of bindings to a more scripting-language-friendly object.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">	 * </em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">	 * &lt;p&gt;This is called twice, once for bindings at ScriptContext.GLOBAL_SCOPE, </em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">	 * and again for bindings at ScriptContext.ENGINE_SCOPE.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">	 */</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  	Bindings toScriptBindings(ScriptEngine engine, ScriptContext newContext,
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  		Bindings bindings, <strong class="jxr_keyword">int</strong> engineScope);
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  	<em class="jxr_comment">// may add a toJavaObject() to do the reverse later on</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  	
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>

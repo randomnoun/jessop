@@ -14,39 +14,34 @@
 <span class="sourceLineNo">006</span><a name="line.6"></a>
 <span class="sourceLineNo">007</span>import java.io.File;<a name="line.7"></a>
 <span class="sourceLineNo">008</span>import java.io.FileNotFoundException;<a name="line.8"></a>
-<span class="sourceLineNo">009</span><a name="line.9"></a>
-<span class="sourceLineNo">010</span>import javax.script.Bindings;<a name="line.10"></a>
-<span class="sourceLineNo">011</span>import javax.script.ScriptEngineManager;<a name="line.11"></a>
+<span class="sourceLineNo">009</span>import java.util.Scanner;<a name="line.9"></a>
+<span class="sourceLineNo">010</span><a name="line.10"></a>
+<span class="sourceLineNo">011</span>import javax.script.Bindings;<a name="line.11"></a>
 <span class="sourceLineNo">012</span>import javax.script.ScriptEngine;<a name="line.12"></a>
-<span class="sourceLineNo">013</span>import javax.script.ScriptException;<a name="line.13"></a>
-<span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span>import java.util.Scanner;<a name="line.15"></a>
-<span class="sourceLineNo">016</span><a name="line.16"></a>
-<span class="sourceLineNo">017</span>/** Simple jessop example  <a name="line.17"></a>
-<span class="sourceLineNo">018</span> * <a name="line.18"></a>
-<span class="sourceLineNo">019</span> * @author knoxg<a name="line.19"></a>
-<span class="sourceLineNo">020</span> * @version $Id$<a name="line.20"></a>
-<span class="sourceLineNo">021</span> */<a name="line.21"></a>
-<span class="sourceLineNo">022</span>public class JessopExample {<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>    /** A revision marker to be used in exception stack traces. */<a name="line.24"></a>
-<span class="sourceLineNo">025</span>    public static final String _revision = "$Id$";<a name="line.25"></a>
-<span class="sourceLineNo">026</span><a name="line.26"></a>
-<span class="sourceLineNo">027</span>        public void main(String args[]) throws FileNotFoundException, ScriptException {<a name="line.27"></a>
-<span class="sourceLineNo">028</span>                String filename = args[1];<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                Scanner scanner = new Scanner(new File(filename));<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                String input = scanner.useDelimiter("\\Z").next();<a name="line.30"></a>
-<span class="sourceLineNo">031</span>                scanner.close();<a name="line.31"></a>
-<span class="sourceLineNo">032</span>                ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");<a name="line.32"></a>
-<span class="sourceLineNo">033</span>                if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                // maybe put a function in here, to be called by the script<a name="line.34"></a>
-<span class="sourceLineNo">035</span>                // or a compound object<a name="line.35"></a>
-<span class="sourceLineNo">036</span>                Bindings b = engine.createBindings();<a name="line.36"></a>
-<span class="sourceLineNo">037</span>                b.put("name", "Count von Count"); // I have been told it is actually "Count von Count"<a name="line.37"></a>
-<span class="sourceLineNo">038</span>                b.put("maxCount", 4);<a name="line.38"></a>
-<span class="sourceLineNo">039</span>                engine.eval(input);<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        }<a name="line.40"></a>
-<span class="sourceLineNo">041</span>}<a name="line.41"></a>
+<span class="sourceLineNo">013</span>import javax.script.ScriptEngineManager;<a name="line.13"></a>
+<span class="sourceLineNo">014</span>import javax.script.ScriptException;<a name="line.14"></a>
+<span class="sourceLineNo">015</span><a name="line.15"></a>
+<span class="sourceLineNo">016</span>/** Simple jessop example  <a name="line.16"></a>
+<span class="sourceLineNo">017</span> * <a name="line.17"></a>
+<span class="sourceLineNo">018</span> * @author knoxg<a name="line.18"></a>
+<span class="sourceLineNo">019</span> */<a name="line.19"></a>
+<span class="sourceLineNo">020</span>public class JessopExample {<a name="line.20"></a>
+<span class="sourceLineNo">021</span><a name="line.21"></a>
+<span class="sourceLineNo">022</span>        public void main(String args[]) throws FileNotFoundException, ScriptException {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>                String filename = args[1];<a name="line.23"></a>
+<span class="sourceLineNo">024</span>                Scanner scanner = new Scanner(new File(filename));<a name="line.24"></a>
+<span class="sourceLineNo">025</span>                String input = scanner.useDelimiter("\\Z").next();<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                scanner.close();<a name="line.26"></a>
+<span class="sourceLineNo">027</span>                ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");<a name="line.27"></a>
+<span class="sourceLineNo">028</span>                if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }<a name="line.28"></a>
+<span class="sourceLineNo">029</span>                // maybe put a function in here, to be called by the script<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                // or a compound object<a name="line.30"></a>
+<span class="sourceLineNo">031</span>                Bindings b = engine.createBindings();<a name="line.31"></a>
+<span class="sourceLineNo">032</span>                b.put("name", "Count von Count"); // I have been told it is actually "Count von Count"<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                b.put("maxCount", 4);<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                engine.eval(input);<a name="line.34"></a>
+<span class="sourceLineNo">035</span>        }<a name="line.35"></a>
+<span class="sourceLineNo">036</span>}<a name="line.36"></a>
 
 
 

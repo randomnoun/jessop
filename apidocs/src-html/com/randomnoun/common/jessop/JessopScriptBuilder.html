@@ -36,121 +36,120 @@
 <span class="sourceLineNo">028</span> * as the corresponding code on the input script, to make error messages more developer-friendly.<a name="line.28"></a>
 <span class="sourceLineNo">029</span> * <a name="line.29"></a>
 <span class="sourceLineNo">030</span> * @author knoxg<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * @version $Id$<a name="line.31"></a>
-<span class="sourceLineNo">032</span> */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>public interface JessopScriptBuilder {<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        // lines are source line numbers; try to keep these intact in the generated script<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        <a name="line.35"></a>
-<span class="sourceLineNo">036</span>        /** Returns the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".<a name="line.36"></a>
-<span class="sourceLineNo">037</span>         * <a name="line.37"></a>
-<span class="sourceLineNo">038</span>         * &lt;p&gt;This is used to register this JessopScriptBuilder in the registry and is used to lookup the JessopScriptBuilder<a name="line.38"></a>
-<span class="sourceLineNo">039</span>         * from the language defined in the jessop script declaration.<a name="line.39"></a>
-<span class="sourceLineNo">040</span>         * <a name="line.40"></a>
-<span class="sourceLineNo">041</span>         * @return the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".<a name="line.41"></a>
-<span class="sourceLineNo">042</span>         */<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        String getLanguage();                                             <a name="line.43"></a>
-<span class="sourceLineNo">044</span>        <a name="line.44"></a>
-<span class="sourceLineNo">045</span>        /** Returns the name of the script engine that is used to evaluate this script; e.g. "rhino" or "jython"<a name="line.45"></a>
-<span class="sourceLineNo">046</span>         * <a name="line.46"></a>
-<span class="sourceLineNo">047</span>         * @return the name of the script engine that is used to evaluate this script; e.g. "rhino" or "jython"<a name="line.47"></a>
-<span class="sourceLineNo">048</span>         */<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        String getDefaultScriptEngineName();                             <a name="line.49"></a>
-<span class="sourceLineNo">050</span><a name="line.50"></a>
-<span class="sourceLineNo">051</span>        /** Returns the name of the default exceptionConverter class that should be used for the default script engine,<a name="line.51"></a>
-<span class="sourceLineNo">052</span>         * or null if no converter is required.<a name="line.52"></a>
-<span class="sourceLineNo">053</span>         * <a name="line.53"></a>
-<span class="sourceLineNo">054</span>         * &lt;p&gt;Changing the engine in the jessop declaration will reset the the converter to null. <a name="line.54"></a>
-<span class="sourceLineNo">055</span>         * <a name="line.55"></a>
-<span class="sourceLineNo">056</span>         * @return the name of the default exceptionConverter class that should be used for the default script engine<a name="line.56"></a>
-<span class="sourceLineNo">057</span>         */<a name="line.57"></a>
-<span class="sourceLineNo">058</span>        String getDefaultExceptionConverterClassName();                             <a name="line.58"></a>
-<span class="sourceLineNo">059</span><a name="line.59"></a>
-<span class="sourceLineNo">060</span>        /** Returns the name of the default bindingsConverter class that should be used for the default script engine,<a name="line.60"></a>
-<span class="sourceLineNo">061</span>         * or null if no converter is required.<a name="line.61"></a>
-<span class="sourceLineNo">062</span>         * <a name="line.62"></a>
-<span class="sourceLineNo">063</span>         * &lt;p&gt;Changing the engine in the jessop declaration will reset the the converter to null. <a name="line.63"></a>
-<span class="sourceLineNo">064</span>         * <a name="line.64"></a>
-<span class="sourceLineNo">065</span>         * @return the name of the default bindingsConverter class that should be used for the default script engine<a name="line.65"></a>
-<span class="sourceLineNo">066</span>         */<a name="line.66"></a>
-<span class="sourceLineNo">067</span>        String getDefaultBindingsConverterClassName();                             <a name="line.67"></a>
-<span class="sourceLineNo">068</span><a name="line.68"></a>
-<span class="sourceLineNo">069</span>        <a name="line.69"></a>
-<span class="sourceLineNo">070</span>        /** Sets the printWriter that this class will write to during emit() methods<a name="line.70"></a>
-<span class="sourceLineNo">071</span>         * <a name="line.71"></a>
-<span class="sourceLineNo">072</span>         * @param pw the printWriter that this class will write to during emit() methods<a name="line.72"></a>
-<span class="sourceLineNo">073</span>         */<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        void setPrintWriter(PrintWriter pw);<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        <a name="line.75"></a>
-<span class="sourceLineNo">076</span>        /** Sets the tokeniser and declaration that are in effect at the start of parsing. This allows this<a name="line.76"></a>
-<span class="sourceLineNo">077</span>         * ScriptBuilder to switch ScriptBuilders.<a name="line.77"></a>
-<span class="sourceLineNo">078</span>         * <a name="line.78"></a>
-<span class="sourceLineNo">079</span>         * @param t tokeniser that is processing the jessop source<a name="line.79"></a>
-<span class="sourceLineNo">080</span>         * @param declarations jessop declarations that are in effect<a name="line.80"></a>
-<span class="sourceLineNo">081</span>         */<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>        <a name="line.83"></a>
-<span class="sourceLineNo">084</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some text output.<a name="line.84"></a>
-<span class="sourceLineNo">085</span>         * <a name="line.85"></a>
-<span class="sourceLineNo">086</span>         * &lt;p&gt;This method should escape the output and generate code that outputs this text in the implementation language.<a name="line.86"></a>
-<span class="sourceLineNo">087</span>         *  <a name="line.87"></a>
-<span class="sourceLineNo">088</span>         * @param line jessop source line number that begins this text output<a name="line.88"></a>
-<span class="sourceLineNo">089</span>         * @param s the text to output; may include newlines.<a name="line.89"></a>
-<span class="sourceLineNo">090</span>         */<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        void emitText(int line, String s);        <a name="line.91"></a>
-<span class="sourceLineNo">092</span>        <a name="line.92"></a>
-<span class="sourceLineNo">093</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some evaluated output.<a name="line.93"></a>
-<span class="sourceLineNo">094</span>         * i.e. process a &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.94"></a>
-<span class="sourceLineNo">095</span>         * <a name="line.95"></a>
-<span class="sourceLineNo">096</span>         * &lt;p&gt;This method should generate the code to evaluate and output the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.96"></a>
-<span class="sourceLineNo">097</span>         * <a name="line.97"></a>
-<span class="sourceLineNo">098</span>         * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.<a name="line.98"></a>
-<span class="sourceLineNo">099</span>         * <a name="line.99"></a>
-<span class="sourceLineNo">100</span>         * @param line jessop source line number that begins this text output.<a name="line.100"></a>
-<span class="sourceLineNo">101</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.101"></a>
-<span class="sourceLineNo">102</span>         */<a name="line.102"></a>
-<span class="sourceLineNo">103</span>        void emitExpression(int line, String s);  // &lt;%= ... %&gt;<a name="line.103"></a>
-<span class="sourceLineNo">104</span>        <a name="line.104"></a>
-<span class="sourceLineNo">105</span><a name="line.105"></a>
-<span class="sourceLineNo">106</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder copy the included code into the generated script.<a name="line.106"></a>
-<span class="sourceLineNo">107</span>         * i.e. process a &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet. (The 'scriptlet' term is the term used in the JSP specification)<a name="line.107"></a>
-<span class="sourceLineNo">108</span>         * <a name="line.108"></a>
-<span class="sourceLineNo">109</span>         * &lt;p&gt;This method should generate the same code that is contained within the &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet.<a name="line.109"></a>
-<span class="sourceLineNo">110</span>         * <a name="line.110"></a>
-<span class="sourceLineNo">111</span>         * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.<a name="line.111"></a>
-<span class="sourceLineNo">112</span>         * <a name="line.112"></a>
-<span class="sourceLineNo">113</span>         * &lt;p&gt;This scriptlet may not be syntactically correct by itself and may require further scriptlets to function, e.g.<a name="line.113"></a>
-<span class="sourceLineNo">114</span>         * &lt;pre&gt;<a name="line.114"></a>
-<span class="sourceLineNo">115</span>         * &amp;lt;% if (a&gt;b) { %&amp;gt;<a name="line.115"></a>
-<span class="sourceLineNo">116</span>         * something<a name="line.116"></a>
-<span class="sourceLineNo">117</span>         * &amp;lt;% } %&amp;gt;<a name="line.117"></a>
-<span class="sourceLineNo">118</span>         * &lt;/pre&gt;<a name="line.118"></a>
-<span class="sourceLineNo">119</span>         * <a name="line.119"></a>
-<span class="sourceLineNo">120</span>         * @param line jessop source line number that begins this scriptlet.<a name="line.120"></a>
-<span class="sourceLineNo">121</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.121"></a>
-<span class="sourceLineNo">122</span>         */<a name="line.122"></a>
-<span class="sourceLineNo">123</span>        void emitScriptlet(int line, String s);<a name="line.123"></a>
-<span class="sourceLineNo">124</span><a name="line.124"></a>
-<span class="sourceLineNo">125</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder process a &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive.<a name="line.125"></a>
-<span class="sourceLineNo">126</span>         * <a name="line.126"></a>
-<span class="sourceLineNo">127</span>         * &lt;p&gt;The exact semantics of these declarations can be defined per-language, but 'jessop' declarations <a name="line.127"></a>
-<span class="sourceLineNo">128</span>         * should be processed by the AbstractJessopScriptBuilder, i.e. declarations that are in the form<a name="line.128"></a>
-<span class="sourceLineNo">129</span>         * &lt;tt&gt;&amp;lt;%@ jessop language="xxx" %&amp;gt;&lt;/tt&gt;<a name="line.129"></a>
-<span class="sourceLineNo">130</span>         * <a name="line.130"></a>
-<span class="sourceLineNo">131</span>         * &lt;p&gt;Ideally, there's only one declaration, at the top of the source script.<a name="line.131"></a>
-<span class="sourceLineNo">132</span>         * <a name="line.132"></a>
-<span class="sourceLineNo">133</span>         * @param line jessop source line number that begins this directive<a name="line.133"></a>
-<span class="sourceLineNo">134</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive<a name="line.134"></a>
-<span class="sourceLineNo">135</span>         * @throws ScriptException<a name="line.135"></a>
-<span class="sourceLineNo">136</span>         */<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        void emitDeclaration(int line, String s) throws ScriptException; <a name="line.137"></a>
-<span class="sourceLineNo">138</span><a name="line.138"></a>
-<span class="sourceLineNo">139</span>        /** Returns the value of any jessop declarations that are in effect.<a name="line.139"></a>
-<span class="sourceLineNo">140</span>         * <a name="line.140"></a>
-<span class="sourceLineNo">141</span>         * &lt;p&gt;Used to maintain declarations when switching JessopScriptBuilders, and to retrieve declarations after the script is built.<a name="line.141"></a>
-<span class="sourceLineNo">142</span>         */<a name="line.142"></a>
-<span class="sourceLineNo">143</span>        JessopDeclarations getDeclarations();<a name="line.143"></a>
-<span class="sourceLineNo">144</span>        <a name="line.144"></a>
-<span class="sourceLineNo">145</span>}<a name="line.145"></a>
+<span class="sourceLineNo">031</span> */<a name="line.31"></a>
+<span class="sourceLineNo">032</span>public interface JessopScriptBuilder {<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        // lines are source line numbers; try to keep these intact in the generated script<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        <a name="line.34"></a>
+<span class="sourceLineNo">035</span>        /** Returns the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".<a name="line.35"></a>
+<span class="sourceLineNo">036</span>         * <a name="line.36"></a>
+<span class="sourceLineNo">037</span>         * &lt;p&gt;This is used to register this JessopScriptBuilder in the registry and is used to lookup the JessopScriptBuilder<a name="line.37"></a>
+<span class="sourceLineNo">038</span>         * from the language defined in the jessop script declaration.<a name="line.38"></a>
+<span class="sourceLineNo">039</span>         * <a name="line.39"></a>
+<span class="sourceLineNo">040</span>         * @return the name of the language that this scriptBuilder can parse; e.g. "javascript" or "python2".<a name="line.40"></a>
+<span class="sourceLineNo">041</span>         */<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        String getLanguage();                                             <a name="line.42"></a>
+<span class="sourceLineNo">043</span>        <a name="line.43"></a>
+<span class="sourceLineNo">044</span>        /** Returns the name of the script engine that is used to evaluate this script; e.g. "rhino" or "jython"<a name="line.44"></a>
+<span class="sourceLineNo">045</span>         * <a name="line.45"></a>
+<span class="sourceLineNo">046</span>         * @return the name of the script engine that is used to evaluate this script; e.g. "rhino" or "jython"<a name="line.46"></a>
+<span class="sourceLineNo">047</span>         */<a name="line.47"></a>
+<span class="sourceLineNo">048</span>        String getDefaultScriptEngineName();                             <a name="line.48"></a>
+<span class="sourceLineNo">049</span><a name="line.49"></a>
+<span class="sourceLineNo">050</span>        /** Returns the name of the default exceptionConverter class that should be used for the default script engine,<a name="line.50"></a>
+<span class="sourceLineNo">051</span>         * or null if no converter is required.<a name="line.51"></a>
+<span class="sourceLineNo">052</span>         * <a name="line.52"></a>
+<span class="sourceLineNo">053</span>         * &lt;p&gt;Changing the engine in the jessop declaration will reset the the converter to null. <a name="line.53"></a>
+<span class="sourceLineNo">054</span>         * <a name="line.54"></a>
+<span class="sourceLineNo">055</span>         * @return the name of the default exceptionConverter class that should be used for the default script engine<a name="line.55"></a>
+<span class="sourceLineNo">056</span>         */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>        String getDefaultExceptionConverterClassName();                             <a name="line.57"></a>
+<span class="sourceLineNo">058</span><a name="line.58"></a>
+<span class="sourceLineNo">059</span>        /** Returns the name of the default bindingsConverter class that should be used for the default script engine,<a name="line.59"></a>
+<span class="sourceLineNo">060</span>         * or null if no converter is required.<a name="line.60"></a>
+<span class="sourceLineNo">061</span>         * <a name="line.61"></a>
+<span class="sourceLineNo">062</span>         * &lt;p&gt;Changing the engine in the jessop declaration will reset the the converter to null. <a name="line.62"></a>
+<span class="sourceLineNo">063</span>         * <a name="line.63"></a>
+<span class="sourceLineNo">064</span>         * @return the name of the default bindingsConverter class that should be used for the default script engine<a name="line.64"></a>
+<span class="sourceLineNo">065</span>         */<a name="line.65"></a>
+<span class="sourceLineNo">066</span>        String getDefaultBindingsConverterClassName();                             <a name="line.66"></a>
+<span class="sourceLineNo">067</span><a name="line.67"></a>
+<span class="sourceLineNo">068</span>        <a name="line.68"></a>
+<span class="sourceLineNo">069</span>        /** Sets the printWriter that this class will write to during emit() methods<a name="line.69"></a>
+<span class="sourceLineNo">070</span>         * <a name="line.70"></a>
+<span class="sourceLineNo">071</span>         * @param pw the printWriter that this class will write to during emit() methods<a name="line.71"></a>
+<span class="sourceLineNo">072</span>         */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>        void setPrintWriter(PrintWriter pw);<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        <a name="line.74"></a>
+<span class="sourceLineNo">075</span>        /** Sets the tokeniser and declaration that are in effect at the start of parsing. This allows this<a name="line.75"></a>
+<span class="sourceLineNo">076</span>         * ScriptBuilder to switch ScriptBuilders.<a name="line.76"></a>
+<span class="sourceLineNo">077</span>         * <a name="line.77"></a>
+<span class="sourceLineNo">078</span>         * @param t tokeniser that is processing the jessop source<a name="line.78"></a>
+<span class="sourceLineNo">079</span>         * @param declarations jessop declarations that are in effect<a name="line.79"></a>
+<span class="sourceLineNo">080</span>         */<a name="line.80"></a>
+<span class="sourceLineNo">081</span>        void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations);<a name="line.81"></a>
+<span class="sourceLineNo">082</span>        <a name="line.82"></a>
+<span class="sourceLineNo">083</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some text output.<a name="line.83"></a>
+<span class="sourceLineNo">084</span>         * <a name="line.84"></a>
+<span class="sourceLineNo">085</span>         * &lt;p&gt;This method should escape the output and generate code that outputs this text in the implementation language.<a name="line.85"></a>
+<span class="sourceLineNo">086</span>         *  <a name="line.86"></a>
+<span class="sourceLineNo">087</span>         * @param line jessop source line number that begins this text output<a name="line.87"></a>
+<span class="sourceLineNo">088</span>         * @param s the text to output; may include newlines.<a name="line.88"></a>
+<span class="sourceLineNo">089</span>         */<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        void emitText(int line, String s);        <a name="line.90"></a>
+<span class="sourceLineNo">091</span>        <a name="line.91"></a>
+<span class="sourceLineNo">092</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some evaluated output.<a name="line.92"></a>
+<span class="sourceLineNo">093</span>         * i.e. process a &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.93"></a>
+<span class="sourceLineNo">094</span>         * <a name="line.94"></a>
+<span class="sourceLineNo">095</span>         * &lt;p&gt;This method should generate the code to evaluate and output the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.95"></a>
+<span class="sourceLineNo">096</span>         * <a name="line.96"></a>
+<span class="sourceLineNo">097</span>         * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.<a name="line.97"></a>
+<span class="sourceLineNo">098</span>         * <a name="line.98"></a>
+<span class="sourceLineNo">099</span>         * @param line jessop source line number that begins this text output.<a name="line.99"></a>
+<span class="sourceLineNo">100</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.100"></a>
+<span class="sourceLineNo">101</span>         */<a name="line.101"></a>
+<span class="sourceLineNo">102</span>        void emitExpression(int line, String s);  // &lt;%= ... %&gt;<a name="line.102"></a>
+<span class="sourceLineNo">103</span>        <a name="line.103"></a>
+<span class="sourceLineNo">104</span><a name="line.104"></a>
+<span class="sourceLineNo">105</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder copy the included code into the generated script.<a name="line.105"></a>
+<span class="sourceLineNo">106</span>         * i.e. process a &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet. (The 'scriptlet' term is the term used in the JSP specification)<a name="line.106"></a>
+<span class="sourceLineNo">107</span>         * <a name="line.107"></a>
+<span class="sourceLineNo">108</span>         * &lt;p&gt;This method should generate the same code that is contained within the &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet.<a name="line.108"></a>
+<span class="sourceLineNo">109</span>         * <a name="line.109"></a>
+<span class="sourceLineNo">110</span>         * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.<a name="line.110"></a>
+<span class="sourceLineNo">111</span>         * <a name="line.111"></a>
+<span class="sourceLineNo">112</span>         * &lt;p&gt;This scriptlet may not be syntactically correct by itself and may require further scriptlets to function, e.g.<a name="line.112"></a>
+<span class="sourceLineNo">113</span>         * &lt;pre&gt;<a name="line.113"></a>
+<span class="sourceLineNo">114</span>         * &amp;lt;% if (a&gt;b) { %&amp;gt;<a name="line.114"></a>
+<span class="sourceLineNo">115</span>         * something<a name="line.115"></a>
+<span class="sourceLineNo">116</span>         * &amp;lt;% } %&amp;gt;<a name="line.116"></a>
+<span class="sourceLineNo">117</span>         * &lt;/pre&gt;<a name="line.117"></a>
+<span class="sourceLineNo">118</span>         * <a name="line.118"></a>
+<span class="sourceLineNo">119</span>         * @param line jessop source line number that begins this scriptlet.<a name="line.119"></a>
+<span class="sourceLineNo">120</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.<a name="line.120"></a>
+<span class="sourceLineNo">121</span>         */<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        void emitScriptlet(int line, String s);<a name="line.122"></a>
+<span class="sourceLineNo">123</span><a name="line.123"></a>
+<span class="sourceLineNo">124</span>        /** Called by the tokeniser and requests that this JessopScriptBuilder process a &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive.<a name="line.124"></a>
+<span class="sourceLineNo">125</span>         * <a name="line.125"></a>
+<span class="sourceLineNo">126</span>         * &lt;p&gt;The exact semantics of these declarations can be defined per-language, but 'jessop' declarations <a name="line.126"></a>
+<span class="sourceLineNo">127</span>         * should be processed by the AbstractJessopScriptBuilder, i.e. declarations that are in the form<a name="line.127"></a>
+<span class="sourceLineNo">128</span>         * &lt;tt&gt;&amp;lt;%@ jessop language="xxx" %&amp;gt;&lt;/tt&gt;<a name="line.128"></a>
+<span class="sourceLineNo">129</span>         * <a name="line.129"></a>
+<span class="sourceLineNo">130</span>         * &lt;p&gt;Ideally, there's only one declaration, at the top of the source script.<a name="line.130"></a>
+<span class="sourceLineNo">131</span>         * <a name="line.131"></a>
+<span class="sourceLineNo">132</span>         * @param line jessop source line number that begins this directive<a name="line.132"></a>
+<span class="sourceLineNo">133</span>         * @param s the contents of the &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive<a name="line.133"></a>
+<span class="sourceLineNo">134</span>         * @throws ScriptException<a name="line.134"></a>
+<span class="sourceLineNo">135</span>         */<a name="line.135"></a>
+<span class="sourceLineNo">136</span>        void emitDeclaration(int line, String s) throws ScriptException; <a name="line.136"></a>
+<span class="sourceLineNo">137</span><a name="line.137"></a>
+<span class="sourceLineNo">138</span>        /** Returns the value of any jessop declarations that are in effect.<a name="line.138"></a>
+<span class="sourceLineNo">139</span>         * <a name="line.139"></a>
+<span class="sourceLineNo">140</span>         * &lt;p&gt;Used to maintain declarations when switching JessopScriptBuilders, and to retrieve declarations after the script is built.<a name="line.140"></a>
+<span class="sourceLineNo">141</span>         */<a name="line.141"></a>
+<span class="sourceLineNo">142</span>        JessopDeclarations getDeclarations();<a name="line.142"></a>
+<span class="sourceLineNo">143</span>        <a name="line.143"></a>
+<span class="sourceLineNo">144</span>}<a name="line.144"></a>
 
 
 

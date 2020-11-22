@@ -19,159 +19,157 @@
 <span class="sourceLineNo">011</span><a name="line.11"></a>
 <span class="sourceLineNo">012</span>public class Python2JessopScriptBuilder extends AbstractJessopScriptBuilder implements JessopScriptBuilder {<a name="line.12"></a>
 <span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>    /** A revision marker to be used in exception stack traces. */<a name="line.14"></a>
-<span class="sourceLineNo">015</span>    public static final String _revision = "$Id$";<a name="line.15"></a>
-<span class="sourceLineNo">016</span>        Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);<a name="line.16"></a>
-<span class="sourceLineNo">017</span>        int outputLine = 1;        // current line number in the target script;<a name="line.17"></a>
-<span class="sourceLineNo">018</span>        int outputCol = 1;         // current output column<a name="line.18"></a>
-<span class="sourceLineNo">019</span>        int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)<a name="line.19"></a>
-<span class="sourceLineNo">020</span>        int indent = 0;            // current number of spaces at start of line (we use 4-space indents)<a name="line.20"></a>
-<span class="sourceLineNo">021</span>        public Python2JessopScriptBuilder() {<a name="line.21"></a>
-<span class="sourceLineNo">022</span>        }<a name="line.22"></a>
-<span class="sourceLineNo">023</span>        private void skipToLine(int line, int indent) {<a name="line.23"></a>
-<span class="sourceLineNo">024</span>                if (outputLine &gt; line) {<a name="line.24"></a>
-<span class="sourceLineNo">025</span>                        // could allow, but then that'll open another can of worms <a name="line.25"></a>
-<span class="sourceLineNo">026</span>                        // throw new IllegalArgumentException("cannot generate output on same line as starting new python block");<a name="line.26"></a>
-<span class="sourceLineNo">027</span>                        logger.warn("can't go back to line " + line + " (outputLine=" + outputLine + "); line numbers may be inaccurate");<a name="line.27"></a>
-<span class="sourceLineNo">028</span>                }<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                while (outputLine &lt; line) { print("\n"); }<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                while (outputCol &lt; indent) { print(" "); }<a name="line.30"></a>
-<span class="sourceLineNo">031</span>                // for (int i=0; i&lt;indent; i++) { print(" "); }<a name="line.31"></a>
-<span class="sourceLineNo">032</span>        }<a name="line.32"></a>
-<span class="sourceLineNo">033</span>        private void print(String s) {<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                // logger.info("** PRINT " + s);<a name="line.34"></a>
-<span class="sourceLineNo">035</span>                pw.print(s);<a name="line.35"></a>
-<span class="sourceLineNo">036</span>                for (int i=0; i&lt;s.length(); i++) {<a name="line.36"></a>
-<span class="sourceLineNo">037</span>                        if (s.charAt(i)=='\n') { outputLine++; outputCol = 1; }<a name="line.37"></a>
-<span class="sourceLineNo">038</span>                        else { outputCol++; }<a name="line.38"></a>
-<span class="sourceLineNo">039</span>                }<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        }<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        private static String escapePython(String string) {<a name="line.41"></a>
-<span class="sourceLineNo">042</span>                /* valid escapes ( https://docs.python.org/2.0/ref/strings.html )<a name="line.42"></a>
-<span class="sourceLineNo">043</span>\a      bell<a name="line.43"></a>
-<span class="sourceLineNo">044</span>\b      back space<a name="line.44"></a>
-<span class="sourceLineNo">045</span>\f      form feed<a name="line.45"></a>
-<span class="sourceLineNo">046</span>\n      newline<a name="line.46"></a>
-<span class="sourceLineNo">047</span>\r      carriage return<a name="line.47"></a>
-<span class="sourceLineNo">048</span>\t      horizontal tab<a name="line.48"></a>
-<span class="sourceLineNo">049</span>\v      vertical tab<a name="line.49"></a>
-<span class="sourceLineNo">050</span>\\      backslash<a name="line.50"></a>
-<span class="sourceLineNo">051</span>\"      double quote<a name="line.51"></a>
-<span class="sourceLineNo">052</span>\'      single quote<a name="line.52"></a>
-<span class="sourceLineNo">053</span>                 */<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                <a name="line.54"></a>
-<span class="sourceLineNo">055</span>        StringBuilder sb = new StringBuilder(string.length());<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        String escapeChars = "\u0007" + "\u0008" + "\u000f" + "\n" + "\r" + "\u0009" + "\u000b" + "\\" + "\"" + "'";<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        String backslashChars = "abfnrtv\\\"'";<a name="line.57"></a>
-<span class="sourceLineNo">058</span>                for (int i = 0; i&lt;string.length(); i++) {<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                        char ch = string.charAt(i);<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                        int pos = escapeChars.indexOf(ch);<a name="line.60"></a>
-<span class="sourceLineNo">061</span>                        if (pos !=- 1) {<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                           sb.append("\\" + backslashChars.charAt(pos));<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                        <a name="line.63"></a>
-<span class="sourceLineNo">064</span>                        } else if (ch&lt;32 || (ch&gt;126 &amp;&amp; ch &lt;= 255)) {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                                String hex = Integer.toString(ch, 16);<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                                sb.append("\\x" + "00".substring(0, 2-hex.length()) + hex);<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                                sb.append(ch);<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                                <a name="line.68"></a>
-<span class="sourceLineNo">069</span>                        } else if (ch&lt;=255) {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                                sb.append(ch);<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                                <a name="line.71"></a>
-<span class="sourceLineNo">072</span>                        } else {<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                                throw new IllegalArgumentException("Cannot escape characters &gt; 0xFF in python2 (found char '" + ch + "'; code=" + ((int) ch) + ")");<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                        }<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                }<a name="line.75"></a>
-<span class="sourceLineNo">076</span>        return sb.toString();<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        <a name="line.78"></a>
-<span class="sourceLineNo">079</span>        @Override<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        public void emitText(int line, String s) {<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                skipToLine(line, indent);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                s = suppressEol(s, declarations.isSuppressEol() &amp;&amp; lastScriptletLine == line);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                print("out.write(\"" + escapePython(s) + "\");");<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                lastScriptletLine = 0; // don't suppress eols on this line<a name="line.84"></a>
-<span class="sourceLineNo">085</span>        }<a name="line.85"></a>
-<span class="sourceLineNo">086</span>        @Override<a name="line.86"></a>
-<span class="sourceLineNo">087</span>        public void emitExpression(int line, String s) {<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                skipToLine(line, indent);<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                print("out.write((str) (" + s + "));"); // coerce to String<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                lastScriptletLine = 0; // don't suppress eols on this line<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        }<a name="line.91"></a>
-<span class="sourceLineNo">092</span>        @Override<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        public void emitScriptlet(int line, String s) {<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                if (outputLine &gt; line) {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                        throw new IllegalArgumentException("cannot generate scriptlet output on same line as starting new python block");<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>                skipToLine(line, indent);<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                // if there's content before the first newline, remove whitespace from the beginning<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                // so that we maintain our line/indentation position<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                int pos = s.indexOf("\n"); if (pos==-1) { pos = s.length(); }<a name="line.101"></a>
-<span class="sourceLineNo">102</span>                int i=0;<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                while (i &lt; s.length() &amp;&amp; s.charAt(i)==' ') { i++; }<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                if (s.charAt(i)=='\t') { throw new IllegalArgumentException("tab indentation for python scriplets not supported"); }<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                s = s.substring(i);<a name="line.105"></a>
-<span class="sourceLineNo">106</span>                <a name="line.106"></a>
-<span class="sourceLineNo">107</span>                logger.debug("scriptlet is '" + s + "'");<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                print(s);<a name="line.108"></a>
-<span class="sourceLineNo">109</span>                /* <a name="line.109"></a>
-<span class="sourceLineNo">110</span>                  &lt;%<a name="line.110"></a>
-<span class="sourceLineNo">111</span>                      for i=1..10:<a name="line.111"></a>
-<span class="sourceLineNo">112</span>                        something<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                        somethingElse<a name="line.113"></a>
-<span class="sourceLineNo">114</span>                  %&gt;no idea whether this is in the for loop or not<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                  <a name="line.115"></a>
-<span class="sourceLineNo">116</span>                  &lt;%<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                      for i=1..10:<a name="line.117"></a>
-<span class="sourceLineNo">118</span>                  %&gt;presumably this is in the for loop. not sure how to terminate it though.<a name="line.118"></a>
-<span class="sourceLineNo">119</span>                  &lt;%<a name="line.119"></a>
-<span class="sourceLineNo">120</span>                      pass;  # empty statement on a line could indicate end of block<a name="line.120"></a>
-<span class="sourceLineNo">121</span>                  %&gt;<a name="line.121"></a>
-<span class="sourceLineNo">122</span>                   <a name="line.122"></a>
-<span class="sourceLineNo">123</span>                      <a name="line.123"></a>
-<span class="sourceLineNo">124</span>                 * This sort of thing is why whitespace-significant languages should burn in hellfire,<a name="line.124"></a>
-<span class="sourceLineNo">125</span>                 * (I'm looking at you, yaml), and why things like jinja are apparently necessary<a name="line.125"></a>
-<span class="sourceLineNo">126</span>                 */<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                <a name="line.127"></a>
-<span class="sourceLineNo">128</span>                // get the amount of indentation on the last non-blank line<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                int endLinePos = s.length();<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                int startLinePos = s.lastIndexOf("\n");<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                while (s.substring(startLinePos+1).trim().equals("")) { <a name="line.131"></a>
-<span class="sourceLineNo">132</span>                        endLinePos = startLinePos; <a name="line.132"></a>
-<span class="sourceLineNo">133</span>                        startLinePos = s.lastIndexOf("\n", startLinePos-1); <a name="line.133"></a>
-<span class="sourceLineNo">134</span>                }<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                startLinePos++; // don't include the '\n'<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                <a name="line.136"></a>
-<span class="sourceLineNo">137</span>                i = 0;<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                while (startLinePos + i &lt; endLinePos &amp;&amp; s.charAt(i)==' ') { i++; }<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                logger.debug("python last newline pos=" + startLinePos + ", indent on last line=" + i);<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                if (s.charAt(startLinePos + i)=='\t') { <a name="line.140"></a>
-<span class="sourceLineNo">141</span>                        // could support this later, perhaps<a name="line.141"></a>
-<span class="sourceLineNo">142</span>                        throw new IllegalArgumentException("tab indentation for python scriplets not supported");<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                }<a name="line.143"></a>
-<span class="sourceLineNo">144</span>                indent = i;<a name="line.144"></a>
-<span class="sourceLineNo">145</span>                if (s.substring(startLinePos, endLinePos).trim().endsWith(":")) {<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                        logger.debug("last non-blank line endsWith ':', indenting by 4");<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                        // this may mean some loop constructs will now have inaccurate line numbers<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        // e.g. &lt;% for i in range (0,10): %&gt;&lt;%= something %&gt;<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                        print("\n"); <a name="line.149"></a>
-<span class="sourceLineNo">150</span>                        indent += 4;<a name="line.150"></a>
-<span class="sourceLineNo">151</span>                }<a name="line.151"></a>
-<span class="sourceLineNo">152</span><a name="line.152"></a>
-<span class="sourceLineNo">153</span>                // this should probably go before the indent processing above. maybe.<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                lastScriptletLine = line;<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                for (i=0; i&lt;s.length(); i++) { if (s.charAt(i)=='\n') { lastScriptletLine++; } }<a name="line.155"></a>
-<span class="sourceLineNo">156</span>        }<a name="line.156"></a>
-<span class="sourceLineNo">157</span>        @Override<a name="line.157"></a>
-<span class="sourceLineNo">158</span>        public String getLanguage() {<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                return "python2";<a name="line.159"></a>
-<span class="sourceLineNo">160</span>        }<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        @Override<a name="line.161"></a>
-<span class="sourceLineNo">162</span>        public String getDefaultScriptEngineName() {<a name="line.162"></a>
-<span class="sourceLineNo">163</span>                return "jython";<a name="line.163"></a>
-<span class="sourceLineNo">164</span>        }<a name="line.164"></a>
-<span class="sourceLineNo">165</span>        <a name="line.165"></a>
-<span class="sourceLineNo">166</span>}<a name="line.166"></a>
+<span class="sourceLineNo">014</span>        Logger logger = Logger.getLogger(Python2JessopScriptBuilder.class);<a name="line.14"></a>
+<span class="sourceLineNo">015</span>        int outputLine = 1;        // current line number in the target script;<a name="line.15"></a>
+<span class="sourceLineNo">016</span>        int outputCol = 1;         // current output column<a name="line.16"></a>
+<span class="sourceLineNo">017</span>        int lastScriptletLine = 1; // the last line number of the last scriptlet (used for suppressEol)<a name="line.17"></a>
+<span class="sourceLineNo">018</span>        int indent = 0;            // current number of spaces at start of line (we use 4-space indents)<a name="line.18"></a>
+<span class="sourceLineNo">019</span>        public Python2JessopScriptBuilder() {<a name="line.19"></a>
+<span class="sourceLineNo">020</span>        }<a name="line.20"></a>
+<span class="sourceLineNo">021</span>        private void skipToLine(int line, int indent) {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>                if (outputLine &gt; line) {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>                        // could allow, but then that'll open another can of worms <a name="line.23"></a>
+<span class="sourceLineNo">024</span>                        // throw new IllegalArgumentException("cannot generate output on same line as starting new python block");<a name="line.24"></a>
+<span class="sourceLineNo">025</span>                        logger.warn("can't go back to line " + line + " (outputLine=" + outputLine + "); line numbers may be inaccurate");<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                }<a name="line.26"></a>
+<span class="sourceLineNo">027</span>                while (outputLine &lt; line) { print("\n"); }<a name="line.27"></a>
+<span class="sourceLineNo">028</span>                while (outputCol &lt; indent) { print(" "); }<a name="line.28"></a>
+<span class="sourceLineNo">029</span>                // for (int i=0; i&lt;indent; i++) { print(" "); }<a name="line.29"></a>
+<span class="sourceLineNo">030</span>        }<a name="line.30"></a>
+<span class="sourceLineNo">031</span>        private void print(String s) {<a name="line.31"></a>
+<span class="sourceLineNo">032</span>                // logger.info("** PRINT " + s);<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                pw.print(s);<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                for (int i=0; i&lt;s.length(); i++) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                        if (s.charAt(i)=='\n') { outputLine++; outputCol = 1; }<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                        else { outputCol++; }<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                }<a name="line.37"></a>
+<span class="sourceLineNo">038</span>        }<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        private static String escapePython(String string) {<a name="line.39"></a>
+<span class="sourceLineNo">040</span>                /* valid escapes ( https://docs.python.org/2.0/ref/strings.html )<a name="line.40"></a>
+<span class="sourceLineNo">041</span>\a      bell<a name="line.41"></a>
+<span class="sourceLineNo">042</span>\b      back space<a name="line.42"></a>
+<span class="sourceLineNo">043</span>\f      form feed<a name="line.43"></a>
+<span class="sourceLineNo">044</span>\n      newline<a name="line.44"></a>
+<span class="sourceLineNo">045</span>\r      carriage return<a name="line.45"></a>
+<span class="sourceLineNo">046</span>\t      horizontal tab<a name="line.46"></a>
+<span class="sourceLineNo">047</span>\v      vertical tab<a name="line.47"></a>
+<span class="sourceLineNo">048</span>\\      backslash<a name="line.48"></a>
+<span class="sourceLineNo">049</span>\"      double quote<a name="line.49"></a>
+<span class="sourceLineNo">050</span>\'      single quote<a name="line.50"></a>
+<span class="sourceLineNo">051</span>                 */<a name="line.51"></a>
+<span class="sourceLineNo">052</span>                <a name="line.52"></a>
+<span class="sourceLineNo">053</span>        StringBuilder sb = new StringBuilder(string.length());<a name="line.53"></a>
+<span class="sourceLineNo">054</span>        String escapeChars = "\u0007" + "\u0008" + "\u000f" + "\n" + "\r" + "\u0009" + "\u000b" + "\\" + "\"" + "'";<a name="line.54"></a>
+<span class="sourceLineNo">055</span>        String backslashChars = "abfnrtv\\\"'";<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                for (int i = 0; i&lt;string.length(); i++) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                        char ch = string.charAt(i);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                        int pos = escapeChars.indexOf(ch);<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                        if (pos !=- 1) {<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                           sb.append("\\" + backslashChars.charAt(pos));<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                        <a name="line.61"></a>
+<span class="sourceLineNo">062</span>                        } else if (ch&lt;32 || (ch&gt;126 &amp;&amp; ch &lt;= 255)) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                                String hex = Integer.toString(ch, 16);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                                sb.append("\\x" + "00".substring(0, 2-hex.length()) + hex);<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                                sb.append(ch);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                                <a name="line.66"></a>
+<span class="sourceLineNo">067</span>                        } else if (ch&lt;=255) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                                sb.append(ch);<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                                <a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        } else {<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                                throw new IllegalArgumentException("Cannot escape characters &gt; 0xFF in python2 (found char '" + ch + "'; code=" + ((int) ch) + ")");<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                        }<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                }<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        return sb.toString();<a name="line.74"></a>
+<span class="sourceLineNo">075</span>    }<a name="line.75"></a>
+<span class="sourceLineNo">076</span>        <a name="line.76"></a>
+<span class="sourceLineNo">077</span>        @Override<a name="line.77"></a>
+<span class="sourceLineNo">078</span>        public void emitText(int line, String s) {<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                skipToLine(line, indent);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                s = suppressEol(s, declarations.isSuppressEol() &amp;&amp; lastScriptletLine == line);<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                print("out.write(\"" + escapePython(s) + "\");");<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                lastScriptletLine = 0; // don't suppress eols on this line<a name="line.82"></a>
+<span class="sourceLineNo">083</span>        }<a name="line.83"></a>
+<span class="sourceLineNo">084</span>        @Override<a name="line.84"></a>
+<span class="sourceLineNo">085</span>        public void emitExpression(int line, String s) {<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                skipToLine(line, indent);<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                print("out.write((str) (" + s + "));"); // coerce to String<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                lastScriptletLine = 0; // don't suppress eols on this line<a name="line.88"></a>
+<span class="sourceLineNo">089</span>        }<a name="line.89"></a>
+<span class="sourceLineNo">090</span>        @Override<a name="line.90"></a>
+<span class="sourceLineNo">091</span>        public void emitScriptlet(int line, String s) {<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                if (outputLine &gt; line) {<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                        throw new IllegalArgumentException("cannot generate scriptlet output on same line as starting new python block");<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                }<a name="line.94"></a>
+<span class="sourceLineNo">095</span><a name="line.95"></a>
+<span class="sourceLineNo">096</span>                skipToLine(line, indent);<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                // if there's content before the first newline, remove whitespace from the beginning<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                // so that we maintain our line/indentation position<a name="line.98"></a>
+<span class="sourceLineNo">099</span>                int pos = s.indexOf("\n"); if (pos==-1) { pos = s.length(); }<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                int i=0;<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                while (i &lt; s.length() &amp;&amp; s.charAt(i)==' ') { i++; }<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                if (s.charAt(i)=='\t') { throw new IllegalArgumentException("tab indentation for python scriplets not supported"); }<a name="line.102"></a>
+<span class="sourceLineNo">103</span>                s = s.substring(i);<a name="line.103"></a>
+<span class="sourceLineNo">104</span>                <a name="line.104"></a>
+<span class="sourceLineNo">105</span>                logger.debug("scriptlet is '" + s + "'");<a name="line.105"></a>
+<span class="sourceLineNo">106</span>                print(s);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                /* <a name="line.107"></a>
+<span class="sourceLineNo">108</span>                  &lt;%<a name="line.108"></a>
+<span class="sourceLineNo">109</span>                      for i=1..10:<a name="line.109"></a>
+<span class="sourceLineNo">110</span>                        something<a name="line.110"></a>
+<span class="sourceLineNo">111</span>                        somethingElse<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                  %&gt;no idea whether this is in the for loop or not<a name="line.112"></a>
+<span class="sourceLineNo">113</span>                  <a name="line.113"></a>
+<span class="sourceLineNo">114</span>                  &lt;%<a name="line.114"></a>
+<span class="sourceLineNo">115</span>                      for i=1..10:<a name="line.115"></a>
+<span class="sourceLineNo">116</span>                  %&gt;presumably this is in the for loop. not sure how to terminate it though.<a name="line.116"></a>
+<span class="sourceLineNo">117</span>                  &lt;%<a name="line.117"></a>
+<span class="sourceLineNo">118</span>                      pass;  # empty statement on a line could indicate end of block<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                  %&gt;<a name="line.119"></a>
+<span class="sourceLineNo">120</span>                   <a name="line.120"></a>
+<span class="sourceLineNo">121</span>                      <a name="line.121"></a>
+<span class="sourceLineNo">122</span>                 * This sort of thing is why whitespace-significant languages should burn in hellfire,<a name="line.122"></a>
+<span class="sourceLineNo">123</span>                 * (I'm looking at you, yaml), and why things like jinja are apparently necessary<a name="line.123"></a>
+<span class="sourceLineNo">124</span>                 */<a name="line.124"></a>
+<span class="sourceLineNo">125</span>                <a name="line.125"></a>
+<span class="sourceLineNo">126</span>                // get the amount of indentation on the last non-blank line<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                int endLinePos = s.length();<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                int startLinePos = s.lastIndexOf("\n");<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                while (s.substring(startLinePos+1).trim().equals("")) { <a name="line.129"></a>
+<span class="sourceLineNo">130</span>                        endLinePos = startLinePos; <a name="line.130"></a>
+<span class="sourceLineNo">131</span>                        startLinePos = s.lastIndexOf("\n", startLinePos-1); <a name="line.131"></a>
+<span class="sourceLineNo">132</span>                }<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                startLinePos++; // don't include the '\n'<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                <a name="line.134"></a>
+<span class="sourceLineNo">135</span>                i = 0;<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                while (startLinePos + i &lt; endLinePos &amp;&amp; s.charAt(i)==' ') { i++; }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                logger.debug("python last newline pos=" + startLinePos + ", indent on last line=" + i);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                if (s.charAt(startLinePos + i)=='\t') { <a name="line.138"></a>
+<span class="sourceLineNo">139</span>                        // could support this later, perhaps<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                        throw new IllegalArgumentException("tab indentation for python scriplets not supported");<a name="line.140"></a>
+<span class="sourceLineNo">141</span>                }<a name="line.141"></a>
+<span class="sourceLineNo">142</span>                indent = i;<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                if (s.substring(startLinePos, endLinePos).trim().endsWith(":")) {<a name="line.143"></a>
+<span class="sourceLineNo">144</span>                        logger.debug("last non-blank line endsWith ':', indenting by 4");<a name="line.144"></a>
+<span class="sourceLineNo">145</span>                        // this may mean some loop constructs will now have inaccurate line numbers<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                        // e.g. &lt;% for i in range (0,10): %&gt;&lt;%= something %&gt;<a name="line.146"></a>
+<span class="sourceLineNo">147</span>                        print("\n"); <a name="line.147"></a>
+<span class="sourceLineNo">148</span>                        indent += 4;<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                }<a name="line.149"></a>
+<span class="sourceLineNo">150</span><a name="line.150"></a>
+<span class="sourceLineNo">151</span>                // this should probably go before the indent processing above. maybe.<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                lastScriptletLine = line;<a name="line.152"></a>
+<span class="sourceLineNo">153</span>                for (i=0; i&lt;s.length(); i++) { if (s.charAt(i)=='\n') { lastScriptletLine++; } }<a name="line.153"></a>
+<span class="sourceLineNo">154</span>        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>        @Override<a name="line.155"></a>
+<span class="sourceLineNo">156</span>        public String getLanguage() {<a name="line.156"></a>
+<span class="sourceLineNo">157</span>                return "python2";<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        }<a name="line.158"></a>
+<span class="sourceLineNo">159</span>        @Override<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        public String getDefaultScriptEngineName() {<a name="line.160"></a>
+<span class="sourceLineNo">161</span>                return "jython";<a name="line.161"></a>
+<span class="sourceLineNo">162</span>        }<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        <a name="line.163"></a>
+<span class="sourceLineNo">164</span>}<a name="line.164"></a>
 
 
 

@@ -19,21 +19,20 @@
 <span class="sourceLineNo">011</span>/** Convert Java bindings to more scripting-language-friendly objects.<a name="line.11"></a>
 <span class="sourceLineNo">012</span> *  <a name="line.12"></a>
 <span class="sourceLineNo">013</span> * @author knoxg<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * @version $Id$<a name="line.14"></a>
-<span class="sourceLineNo">015</span> */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>public interface JessopBindingsConverter {<a name="line.16"></a>
-<span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>        /** Convert a set of bindings to a more scripting-language-friendly object.<a name="line.18"></a>
-<span class="sourceLineNo">019</span>         * <a name="line.19"></a>
-<span class="sourceLineNo">020</span>         * &lt;p&gt;This is called twice, once for bindings at ScriptContext.GLOBAL_SCOPE, <a name="line.20"></a>
-<span class="sourceLineNo">021</span>         * and again for bindings at ScriptContext.ENGINE_SCOPE.<a name="line.21"></a>
-<span class="sourceLineNo">022</span>         */<a name="line.22"></a>
-<span class="sourceLineNo">023</span>        Bindings toScriptBindings(ScriptEngine engine, ScriptContext newContext,<a name="line.23"></a>
-<span class="sourceLineNo">024</span>                Bindings bindings, int engineScope);<a name="line.24"></a>
-<span class="sourceLineNo">025</span><a name="line.25"></a>
-<span class="sourceLineNo">026</span>        // may add a toJavaObject() to do the reverse later on<a name="line.26"></a>
-<span class="sourceLineNo">027</span>        <a name="line.27"></a>
-<span class="sourceLineNo">028</span>}<a name="line.28"></a>
+<span class="sourceLineNo">014</span> */<a name="line.14"></a>
+<span class="sourceLineNo">015</span>public interface JessopBindingsConverter {<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span>        /** Convert a set of bindings to a more scripting-language-friendly object.<a name="line.17"></a>
+<span class="sourceLineNo">018</span>         * <a name="line.18"></a>
+<span class="sourceLineNo">019</span>         * &lt;p&gt;This is called twice, once for bindings at ScriptContext.GLOBAL_SCOPE, <a name="line.19"></a>
+<span class="sourceLineNo">020</span>         * and again for bindings at ScriptContext.ENGINE_SCOPE.<a name="line.20"></a>
+<span class="sourceLineNo">021</span>         */<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        Bindings toScriptBindings(ScriptEngine engine, ScriptContext newContext,<a name="line.22"></a>
+<span class="sourceLineNo">023</span>                Bindings bindings, int engineScope);<a name="line.23"></a>
+<span class="sourceLineNo">024</span><a name="line.24"></a>
+<span class="sourceLineNo">025</span>        // may add a toJavaObject() to do the reverse later on<a name="line.25"></a>
+<span class="sourceLineNo">026</span>        <a name="line.26"></a>
+<span class="sourceLineNo">027</span>}<a name="line.27"></a>
 
 
 

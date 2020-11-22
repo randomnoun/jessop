@@ -14,39 +14,34 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> java.io.File;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.io.FileNotFoundException;
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> javax.script.Bindings;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> javax.script.ScriptEngineManager;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.util.Scanner;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> javax.script.Bindings;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.script.ScriptEngine;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.script.ScriptException;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.Scanner;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">/** Simple jessop example  </em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * @version $Id$</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../com/example/contrived/JessopExample.html">JessopExample</a> {
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <em class="jxr_javadoccomment">/** A revision marker to be used in exception stack traces. */</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String _revision = <span class="jxr_string">"$Id$"</span>;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> main(String args[]) <strong class="jxr_keyword">throws</strong> FileNotFoundException, ScriptException {
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  		String filename = args[1];
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  		Scanner scanner = <strong class="jxr_keyword">new</strong> Scanner(<strong class="jxr_keyword">new</strong> File(filename));
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  		String input = scanner.useDelimiter(<span class="jxr_string">"&#92;&#92;Z"</span>).next();
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  		scanner.close();
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  		ScriptEngine engine = <strong class="jxr_keyword">new</strong> ScriptEngineManager().getEngineByName(<span class="jxr_string">"jessop"</span>);
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  		<strong class="jxr_keyword">if</strong> (engine==<strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Missing engine 'jessop'"</span>); }
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  		<em class="jxr_comment">// maybe put a function in here, to be called by the script</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  		<em class="jxr_comment">// or a compound object</em>
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  		Bindings b = engine.createBindings();
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  		b.put(<span class="jxr_string">"name"</span>, <span class="jxr_string">"Count von Count"</span>); <em class="jxr_comment">// I have been told it is actually "Count von Count"</em>
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  		b.put(<span class="jxr_string">"maxCount"</span>, 4);
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  		engine.eval(input);
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  	}
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.script.ScriptEngineManager;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> javax.script.ScriptException;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment">/** Simple jessop example  </em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../com/example/contrived/JessopExample.html">JessopExample</a> {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> main(String args[]) <strong class="jxr_keyword">throws</strong> FileNotFoundException, ScriptException {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  		String filename = args[1];
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  		Scanner scanner = <strong class="jxr_keyword">new</strong> Scanner(<strong class="jxr_keyword">new</strong> File(filename));
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  		String input = scanner.useDelimiter(<span class="jxr_string">"&#92;&#92;Z"</span>).next();
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  		scanner.close();
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  		ScriptEngine engine = <strong class="jxr_keyword">new</strong> ScriptEngineManager().getEngineByName(<span class="jxr_string">"jessop"</span>);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  		<strong class="jxr_keyword">if</strong> (engine==<strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Missing engine 'jessop'"</span>); }
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  		<em class="jxr_comment">// maybe put a function in here, to be called by the script</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  		<em class="jxr_comment">// or a compound object</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  		Bindings b = engine.createBindings();
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  		b.put(<span class="jxr_string">"name"</span>, <span class="jxr_string">"Count von Count"</span>); <em class="jxr_comment">// I have been told it is actually "Count von Count"</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  		b.put(<span class="jxr_string">"maxCount"</span>, 4);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  		engine.eval(input);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  	}
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>

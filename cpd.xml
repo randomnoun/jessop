@@ -609,8 +609,8 @@ public class ScriptUtils {
 </codefragment>
 </duplication>
 <duplication lines="21" tokens="170">
-<file line="35" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\JavaJessopScriptBuilder.java"/>
-<file line="36" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\JavascriptJessopScriptBuilder.java"/>
+<file line="33" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\JavaJessopScriptBuilder.java"/>
+<file line="34" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\JavascriptJessopScriptBuilder.java"/>
 <codefragment>
 <![CDATA[
 	private static String escapeJavascript(String string) {
@@ -638,8 +638,8 @@ public class ScriptUtils {
 </codefragment>
 </duplication>
 <duplication lines="28" tokens="111">
-<file line="20" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\LuaJessopScriptBuilder.java"/>
-<file line="20" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\RubyJessopScriptBuilder.java"/>
+<file line="18" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\LuaJessopScriptBuilder.java"/>
+<file line="18" path="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\RubyJessopScriptBuilder.java"/>
 <codefragment>
 <![CDATA[
 	public RubyJessopScriptBuilder() {

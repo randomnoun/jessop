@@ -32,196 +32,193 @@
 <span class="sourceLineNo">024</span> * &lt;p&gt;If the declaration is missing, then the default JavascriptJessopScriptBuilder is used, using the 'rhino' engine.<a name="line.24"></a>
 <span class="sourceLineNo">025</span> * <a name="line.25"></a>
 <span class="sourceLineNo">026</span> * @author knoxg<a name="line.26"></a>
-<span class="sourceLineNo">027</span> * @version $Id$<a name="line.27"></a>
-<span class="sourceLineNo">028</span> */<a name="line.28"></a>
-<span class="sourceLineNo">029</span>// this should be subclassed by specific languages (javascript etc)<a name="line.29"></a>
-<span class="sourceLineNo">030</span>public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {<a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>    /** A revision marker to be used in exception stack traces. */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>    public static final String _revision = "$Id$";<a name="line.33"></a>
-<span class="sourceLineNo">034</span>        protected Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        protected JessopDeclarations declarations;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        protected Tokeniser tokeniser;<a name="line.36"></a>
-<span class="sourceLineNo">037</span>        protected PrintWriter pw;<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>        @Override<a name="line.39"></a>
-<span class="sourceLineNo">040</span>        public void setPrintWriter(PrintWriter pw) {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>                this.pw = pw;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>        }<a name="line.42"></a>
-<span class="sourceLineNo">043</span>        <a name="line.43"></a>
-<span class="sourceLineNo">044</span>        @Override<a name="line.44"></a>
-<span class="sourceLineNo">045</span>        public void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations) {<a name="line.45"></a>
-<span class="sourceLineNo">046</span>                this.tokeniser = t;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>                this.declarations = declarations;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        }<a name="line.48"></a>
-<span class="sourceLineNo">049</span>        @Override<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        public JessopDeclarations getDeclarations() {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                return declarations;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>        }<a name="line.52"></a>
-<span class="sourceLineNo">053</span><a name="line.53"></a>
-<span class="sourceLineNo">054</span>        @Override<a name="line.54"></a>
-<span class="sourceLineNo">055</span>        public void emitDeclaration(int line, String s) throws ScriptException {<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                // declType attr1="val1" attr2="val2"<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                // don't really feel like tokenising this at the moment<a name="line.57"></a>
-<span class="sourceLineNo">058</span>                s = s.trim();<a name="line.58"></a>
-<span class="sourceLineNo">059</span>                // can't do this in 1 regex for some reason<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                //   Pattern declPattern = Pattern.compile("([^\\s\"]+)\\s*(?:(\\S+)=\"([^\"]*)\"\\s*)*$");<a name="line.60"></a>
-<span class="sourceLineNo">061</span>                // so breaking into subregexes<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                String declType;<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                Pattern declTypePattern = Pattern.compile("^([^\\s\"]+)");<a name="line.63"></a>
-<span class="sourceLineNo">064</span>                Matcher m = declTypePattern.matcher(s);<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                if (m.find()) {<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                        declType = m.group(1);<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                } else {<a name="line.67"></a>
-<span class="sourceLineNo">068</span>                        throw new ScriptException("Could not parse declaration '" + s + "'", null, line);<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                }<a name="line.69"></a>
-<span class="sourceLineNo">070</span>                if (!declType.equals("jessop")) {<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                        logger.warn("Unknown declaration type '" + declType + "'");<a name="line.71"></a>
-<span class="sourceLineNo">072</span>                        // just ignore unknown declarations<a name="line.72"></a>
-<span class="sourceLineNo">073</span>                        return;<a name="line.73"></a>
-<span class="sourceLineNo">074</span>                }<a name="line.74"></a>
-<span class="sourceLineNo">075</span>                s = s.substring(declType.length()).trim();<a name="line.75"></a>
-<span class="sourceLineNo">076</span>                logger.debug("s=" + s);<a name="line.76"></a>
-<span class="sourceLineNo">077</span>                Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                m = declAttrPattern.matcher(s);<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                while (m.find()) {<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        // do something<a name="line.80"></a>
-<span class="sourceLineNo">081</span>                        String attrName = m.group(1);<a name="line.81"></a>
-<span class="sourceLineNo">082</span>                        String attrValue = m.group(2);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>                        if (attrName.equals("language")) {<a name="line.83"></a>
-<span class="sourceLineNo">084</span>                                // change the JessopScriptBuilder based on the language<a name="line.84"></a>
-<span class="sourceLineNo">085</span>                                // the registry of ScriptBuilders is kept in the EngineFactory<a name="line.85"></a>
-<span class="sourceLineNo">086</span>                                JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();<a name="line.86"></a>
-<span class="sourceLineNo">087</span>                                JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);<a name="line.87"></a>
-<span class="sourceLineNo">088</span>                                newBuilder.setPrintWriter(pw);<a name="line.88"></a>
-<span class="sourceLineNo">089</span>                                newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb<a name="line.89"></a>
-<span class="sourceLineNo">090</span>                                tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on<a name="line.90"></a>
-<span class="sourceLineNo">091</span>                                // should probably wait until all attributes are parsed, but hey<a name="line.91"></a>
-<span class="sourceLineNo">092</span>                                //if (declarations.engine==null) { <a name="line.92"></a>
-<span class="sourceLineNo">093</span>                                        declarations.engine = newBuilder.getDefaultScriptEngineName();<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                                        declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                                        declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();<a name="line.95"></a>
-<span class="sourceLineNo">096</span>                                //}<a name="line.96"></a>
-<span class="sourceLineNo">097</span>                                <a name="line.97"></a>
-<span class="sourceLineNo">098</span>                                /*<a name="line.98"></a>
-<span class="sourceLineNo">099</span>                                JessopScriptBuilder newBuilder;<a name="line.99"></a>
-<span class="sourceLineNo">100</span>                                if (attrValue.equals("javascript")) {<a name="line.100"></a>
-<span class="sourceLineNo">101</span>                                        newBuilder = new JavascriptJessopScriptBuilder(); <a name="line.101"></a>
-<span class="sourceLineNo">102</span>                                        newBuilder.setPrintWriter(pw);<a name="line.102"></a>
-<span class="sourceLineNo">103</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb<a name="line.103"></a>
-<span class="sourceLineNo">104</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on<a name="line.104"></a>
-<span class="sourceLineNo">105</span>                                        if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript<a name="line.105"></a>
-<span class="sourceLineNo">106</span><a name="line.106"></a>
-<span class="sourceLineNo">107</span>                                } else if (attrValue.equals("java")) {<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                                        newBuilder = new JavaJessopScriptBuilder(); <a name="line.108"></a>
-<span class="sourceLineNo">109</span>                                        newBuilder.setPrintWriter(pw);<a name="line.109"></a>
-<span class="sourceLineNo">110</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.110"></a>
-<span class="sourceLineNo">111</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.111"></a>
-<span class="sourceLineNo">112</span>                                        if (declarations.engine==null) { declarations.engine = "beanshell"; }  // default engine for java<a name="line.112"></a>
-<span class="sourceLineNo">113</span><a name="line.113"></a>
-<span class="sourceLineNo">114</span>                                } else if (attrValue.equals("lua")) {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                                        newBuilder = new LuaJessopScriptBuilder(); <a name="line.115"></a>
-<span class="sourceLineNo">116</span>                                        newBuilder.setPrintWriter(pw);<a name="line.116"></a>
-<span class="sourceLineNo">117</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.117"></a>
-<span class="sourceLineNo">118</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.118"></a>
-<span class="sourceLineNo">119</span>                                        if (declarations.engine==null) { declarations.engine = "luaj"; }  // default engine for lua<a name="line.119"></a>
-<span class="sourceLineNo">120</span><a name="line.120"></a>
-<span class="sourceLineNo">121</span>                                } else if (attrValue.equals("python") || attrValue.equals("python2")) {<a name="line.121"></a>
-<span class="sourceLineNo">122</span>                                        newBuilder = new Python2JessopScriptBuilder(); <a name="line.122"></a>
-<span class="sourceLineNo">123</span>                                        newBuilder.setPrintWriter(pw);<a name="line.123"></a>
-<span class="sourceLineNo">124</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.124"></a>
-<span class="sourceLineNo">125</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.125"></a>
-<span class="sourceLineNo">126</span>                                        if (declarations.engine==null) { declarations.engine = "jython"; }  // default engine for lua<a name="line.126"></a>
-<span class="sourceLineNo">127</span><a name="line.127"></a>
-<span class="sourceLineNo">128</span>                                } else {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                                        throw new IllegalArgumentException("Unknown language '" + attrValue + "'");<a name="line.129"></a>
-<span class="sourceLineNo">130</span>                                }<a name="line.130"></a>
-<span class="sourceLineNo">131</span>                                */<a name="line.131"></a>
-<span class="sourceLineNo">132</span>                                <a name="line.132"></a>
-<span class="sourceLineNo">133</span>                        } else if (attrName.equals("engine")) {<a name="line.133"></a>
-<span class="sourceLineNo">134</span>                                // if we're changing engines, this will reset the default exception converter.<a name="line.134"></a>
-<span class="sourceLineNo">135</span>                                // we may want to keep a registry of engine names -&gt; ExceptionConverters<a name="line.135"></a>
-<span class="sourceLineNo">136</span>                                // at a later stage<a name="line.136"></a>
-<span class="sourceLineNo">137</span>                                if (!attrValue.equals(declarations.getEngine())) {<a name="line.137"></a>
-<span class="sourceLineNo">138</span>                                        declarations.setExceptionConverter(null);<a name="line.138"></a>
-<span class="sourceLineNo">139</span>                                }<a name="line.139"></a>
-<span class="sourceLineNo">140</span>                                declarations.setEngine(attrValue);<a name="line.140"></a>
-<span class="sourceLineNo">141</span>                                <a name="line.141"></a>
-<span class="sourceLineNo">142</span>                        } else if (attrName.equals("suppressEol")) {<a name="line.142"></a>
-<span class="sourceLineNo">143</span>                                declarations.setSuppressEol(Boolean.valueOf(attrValue));<a name="line.143"></a>
+<span class="sourceLineNo">027</span> */<a name="line.27"></a>
+<span class="sourceLineNo">028</span>// this should be subclassed by specific languages (javascript etc)<a name="line.28"></a>
+<span class="sourceLineNo">029</span>public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder {<a name="line.29"></a>
+<span class="sourceLineNo">030</span><a name="line.30"></a>
+<span class="sourceLineNo">031</span>        protected Logger logger = Logger.getLogger(AbstractJessopScriptBuilder.class);<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        protected JessopDeclarations declarations;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>        protected Tokeniser tokeniser;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>        protected PrintWriter pw;<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>        @Override<a name="line.36"></a>
+<span class="sourceLineNo">037</span>        public void setPrintWriter(PrintWriter pw) {<a name="line.37"></a>
+<span class="sourceLineNo">038</span>                this.pw = pw;<a name="line.38"></a>
+<span class="sourceLineNo">039</span>        }<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        <a name="line.40"></a>
+<span class="sourceLineNo">041</span>        @Override<a name="line.41"></a>
+<span class="sourceLineNo">042</span>        public void setTokeniserAndDeclarations(Tokeniser t, JessopDeclarations declarations) {<a name="line.42"></a>
+<span class="sourceLineNo">043</span>                this.tokeniser = t;<a name="line.43"></a>
+<span class="sourceLineNo">044</span>                this.declarations = declarations;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>        }<a name="line.45"></a>
+<span class="sourceLineNo">046</span>        @Override<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        public JessopDeclarations getDeclarations() {<a name="line.47"></a>
+<span class="sourceLineNo">048</span>                return declarations;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>        }<a name="line.49"></a>
+<span class="sourceLineNo">050</span><a name="line.50"></a>
+<span class="sourceLineNo">051</span>        @Override<a name="line.51"></a>
+<span class="sourceLineNo">052</span>        public void emitDeclaration(int line, String s) throws ScriptException {<a name="line.52"></a>
+<span class="sourceLineNo">053</span>                // declType attr1="val1" attr2="val2"<a name="line.53"></a>
+<span class="sourceLineNo">054</span>                // don't really feel like tokenising this at the moment<a name="line.54"></a>
+<span class="sourceLineNo">055</span>                s = s.trim();<a name="line.55"></a>
+<span class="sourceLineNo">056</span>                // can't do this in 1 regex for some reason<a name="line.56"></a>
+<span class="sourceLineNo">057</span>                //   Pattern declPattern = Pattern.compile("([^\\s\"]+)\\s*(?:(\\S+)=\"([^\"]*)\"\\s*)*$");<a name="line.57"></a>
+<span class="sourceLineNo">058</span>                // so breaking into subregexes<a name="line.58"></a>
+<span class="sourceLineNo">059</span>                String declType;<a name="line.59"></a>
+<span class="sourceLineNo">060</span>                Pattern declTypePattern = Pattern.compile("^([^\\s\"]+)");<a name="line.60"></a>
+<span class="sourceLineNo">061</span>                Matcher m = declTypePattern.matcher(s);<a name="line.61"></a>
+<span class="sourceLineNo">062</span>                if (m.find()) {<a name="line.62"></a>
+<span class="sourceLineNo">063</span>                        declType = m.group(1);<a name="line.63"></a>
+<span class="sourceLineNo">064</span>                } else {<a name="line.64"></a>
+<span class="sourceLineNo">065</span>                        throw new ScriptException("Could not parse declaration '" + s + "'", null, line);<a name="line.65"></a>
+<span class="sourceLineNo">066</span>                }<a name="line.66"></a>
+<span class="sourceLineNo">067</span>                if (!declType.equals("jessop")) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>                        logger.warn("Unknown declaration type '" + declType + "'");<a name="line.68"></a>
+<span class="sourceLineNo">069</span>                        // just ignore unknown declarations<a name="line.69"></a>
+<span class="sourceLineNo">070</span>                        return;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>                }<a name="line.71"></a>
+<span class="sourceLineNo">072</span>                s = s.substring(declType.length()).trim();<a name="line.72"></a>
+<span class="sourceLineNo">073</span>                logger.debug("s=" + s);<a name="line.73"></a>
+<span class="sourceLineNo">074</span>                Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");<a name="line.74"></a>
+<span class="sourceLineNo">075</span>                m = declAttrPattern.matcher(s);<a name="line.75"></a>
+<span class="sourceLineNo">076</span>                while (m.find()) {<a name="line.76"></a>
+<span class="sourceLineNo">077</span>                        // do something<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                        String attrName = m.group(1);<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                        String attrValue = m.group(2);<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                        if (attrName.equals("language")) {<a name="line.80"></a>
+<span class="sourceLineNo">081</span>                                // change the JessopScriptBuilder based on the language<a name="line.81"></a>
+<span class="sourceLineNo">082</span>                                // the registry of ScriptBuilders is kept in the EngineFactory<a name="line.82"></a>
+<span class="sourceLineNo">083</span>                                JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();<a name="line.83"></a>
+<span class="sourceLineNo">084</span>                                JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);<a name="line.84"></a>
+<span class="sourceLineNo">085</span>                                newBuilder.setPrintWriter(pw);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>                                newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb<a name="line.86"></a>
+<span class="sourceLineNo">087</span>                                tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on<a name="line.87"></a>
+<span class="sourceLineNo">088</span>                                // should probably wait until all attributes are parsed, but hey<a name="line.88"></a>
+<span class="sourceLineNo">089</span>                                //if (declarations.engine==null) { <a name="line.89"></a>
+<span class="sourceLineNo">090</span>                                        declarations.engine = newBuilder.getDefaultScriptEngineName();<a name="line.90"></a>
+<span class="sourceLineNo">091</span>                                        declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                                        declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                                //}<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                                <a name="line.94"></a>
+<span class="sourceLineNo">095</span>                                /*<a name="line.95"></a>
+<span class="sourceLineNo">096</span>                                JessopScriptBuilder newBuilder;<a name="line.96"></a>
+<span class="sourceLineNo">097</span>                                if (attrValue.equals("javascript")) {<a name="line.97"></a>
+<span class="sourceLineNo">098</span>                                        newBuilder = new JavascriptJessopScriptBuilder(); <a name="line.98"></a>
+<span class="sourceLineNo">099</span>                                        newBuilder.setPrintWriter(pw);<a name="line.99"></a>
+<span class="sourceLineNo">100</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb<a name="line.100"></a>
+<span class="sourceLineNo">101</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on<a name="line.101"></a>
+<span class="sourceLineNo">102</span>                                        if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript<a name="line.102"></a>
+<span class="sourceLineNo">103</span><a name="line.103"></a>
+<span class="sourceLineNo">104</span>                                } else if (attrValue.equals("java")) {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>                                        newBuilder = new JavaJessopScriptBuilder(); <a name="line.105"></a>
+<span class="sourceLineNo">106</span>                                        newBuilder.setPrintWriter(pw);<a name="line.106"></a>
+<span class="sourceLineNo">107</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.107"></a>
+<span class="sourceLineNo">108</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.108"></a>
+<span class="sourceLineNo">109</span>                                        if (declarations.engine==null) { declarations.engine = "beanshell"; }  // default engine for java<a name="line.109"></a>
+<span class="sourceLineNo">110</span><a name="line.110"></a>
+<span class="sourceLineNo">111</span>                                } else if (attrValue.equals("lua")) {<a name="line.111"></a>
+<span class="sourceLineNo">112</span>                                        newBuilder = new LuaJessopScriptBuilder(); <a name="line.112"></a>
+<span class="sourceLineNo">113</span>                                        newBuilder.setPrintWriter(pw);<a name="line.113"></a>
+<span class="sourceLineNo">114</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.114"></a>
+<span class="sourceLineNo">115</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.115"></a>
+<span class="sourceLineNo">116</span>                                        if (declarations.engine==null) { declarations.engine = "luaj"; }  // default engine for lua<a name="line.116"></a>
+<span class="sourceLineNo">117</span><a name="line.117"></a>
+<span class="sourceLineNo">118</span>                                } else if (attrValue.equals("python") || attrValue.equals("python2")) {<a name="line.118"></a>
+<span class="sourceLineNo">119</span>                                        newBuilder = new Python2JessopScriptBuilder(); <a name="line.119"></a>
+<span class="sourceLineNo">120</span>                                        newBuilder.setPrintWriter(pw);<a name="line.120"></a>
+<span class="sourceLineNo">121</span>                                        newBuilder.setTokeniser(tokeniser, declarations);   <a name="line.121"></a>
+<span class="sourceLineNo">122</span>                                        tokeniser.setJessopScriptBuilder(newBuilder);       <a name="line.122"></a>
+<span class="sourceLineNo">123</span>                                        if (declarations.engine==null) { declarations.engine = "jython"; }  // default engine for lua<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>                                } else {<a name="line.125"></a>
+<span class="sourceLineNo">126</span>                                        throw new IllegalArgumentException("Unknown language '" + attrValue + "'");<a name="line.126"></a>
+<span class="sourceLineNo">127</span>                                }<a name="line.127"></a>
+<span class="sourceLineNo">128</span>                                */<a name="line.128"></a>
+<span class="sourceLineNo">129</span>                                <a name="line.129"></a>
+<span class="sourceLineNo">130</span>                        } else if (attrName.equals("engine")) {<a name="line.130"></a>
+<span class="sourceLineNo">131</span>                                // if we're changing engines, this will reset the default exception converter.<a name="line.131"></a>
+<span class="sourceLineNo">132</span>                                // we may want to keep a registry of engine names -&gt; ExceptionConverters<a name="line.132"></a>
+<span class="sourceLineNo">133</span>                                // at a later stage<a name="line.133"></a>
+<span class="sourceLineNo">134</span>                                if (!attrValue.equals(declarations.getEngine())) {<a name="line.134"></a>
+<span class="sourceLineNo">135</span>                                        declarations.setExceptionConverter(null);<a name="line.135"></a>
+<span class="sourceLineNo">136</span>                                }<a name="line.136"></a>
+<span class="sourceLineNo">137</span>                                declarations.setEngine(attrValue);<a name="line.137"></a>
+<span class="sourceLineNo">138</span>                                <a name="line.138"></a>
+<span class="sourceLineNo">139</span>                        } else if (attrName.equals("suppressEol")) {<a name="line.139"></a>
+<span class="sourceLineNo">140</span>                                declarations.setSuppressEol(Boolean.valueOf(attrValue));<a name="line.140"></a>
+<span class="sourceLineNo">141</span><a name="line.141"></a>
+<span class="sourceLineNo">142</span>                        } else if (attrName.equals("compileTarget")) {<a name="line.142"></a>
+<span class="sourceLineNo">143</span>                                declarations.setCompileTarget(Boolean.valueOf(attrValue));<a name="line.143"></a>
 <span class="sourceLineNo">144</span><a name="line.144"></a>
-<span class="sourceLineNo">145</span>                        } else if (attrName.equals("compileTarget")) {<a name="line.145"></a>
-<span class="sourceLineNo">146</span>                                declarations.setCompileTarget(Boolean.valueOf(attrValue));<a name="line.146"></a>
+<span class="sourceLineNo">145</span>                        } else if (attrName.equals("filename")) {<a name="line.145"></a>
+<span class="sourceLineNo">146</span>                                declarations.setFilename(attrValue);<a name="line.146"></a>
 <span class="sourceLineNo">147</span><a name="line.147"></a>
-<span class="sourceLineNo">148</span>                        } else if (attrName.equals("filename")) {<a name="line.148"></a>
-<span class="sourceLineNo">149</span>                                declarations.setFilename(attrValue);<a name="line.149"></a>
+<span class="sourceLineNo">148</span>                        } else if (attrName.equals("exceptionConverter")) {<a name="line.148"></a>
+<span class="sourceLineNo">149</span>                                declarations.setExceptionConverter(attrValue);<a name="line.149"></a>
 <span class="sourceLineNo">150</span><a name="line.150"></a>
-<span class="sourceLineNo">151</span>                        } else if (attrName.equals("exceptionConverter")) {<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                                declarations.setExceptionConverter(attrValue);<a name="line.152"></a>
+<span class="sourceLineNo">151</span>                        } else if (attrName.equals("bindingsConverter")) {<a name="line.151"></a>
+<span class="sourceLineNo">152</span>                                declarations.setBindingsConverter(attrValue);<a name="line.152"></a>
 <span class="sourceLineNo">153</span><a name="line.153"></a>
-<span class="sourceLineNo">154</span>                        } else if (attrName.equals("bindingsConverter")) {<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                                declarations.setBindingsConverter(attrValue);<a name="line.155"></a>
-<span class="sourceLineNo">156</span><a name="line.156"></a>
-<span class="sourceLineNo">157</span>                        }<a name="line.157"></a>
-<span class="sourceLineNo">158</span>                        logger.debug("Found attr " + m.group(1) + "," + m.group(2));<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                }<a name="line.159"></a>
-<span class="sourceLineNo">160</span>        }<a name="line.160"></a>
+<span class="sourceLineNo">154</span>                        }<a name="line.154"></a>
+<span class="sourceLineNo">155</span>                        logger.debug("Found attr " + m.group(1) + "," + m.group(2));<a name="line.155"></a>
+<span class="sourceLineNo">156</span>                }<a name="line.156"></a>
+<span class="sourceLineNo">157</span>        }<a name="line.157"></a>
+<span class="sourceLineNo">158</span>        <a name="line.158"></a>
+<span class="sourceLineNo">159</span>        @Override<a name="line.159"></a>
+<span class="sourceLineNo">160</span>        public abstract void emitText(int line, String s);<a name="line.160"></a>
 <span class="sourceLineNo">161</span>        <a name="line.161"></a>
 <span class="sourceLineNo">162</span>        @Override<a name="line.162"></a>
-<span class="sourceLineNo">163</span>        public abstract void emitText(int line, String s);<a name="line.163"></a>
+<span class="sourceLineNo">163</span>        public abstract void emitExpression(int line, String s);<a name="line.163"></a>
 <span class="sourceLineNo">164</span>        <a name="line.164"></a>
 <span class="sourceLineNo">165</span>        @Override<a name="line.165"></a>
-<span class="sourceLineNo">166</span>        public abstract void emitExpression(int line, String s);<a name="line.166"></a>
+<span class="sourceLineNo">166</span>        public abstract void emitScriptlet(int line, String s);<a name="line.166"></a>
 <span class="sourceLineNo">167</span>        <a name="line.167"></a>
 <span class="sourceLineNo">168</span>        @Override<a name="line.168"></a>
-<span class="sourceLineNo">169</span>        public abstract void emitScriptlet(int line, String s);<a name="line.169"></a>
-<span class="sourceLineNo">170</span>        <a name="line.170"></a>
-<span class="sourceLineNo">171</span>        @Override<a name="line.171"></a>
-<span class="sourceLineNo">172</span>        public String getDefaultExceptionConverterClassName() {<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                return null;<a name="line.173"></a>
-<span class="sourceLineNo">174</span>        }<a name="line.174"></a>
-<span class="sourceLineNo">175</span><a name="line.175"></a>
-<span class="sourceLineNo">176</span>        @Override<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        public String getDefaultBindingsConverterClassName() {<a name="line.177"></a>
-<span class="sourceLineNo">178</span>                return null;<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        }<a name="line.179"></a>
-<span class="sourceLineNo">180</span><a name="line.180"></a>
-<span class="sourceLineNo">181</span>        /** Conditionally remove the first newline from the supplied string.<a name="line.181"></a>
-<span class="sourceLineNo">182</span>         * <a name="line.182"></a>
-<span class="sourceLineNo">183</span>         * &lt;p&gt;This method is used to perform &lt;tt&gt;suppressEol&lt;/tt&gt; declaration processing.<a name="line.183"></a>
-<span class="sourceLineNo">184</span>         * <a name="line.184"></a>
-<span class="sourceLineNo">185</span>         * &lt;p&gt;When the &lt;tt&gt;suppressEol&lt;/tt&gt; declaration is &lt;tt&gt;true&lt;/tt&gt;, and the text to be emitted by the output script<a name="line.185"></a>
-<span class="sourceLineNo">186</span>         * immediately follows a scriptlet and begins with a newline (or whitespace followed by a newline), <a name="line.186"></a>
-<span class="sourceLineNo">187</span>         * then we want to remove that (whitespace and) newline.<a name="line.187"></a>
-<span class="sourceLineNo">188</span>         * <a name="line.188"></a>
-<span class="sourceLineNo">189</span>         * &lt;p&gt;If there are non-whitespace characters before the first newline, then it is not suppressed.<a name="line.189"></a>
+<span class="sourceLineNo">169</span>        public String getDefaultExceptionConverterClassName() {<a name="line.169"></a>
+<span class="sourceLineNo">170</span>                return null;<a name="line.170"></a>
+<span class="sourceLineNo">171</span>        }<a name="line.171"></a>
+<span class="sourceLineNo">172</span><a name="line.172"></a>
+<span class="sourceLineNo">173</span>        @Override<a name="line.173"></a>
+<span class="sourceLineNo">174</span>        public String getDefaultBindingsConverterClassName() {<a name="line.174"></a>
+<span class="sourceLineNo">175</span>                return null;<a name="line.175"></a>
+<span class="sourceLineNo">176</span>        }<a name="line.176"></a>
+<span class="sourceLineNo">177</span><a name="line.177"></a>
+<span class="sourceLineNo">178</span>        /** Conditionally remove the first newline from the supplied string.<a name="line.178"></a>
+<span class="sourceLineNo">179</span>         * <a name="line.179"></a>
+<span class="sourceLineNo">180</span>         * &lt;p&gt;This method is used to perform &lt;tt&gt;suppressEol&lt;/tt&gt; declaration processing.<a name="line.180"></a>
+<span class="sourceLineNo">181</span>         * <a name="line.181"></a>
+<span class="sourceLineNo">182</span>         * &lt;p&gt;When the &lt;tt&gt;suppressEol&lt;/tt&gt; declaration is &lt;tt&gt;true&lt;/tt&gt;, and the text to be emitted by the output script<a name="line.182"></a>
+<span class="sourceLineNo">183</span>         * immediately follows a scriptlet and begins with a newline (or whitespace followed by a newline), <a name="line.183"></a>
+<span class="sourceLineNo">184</span>         * then we want to remove that (whitespace and) newline.<a name="line.184"></a>
+<span class="sourceLineNo">185</span>         * <a name="line.185"></a>
+<span class="sourceLineNo">186</span>         * &lt;p&gt;If there are non-whitespace characters before the first newline, then it is not suppressed.<a name="line.186"></a>
+<span class="sourceLineNo">187</span>         * <a name="line.187"></a>
+<span class="sourceLineNo">188</span>         * @param s text which is to be emitted by the output script<a name="line.188"></a>
+<span class="sourceLineNo">189</span>         * @param suppressEol if true, remove the beginning whitespace and newline, if it exists.<a name="line.189"></a>
 <span class="sourceLineNo">190</span>         * <a name="line.190"></a>
-<span class="sourceLineNo">191</span>         * @param s text which is to be emitted by the output script<a name="line.191"></a>
-<span class="sourceLineNo">192</span>         * @param suppressEol if true, remove the beginning whitespace and newline, if it exists.<a name="line.192"></a>
-<span class="sourceLineNo">193</span>         * <a name="line.193"></a>
-<span class="sourceLineNo">194</span>         * @return the supplied string, with the first newline conditionally removed<a name="line.194"></a>
-<span class="sourceLineNo">195</span>         */<a name="line.195"></a>
-<span class="sourceLineNo">196</span>        protected String suppressEol(String s, boolean suppressEol) {<a name="line.196"></a>
-<span class="sourceLineNo">197</span>                // ok. if s starts with a newline, <a name="line.197"></a>
-<span class="sourceLineNo">198</span>                // *and* suppressEol is true,<a name="line.198"></a>
-<span class="sourceLineNo">199</span>                // *and* this text is being emitted on a line that has nothing but expressions (and whitespace), <a name="line.199"></a>
-<span class="sourceLineNo">200</span>                // then suppress the newline.<a name="line.200"></a>
-<span class="sourceLineNo">201</span>                if (s.indexOf("\n")!=-1 &amp;&amp; suppressEol) {<a name="line.201"></a>
-<span class="sourceLineNo">202</span>                        boolean isFirstLineJustWhitespace = true;<a name="line.202"></a>
-<span class="sourceLineNo">203</span>                        int pos = 0;<a name="line.203"></a>
-<span class="sourceLineNo">204</span>                        while (pos&lt;s.length() &amp;&amp; isFirstLineJustWhitespace) {<a name="line.204"></a>
-<span class="sourceLineNo">205</span>                                char ch = s.charAt(pos);<a name="line.205"></a>
-<span class="sourceLineNo">206</span>                                if (ch=='\n') { pos++; break; }<a name="line.206"></a>
-<span class="sourceLineNo">207</span>                                if (!Character.isWhitespace(ch)) { isFirstLineJustWhitespace = false; break; }<a name="line.207"></a>
-<span class="sourceLineNo">208</span>                                pos++;<a name="line.208"></a>
+<span class="sourceLineNo">191</span>         * @return the supplied string, with the first newline conditionally removed<a name="line.191"></a>
+<span class="sourceLineNo">192</span>         */<a name="line.192"></a>
+<span class="sourceLineNo">193</span>        protected String suppressEol(String s, boolean suppressEol) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>                // ok. if s starts with a newline, <a name="line.194"></a>
+<span class="sourceLineNo">195</span>                // *and* suppressEol is true,<a name="line.195"></a>
+<span class="sourceLineNo">196</span>                // *and* this text is being emitted on a line that has nothing but expressions (and whitespace), <a name="line.196"></a>
+<span class="sourceLineNo">197</span>                // then suppress the newline.<a name="line.197"></a>
+<span class="sourceLineNo">198</span>                if (s.indexOf("\n")!=-1 &amp;&amp; suppressEol) {<a name="line.198"></a>
+<span class="sourceLineNo">199</span>                        boolean isFirstLineJustWhitespace = true;<a name="line.199"></a>
+<span class="sourceLineNo">200</span>                        int pos = 0;<a name="line.200"></a>
+<span class="sourceLineNo">201</span>                        while (pos&lt;s.length() &amp;&amp; isFirstLineJustWhitespace) {<a name="line.201"></a>
+<span class="sourceLineNo">202</span>                                char ch = s.charAt(pos);<a name="line.202"></a>
+<span class="sourceLineNo">203</span>                                if (ch=='\n') { pos++; break; }<a name="line.203"></a>
+<span class="sourceLineNo">204</span>                                if (!Character.isWhitespace(ch)) { isFirstLineJustWhitespace = false; break; }<a name="line.204"></a>
+<span class="sourceLineNo">205</span>                                pos++;<a name="line.205"></a>
+<span class="sourceLineNo">206</span>                        }<a name="line.206"></a>
+<span class="sourceLineNo">207</span>                        if (isFirstLineJustWhitespace) {<a name="line.207"></a>
+<span class="sourceLineNo">208</span>                                s = s.substring(pos);<a name="line.208"></a>
 <span class="sourceLineNo">209</span>                        }<a name="line.209"></a>
-<span class="sourceLineNo">210</span>                        if (isFirstLineJustWhitespace) {<a name="line.210"></a>
-<span class="sourceLineNo">211</span>                                s = s.substring(pos);<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                        }<a name="line.212"></a>
-<span class="sourceLineNo">213</span>                }<a name="line.213"></a>
-<span class="sourceLineNo">214</span>                return s;<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        }<a name="line.215"></a>
-<span class="sourceLineNo">216</span>}<a name="line.216"></a>
+<span class="sourceLineNo">210</span>                }<a name="line.210"></a>
+<span class="sourceLineNo">211</span>                return s;<a name="line.211"></a>
+<span class="sourceLineNo">212</span>        }<a name="line.212"></a>
+<span class="sourceLineNo">213</span>}<a name="line.213"></a>
 
 
 

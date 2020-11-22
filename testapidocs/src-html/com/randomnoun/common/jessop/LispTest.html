@@ -100,7 +100,7 @@
 <span class="sourceLineNo">092</span>             <a name="line.92"></a>
 <span class="sourceLineNo">093</span>              //Implementing a Java interface in Lisp<a name="line.93"></a>
 <span class="sourceLineNo">094</span>              lispEngine.eval("(defun compare-to (&amp;rest args) 42)");<a name="line.94"></a>
-<span class="sourceLineNo">095</span>              Comparable c = ((Invocable) lispEngine).getInterface(java.lang.Comparable.class);<a name="line.95"></a>
+<span class="sourceLineNo">095</span>              Comparable&lt;?&gt; c = ((Invocable) lispEngine).getInterface(java.lang.Comparable.class);<a name="line.95"></a>
 <span class="sourceLineNo">096</span>              System.out.println("compareTo: " + c.compareTo(null));<a name="line.96"></a>
 <span class="sourceLineNo">097</span>             <a name="line.97"></a>
 <span class="sourceLineNo">098</span>              //Compilation!<a name="line.98"></a>

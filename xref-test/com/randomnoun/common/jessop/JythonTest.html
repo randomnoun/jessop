@@ -29,53 +29,49 @@
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Turns out that some of the builds in mvn central don't actually work.</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * @version $Id$</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/JythonTest.html">JythonTest</a> <strong class="jxr_keyword">extends</strong> TestCase {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <em class="jxr_javadoccomment">/** A revision marker to be used in exception stack traces. */</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String _revision = <span class="jxr_string">"$Id$"</span>;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> listEngines(){ <em class="jxr_comment">// Note 1</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          ScriptEngineManager mgr = <strong class="jxr_keyword">new</strong> ScriptEngineManager();
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          List&lt;ScriptEngineFactory&gt; factories =
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>                  mgr.getEngineFactories();
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">for</strong> (ScriptEngineFactory factory: factories) {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>              System.out.println(<span class="jxr_string">"ScriptEngineFactory Info"</span>);
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>              String engName = factory.getEngineName();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>              String engVersion = factory.getEngineVersion();
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>              String langName = factory.getLanguageName();
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>              String langVersion = factory.getLanguageVersion();
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>              System.out.println(<span class="jxr_string">"\tScript Engine: "</span> + engName + <span class="jxr_string">":"</span> +
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>                                 engVersion);
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>              List&lt;String&gt; engNames = factory.getNames();
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>              <strong class="jxr_keyword">for</strong>(String name: engNames) {
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>                  System.out.println(<span class="jxr_string">"\tEngine Alias: "</span> + name);
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>              }
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>              System.out.println(<span class="jxr_string">"\tLanguage: "</span> + langName + <span class="jxr_string">":"</span> +
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>                                 langVersion);
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          }
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJython() <strong class="jxr_keyword">throws</strong> ScriptException {
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  		<em class="jxr_comment">// -Dpython.console.encoding=UTF-8</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  		<em class="jxr_comment">// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde</em>
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  		System.setProperty(<span class="jxr_string">"python.console.encoding"</span>, <span class="jxr_string">"UTF-8"</span>);
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  	
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  		listEngines(); <em class="jxr_comment">// Note 1</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  		
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  		<em class="jxr_comment">// this is the same test code as on https://wiki.python.org/jython/LearningJython#using-script-engine-support</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  		ScriptEngineManager mgr = <strong class="jxr_keyword">new</strong> ScriptEngineManager(); <em class="jxr_comment">// Note 2</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  	    ScriptEngine eng = mgr.getEngineByName(<span class="jxr_string">"python"</span>);  
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  	    <em class="jxr_comment">// except that eng here is null.</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  	    System.out.println(<span class="jxr_string">"eng: "</span> + String.valueOf(eng));
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  	    eng.put(<span class="jxr_string">"var1"</span>, <strong class="jxr_keyword">new</strong> Integer(257)); <em class="jxr_comment">// Note 3</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  	    eng.eval(<span class="jxr_string">"print 'var1: %s' % var1"</span>);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  	    eng.eval(<span class="jxr_string">"import sys"</span>); <em class="jxr_comment">// Note 4</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  	    eng.eval(<span class="jxr_string">"print sys.version"</span>);
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  	}
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  }
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/JythonTest.html">JythonTest</a> <strong class="jxr_keyword">extends</strong> TestCase {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> listEngines(){ <em class="jxr_comment">// Note 1</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          ScriptEngineManager mgr = <strong class="jxr_keyword">new</strong> ScriptEngineManager();
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          List&lt;ScriptEngineFactory&gt; factories =
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>                  mgr.getEngineFactories();
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">for</strong> (ScriptEngineFactory factory: factories) {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>              System.out.println(<span class="jxr_string">"ScriptEngineFactory Info"</span>);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>              String engName = factory.getEngineName();
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>              String engVersion = factory.getEngineVersion();
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              String langName = factory.getLanguageName();
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>              String langVersion = factory.getLanguageVersion();
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>              System.out.println(<span class="jxr_string">"\tScript Engine: "</span> + engName + <span class="jxr_string">":"</span> +
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>                                 engVersion);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>              List&lt;String&gt; engNames = factory.getNames();
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>              <strong class="jxr_keyword">for</strong>(String name: engNames) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>                  System.out.println(<span class="jxr_string">"\tEngine Alias: "</span> + name);
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>              }
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>              System.out.println(<span class="jxr_string">"\tLanguage: "</span> + langName + <span class="jxr_string">":"</span> +
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>                                 langVersion);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          }
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testJython() <strong class="jxr_keyword">throws</strong> ScriptException {
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  		<em class="jxr_comment">// -Dpython.console.encoding=UTF-8</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  		<em class="jxr_comment">// see http://stackoverflow.com/questions/30443537/how-do-i-fix-unsupportedcharsetexception-in-eclipse-kepler-luna-with-jython-pyde</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  		System.setProperty(<span class="jxr_string">"python.console.encoding"</span>, <span class="jxr_string">"UTF-8"</span>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  	
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  		listEngines(); <em class="jxr_comment">// Note 1</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  		
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  		<em class="jxr_comment">// this is the same test code as on https://wiki.python.org/jython/LearningJython#using-script-engine-support</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  		ScriptEngineManager mgr = <strong class="jxr_keyword">new</strong> ScriptEngineManager(); <em class="jxr_comment">// Note 2</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  	    ScriptEngine eng = mgr.getEngineByName(<span class="jxr_string">"python"</span>);  
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  	    <em class="jxr_comment">// except that eng here is null.</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  	    System.out.println(<span class="jxr_string">"eng: "</span> + String.valueOf(eng));
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  	    eng.put(<span class="jxr_string">"var1"</span>, <strong class="jxr_keyword">new</strong> Integer(257)); <em class="jxr_comment">// Note 3</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  	    eng.eval(<span class="jxr_string">"print 'var1: %s' % var1"</span>);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  	    eng.eval(<span class="jxr_string">"import sys"</span>); <em class="jxr_comment">// Note 4</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  	    eng.eval(<span class="jxr_string">"print sys.version"</span>);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  	}
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>

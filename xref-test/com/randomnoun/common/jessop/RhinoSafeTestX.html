@@ -38,142 +38,138 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">/** Performs some tests with and without sandboxing in rhino </em>
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * @version $Id: JessopTest.java,v 1.30 2016-09-13 09:45:54 knoxg Exp $</em>
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  @SuppressWarnings(<span class="jxr_string">"restriction"</span>)
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">RhinoSafeTestX</a> <strong class="jxr_keyword">extends</strong> TestCase {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <em class="jxr_javadoccomment">/** A revision marker to be used in exception stack traces. */</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String _revision = <span class="jxr_string">"$Id: JessopTest.java,v 1.30 2016-09-13 09:45:54 knoxg Exp $"</span>;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  	Logger logger = Logger.getLogger(RhinoSafeTestX.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  	
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUp() {
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  		String logFormatPrefix = <span class="jxr_string">"[RhinoSafeTest] "</span>;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  		Properties lp = <strong class="jxr_keyword">new</strong> Properties();
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  		lp.put(<span class="jxr_string">"log4j.rootCategory"</span>, <span class="jxr_string">"INFO, CONSOLE"</span>);
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE"</span>, <span class="jxr_string">"org.apache.log4j.ConsoleAppender"</span>);
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE.layout"</span>, <span class="jxr_string">"org.apache.log4j.PatternLayout"</span>);
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE.layout.ConversionPattern"</span>, logFormatPrefix + <span class="jxr_string">"%d{ABSOLUTE} %-5p %c - %m%n"</span>);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  		lp.put(<span class="jxr_string">"log4j.logger.org.springframework"</span>, <span class="jxr_string">"INFO"</span>); <em class="jxr_comment">// since Spring is a bit too verbose for my liking at DEBUG level</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  		PropertyConfigurator.configure(lp);
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  	}
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  	
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  	<em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_comment">	public void testThings() throws ScriptException {</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_comment">		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_comment">		engine.eval("print('Hello World!');");</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_comment">	}</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_comment">	*/</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  	
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  	<em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_comment">	public void testServiceLoader() {</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_comment">		ServiceLoader&lt;ScriptEngineFactory&gt; sefLoader = ServiceLoader.load(ScriptEngineFactory.class);</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_comment">		logger.info("ScriptEngineFactories start");</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_comment">		for (ScriptEngineFactory sef : sefLoader) {</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_comment">			logger.info(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_comment">		}</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_comment">		logger.info("ScriptEngineFactories end");</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_comment">		ServiceLoader&lt;JessopScriptBuilder&gt; jsbLoader = ServiceLoader.load(JessopScriptBuilder.class);</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_comment">		logger.info("JessopScriptBuilder start");</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_comment">		for (JessopScriptBuilder jsb : jsbLoader) {</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_comment">			logger.info(jsb.getLanguage()); // jessop appears when run from mvn test, but not in eclipse.</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_comment">		}</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_comment">		logger.info("JessopScriptBuilder end");</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_comment">	}</em>
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_comment">	*/</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  	
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> String JAVASCRIPT_UNSAFE_SCRIPT_1 = 
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  	  <span class="jxr_string">"&lt;%@ jessop language=\&quot;javascript\&quot; %&gt;\n"</span> +  <em class="jxr_comment">// was engine=\&quot;rhino\&quot;, but we may want nashorn </em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  	  <span class="jxr_string">"&lt;% Packages.java.lang.System.out.println(\&quot;this is calling into Java\&quot;); %&gt;\r\n"</span> +
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  	  <span class="jxr_string">"&lt;% for (var i=1; i&lt;10; i++) { %&gt;\n"</span> +
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  	  <span class="jxr_string">"&lt;%= i %&gt;\n"</span> +
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  	  <span class="jxr_string">"&lt;% } %&gt;"</span>;
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  	<strong class="jxr_keyword">private</strong> String getSource(ScriptEngine engine, String jessopSource) <strong class="jxr_keyword">throws</strong> ScriptException {
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>  		Compilable compilable = (Compilable) engine;
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  		<strong class="jxr_keyword">return</strong> compiledScript.getSource();
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  		
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  	}
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  	
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> _testScript(String input, <strong class="jxr_keyword">boolean</strong> safe) <strong class="jxr_keyword">throws</strong> ScriptException {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  		ScriptEngine engine = <strong class="jxr_keyword">new</strong> ScriptEngineManager().getEngineByName(<span class="jxr_string">"jessop"</span>);
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> 		<strong class="jxr_keyword">if</strong> (engine==<strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Missing engine 'jessop'"</span>); }
-<a class="jxr_linenumber" name="L101" href="#L101">101</a> 		
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 		<strong class="jxr_keyword">if</strong> (safe) {
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> 			ScriptContext context = engine.getContext();
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> 		    context.setAttribute(<span class="jxr_string">"com.randommoun.common.jessop.rhino.safe"</span>, <span class="jxr_string">"true"</span>, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// defaults aren't being set properly</em>
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 		}
-<a class="jxr_linenumber" name="L106" href="#L106">106</a> 		
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> 		logger.info(<span class="jxr_string">"jessop input: "</span> + input);
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> 		logger.info(<span class="jxr_string">"target language source: "</span> + getSource(engine, input));
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> 		logger.info(<span class="jxr_string">"Start eval"</span>);
-<a class="jxr_linenumber" name="L110" href="#L110">110</a> 		engine.eval(input);
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> 		logger.info(<span class="jxr_string">"End eval"</span>);
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> 	}
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
-<a class="jxr_linenumber" name="L114" href="#L114">114</a> 	
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> 	<em class="jxr_comment">// Custom Context to store execution time.</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> 	<em class="jxr_comment">// oh for fucks sake. they've made the fucking thing final.</em>
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> 	<em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_comment">    private static class MyContext extends Context</em>
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_comment">    {</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_comment">        long startTime;</em>
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_comment">    }</em>
-<a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_comment">    */</em>
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>     
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">ParanoidContextFactory</a> <strong class="jxr_keyword">extends</strong> ContextFactory {
-<a class="jxr_linenumber" name="L125" href="#L125">125</a> 		<em class="jxr_comment">// Override makeContext()</em>
-<a class="jxr_linenumber" name="L126" href="#L126">126</a> 	     <strong class="jxr_keyword">protected</strong> Context makeContext()
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> 	     {
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> 	         <em class="jxr_comment">//MyContext cx = new MyContext();</em>
-<a class="jxr_linenumber" name="L129" href="#L129">129</a> 	         <em class="jxr_comment">// Use pure interpreter mode to allow for</em>
-<a class="jxr_linenumber" name="L130" href="#L130">130</a> 	         <em class="jxr_comment">// observeInstructionCount(Context, int) to work</em>
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> 	         <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_comment">	         cx.setOptimizationLevel(-1);</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_comment">	         // Make Rhino runtime to call observeInstructionCount</em>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_comment">	         // each 10000 bytecode instructions</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_comment">	         cx.setInstructionObserverThreshold(10000);</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_comment">	         return cx;</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_comment">	         */</em>
-<a class="jxr_linenumber" name="L138" href="#L138">138</a> 	    	 <em class="jxr_comment">// Context c = Context.enter(); // huh ?</em>
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 	    	 System.out.println(<span class="jxr_string">"*** custom makeContext"</span>); <em class="jxr_comment">// &lt;-- this never happens</em>
-<a class="jxr_linenumber" name="L140" href="#L140">140</a> 	    	 Context c = <strong class="jxr_keyword">new</strong> Context();
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> 	    	 c.setClassShutter(<strong class="jxr_keyword">new</strong> ClassShutter() {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a> 				@Override
-<a class="jxr_linenumber" name="L143" href="#L143">143</a> 				<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> visibleToScripts(String arg0) {
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 					<em class="jxr_comment">// TODO Auto-generated method stub</em>
-<a class="jxr_linenumber" name="L145" href="#L145">145</a> 					<strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> 				}
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> 	    	 });
-<a class="jxr_linenumber" name="L148" href="#L148">148</a> 	    	 <strong class="jxr_keyword">return</strong> c;
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> 	         <em class="jxr_comment">// return new Context();</em>
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> 	     }
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> 	}
-<a class="jxr_linenumber" name="L152" href="#L152">152</a> 	
-<a class="jxr_linenumber" name="L153" href="#L153">153</a> 	<em class="jxr_javadoccomment">/********* Set JessopCompiledScript.eval() for an idea as to what this is attempting to do */</em> 
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> 	
-<a class="jxr_linenumber" name="L155" href="#L155">155</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnsafeScript1() <strong class="jxr_keyword">throws</strong> ScriptException {
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> 		logger.info(<span class="jxr_string">"hasExplicitGlobal="</span> + ContextFactory.hasExplicitGlobal());
-<a class="jxr_linenumber" name="L157" href="#L157">157</a> 		ContextFactory.initGlobal(<strong class="jxr_keyword">new</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">ParanoidContextFactory</a>()); <em class="jxr_comment">// &lt;-- think this is loading the wrong (non-internal) rhino classes </em>
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> 		_testScript(JAVASCRIPT_UNSAFE_SCRIPT_1, false);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  @SuppressWarnings(<span class="jxr_string">"restriction"</span>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">RhinoSafeTestX</a> <strong class="jxr_keyword">extends</strong> TestCase {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  	Logger logger = Logger.getLogger(RhinoSafeTestX.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  	
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setUp() {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  		String logFormatPrefix = <span class="jxr_string">"[RhinoSafeTest] "</span>;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  		Properties lp = <strong class="jxr_keyword">new</strong> Properties();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  		lp.put(<span class="jxr_string">"log4j.rootCategory"</span>, <span class="jxr_string">"INFO, CONSOLE"</span>);
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE"</span>, <span class="jxr_string">"org.apache.log4j.ConsoleAppender"</span>);
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE.layout"</span>, <span class="jxr_string">"org.apache.log4j.PatternLayout"</span>);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  		lp.put(<span class="jxr_string">"log4j.appender.CONSOLE.layout.ConversionPattern"</span>, logFormatPrefix + <span class="jxr_string">"%d{ABSOLUTE} %-5p %c - %m%n"</span>);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  		lp.put(<span class="jxr_string">"log4j.logger.org.springframework"</span>, <span class="jxr_string">"INFO"</span>); <em class="jxr_comment">// since Spring is a bit too verbose for my liking at DEBUG level</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  		PropertyConfigurator.configure(lp);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  	}
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  	
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  	<em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_comment">	public void testThings() throws ScriptException {</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_comment">		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_comment">		engine.eval("print('Hello World!');");</em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_comment">	}</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_comment">	*/</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>  	
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  	<em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_comment">	public void testServiceLoader() {</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_comment">		ServiceLoader&lt;ScriptEngineFactory&gt; sefLoader = ServiceLoader.load(ScriptEngineFactory.class);</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_comment">		logger.info("ScriptEngineFactories start");</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_comment">		for (ScriptEngineFactory sef : sefLoader) {</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_comment">			logger.info(sef.getEngineName()); // jessop appears when run from mvn test, but not in eclipse.</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_comment">		}</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_comment">		logger.info("ScriptEngineFactories end");</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_comment">		ServiceLoader&lt;JessopScriptBuilder&gt; jsbLoader = ServiceLoader.load(JessopScriptBuilder.class);</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_comment">		logger.info("JessopScriptBuilder start");</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_comment">		for (JessopScriptBuilder jsb : jsbLoader) {</em>
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_comment">			logger.info(jsb.getLanguage()); // jessop appears when run from mvn test, but not in eclipse.</em>
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_comment">		}</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_comment">		logger.info("JessopScriptBuilder end");</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>  
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_comment">	}</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_comment">	*/</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  	
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">static</strong> String JAVASCRIPT_UNSAFE_SCRIPT_1 = 
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  	  <span class="jxr_string">"&lt;%@ jessop language=\&quot;javascript\&quot; %&gt;\n"</span> +  <em class="jxr_comment">// was engine=\&quot;rhino\&quot;, but we may want nashorn </em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  	  <span class="jxr_string">"&lt;% Packages.java.lang.System.out.println(\&quot;this is calling into Java\&quot;); %&gt;\r\n"</span> +
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  	  <span class="jxr_string">"&lt;% for (var i=1; i&lt;10; i++) { %&gt;\n"</span> +
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  	  <span class="jxr_string">"&lt;%= i %&gt;\n"</span> +
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  	  <span class="jxr_string">"&lt;% } %&gt;"</span>;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  	<strong class="jxr_keyword">private</strong> String getSource(ScriptEngine engine, String jessopSource) <strong class="jxr_keyword">throws</strong> ScriptException {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  		Compilable compilable = (Compilable) engine;
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  		JessopCompiledScript compiledScript = (JessopCompiledScript) compilable.compile(jessopSource);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  		<strong class="jxr_keyword">return</strong> compiledScript.getSource();
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  		
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  	}
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  	
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> _testScript(String input, <strong class="jxr_keyword">boolean</strong> safe) <strong class="jxr_keyword">throws</strong> ScriptException {
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  		ScriptEngine engine = <strong class="jxr_keyword">new</strong> ScriptEngineManager().getEngineByName(<span class="jxr_string">"jessop"</span>);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  		<strong class="jxr_keyword">if</strong> (engine==<strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Missing engine 'jessop'"</span>); }
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  		
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  		<strong class="jxr_keyword">if</strong> (safe) {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  			ScriptContext context = engine.getContext();
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 		    context.setAttribute(<span class="jxr_string">"com.randommoun.common.jessop.rhino.safe"</span>, <span class="jxr_string">"true"</span>, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// defaults aren't being set properly</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> 		}
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> 		
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 		logger.info(<span class="jxr_string">"jessop input: "</span> + input);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 		logger.info(<span class="jxr_string">"target language source: "</span> + getSource(engine, input));
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 		logger.info(<span class="jxr_string">"Start eval"</span>);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a> 		engine.eval(input);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 		logger.info(<span class="jxr_string">"End eval"</span>);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 	}
+<a class="jxr_linenumber" name="L109" href="#L109">109</a> 
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 	
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 	<em class="jxr_comment">// Custom Context to store execution time.</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> 	<em class="jxr_comment">// oh for fucks sake. they've made the fucking thing final.</em>
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 	<em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_comment">    private static class MyContext extends Context</em>
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_comment">    {</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_comment">        long startTime;</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_comment">    }</em>
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_comment">    */</em>
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>     
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">ParanoidContextFactory</a> <strong class="jxr_keyword">extends</strong> ContextFactory {
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> 		<em class="jxr_comment">// Override makeContext()</em>
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 	     <strong class="jxr_keyword">protected</strong> Context makeContext()
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> 	     {
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 	         <em class="jxr_comment">//MyContext cx = new MyContext();</em>
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> 	         <em class="jxr_comment">// Use pure interpreter mode to allow for</em>
+<a class="jxr_linenumber" name="L126" href="#L126">126</a> 	         <em class="jxr_comment">// observeInstructionCount(Context, int) to work</em>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> 	         <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_comment">	         cx.setOptimizationLevel(-1);</em>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_comment">	         // Make Rhino runtime to call observeInstructionCount</em>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_comment">	         // each 10000 bytecode instructions</em>
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_comment">	         cx.setInstructionObserverThreshold(10000);</em>
+<a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_comment">	         return cx;</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_comment">	         */</em>
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 	    	 <em class="jxr_comment">// Context c = Context.enter(); // huh ?</em>
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> 	    	 System.out.println(<span class="jxr_string">"*** custom makeContext"</span>); <em class="jxr_comment">// &lt;-- this never happens</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> 	    	 Context c = <strong class="jxr_keyword">new</strong> Context();
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 	    	 c.setClassShutter(<strong class="jxr_keyword">new</strong> ClassShutter() {
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> 				@Override
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 				<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> visibleToScripts(String arg0) {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 					<em class="jxr_comment">// TODO Auto-generated method stub</em>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 					<strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> 				}
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 	    	 });
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> 	    	 <strong class="jxr_keyword">return</strong> c;
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> 	         <em class="jxr_comment">// return new Context();</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 	     }
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 	}
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 	
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 	<em class="jxr_javadoccomment">/********* Set JessopCompiledScript.eval() for an idea as to what this is attempting to do */</em> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> 	
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnsafeScript1() <strong class="jxr_keyword">throws</strong> ScriptException {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> 		logger.info(<span class="jxr_string">"hasExplicitGlobal="</span> + ContextFactory.hasExplicitGlobal());
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 		ContextFactory.initGlobal(<strong class="jxr_keyword">new</strong> <a href="../../../../com/randomnoun/common/jessop/RhinoSafeTestX.html">ParanoidContextFactory</a>()); <em class="jxr_comment">// &lt;-- think this is loading the wrong (non-internal) rhino classes </em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> 		
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 		_testScript(JAVASCRIPT_UNSAFE_SCRIPT_1, false);
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> 	}
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> 
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnsafeScript2() <strong class="jxr_keyword">throws</strong> ScriptException {
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 		_testScript(JAVASCRIPT_UNSAFE_SCRIPT_1, <strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 	}
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUnsafeScript2() <strong class="jxr_keyword">throws</strong> ScriptException {
-<a class="jxr_linenumber" name="L163" href="#L163">163</a> 		_testScript(JAVASCRIPT_UNSAFE_SCRIPT_1, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> 	}
-<a class="jxr_linenumber" name="L165" href="#L165">165</a> 
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> 	
-<a class="jxr_linenumber" name="L167" href="#L167">167</a> 	
-<a class="jxr_linenumber" name="L168" href="#L168">168</a> }
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> 	
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> 	
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>

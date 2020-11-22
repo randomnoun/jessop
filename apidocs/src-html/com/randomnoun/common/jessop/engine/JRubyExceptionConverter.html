@@ -13,45 +13,41 @@
 <span class="sourceLineNo">005</span> */<a name="line.5"></a>
 <span class="sourceLineNo">006</span><a name="line.6"></a>
 <span class="sourceLineNo">007</span>import javax.script.ScriptContext;<a name="line.7"></a>
-<span class="sourceLineNo">008</span>import javax.script.ScriptEngine;<a name="line.8"></a>
-<span class="sourceLineNo">009</span>import javax.script.ScriptException;<a name="line.9"></a>
-<span class="sourceLineNo">010</span><a name="line.10"></a>
-<span class="sourceLineNo">011</span>import com.randomnoun.common.jessop.JessopExceptionConverter;<a name="line.11"></a>
-<span class="sourceLineNo">012</span><a name="line.12"></a>
-<span class="sourceLineNo">013</span>public class JRubyExceptionConverter implements JessopExceptionConverter {<a name="line.13"></a>
-<span class="sourceLineNo">014</span><a name="line.14"></a>
-<span class="sourceLineNo">015</span>    /** A revision marker to be used in exception stack traces. */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>    public static final String _revision = "$Id$";<a name="line.16"></a>
-<span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>        /* jruby doesn't return filenames or line numbers in the ScriptException object, <a name="line.18"></a>
-<span class="sourceLineNo">019</span>         * but these are contained in the jruby RaiseException object */<a name="line.19"></a>
-<span class="sourceLineNo">020</span>    /* example stacktrace<a name="line.20"></a>
-<span class="sourceLineNo">021</span>  NameError: undefined local variable or method `floob' for main:Object<a name="line.21"></a>
-<span class="sourceLineNo">022</span>  &lt;top&gt; at test.jessop:6<a name="line.22"></a>
-<span class="sourceLineNo">023</span>     */<a name="line.23"></a>
-<span class="sourceLineNo">024</span>        @Override<a name="line.24"></a>
-<span class="sourceLineNo">025</span>        public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {<a name="line.25"></a>
-<span class="sourceLineNo">026</span>                if (t instanceof ScriptException) { <a name="line.26"></a>
-<span class="sourceLineNo">027</span>                        ScriptException se = (ScriptException) t;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>                        StackTraceElement[] stes = getFirstStackTrace(se.getCause());<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                        if (stes!=null &amp;&amp; stes.length &gt; 0) {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                                return (ScriptException) new ScriptException(se.getMessage(), <a name="line.30"></a>
-<span class="sourceLineNo">031</span>                                        stes[0].getFileName(), stes[0].getLineNumber()).initCause(t);   <a name="line.31"></a>
-<span class="sourceLineNo">032</span>                        }<a name="line.32"></a>
-<span class="sourceLineNo">033</span>                }<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                return (ScriptException) new ScriptException(t.getMessage()).initCause(t);<a name="line.34"></a>
-<span class="sourceLineNo">035</span>        }<a name="line.35"></a>
-<span class="sourceLineNo">036</span>        <a name="line.36"></a>
-<span class="sourceLineNo">037</span>        private StackTraceElement[] getFirstStackTrace(Throwable e) {<a name="line.37"></a>
-<span class="sourceLineNo">038</span>                if (e instanceof org.jruby.exceptions.RaiseException) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>                        return e.getStackTrace();<a name="line.39"></a>
-<span class="sourceLineNo">040</span>                }<a name="line.40"></a>
-<span class="sourceLineNo">041</span>                if (e.getCause()!=null) { return getFirstStackTrace(e.getCause()); }<a name="line.41"></a>
-<span class="sourceLineNo">042</span>                // no RaiseException in stacktrace<a name="line.42"></a>
-<span class="sourceLineNo">043</span>                return e.getStackTrace();<a name="line.43"></a>
-<span class="sourceLineNo">044</span>        }<a name="line.44"></a>
-<span class="sourceLineNo">045</span><a name="line.45"></a>
-<span class="sourceLineNo">046</span>}<a name="line.46"></a>
+<span class="sourceLineNo">008</span>import javax.script.ScriptException;<a name="line.8"></a>
+<span class="sourceLineNo">009</span><a name="line.9"></a>
+<span class="sourceLineNo">010</span>import com.randomnoun.common.jessop.JessopExceptionConverter;<a name="line.10"></a>
+<span class="sourceLineNo">011</span><a name="line.11"></a>
+<span class="sourceLineNo">012</span>public class JRubyExceptionConverter implements JessopExceptionConverter {<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span>        /* jruby doesn't return filenames or line numbers in the ScriptException object, <a name="line.14"></a>
+<span class="sourceLineNo">015</span>         * but these are contained in the jruby RaiseException object */<a name="line.15"></a>
+<span class="sourceLineNo">016</span>    /* example stacktrace<a name="line.16"></a>
+<span class="sourceLineNo">017</span>  NameError: undefined local variable or method `floob' for main:Object<a name="line.17"></a>
+<span class="sourceLineNo">018</span>  &lt;top&gt; at test.jessop:6<a name="line.18"></a>
+<span class="sourceLineNo">019</span>     */<a name="line.19"></a>
+<span class="sourceLineNo">020</span>        @Override<a name="line.20"></a>
+<span class="sourceLineNo">021</span>        public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {<a name="line.21"></a>
+<span class="sourceLineNo">022</span>                if (t instanceof ScriptException) { <a name="line.22"></a>
+<span class="sourceLineNo">023</span>                        ScriptException se = (ScriptException) t;<a name="line.23"></a>
+<span class="sourceLineNo">024</span>                        StackTraceElement[] stes = getFirstStackTrace(se.getCause());<a name="line.24"></a>
+<span class="sourceLineNo">025</span>                        if (stes!=null &amp;&amp; stes.length &gt; 0) {<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                                return (ScriptException) new ScriptException(se.getMessage(), <a name="line.26"></a>
+<span class="sourceLineNo">027</span>                                        stes[0].getFileName(), stes[0].getLineNumber()).initCause(t);   <a name="line.27"></a>
+<span class="sourceLineNo">028</span>                        }<a name="line.28"></a>
+<span class="sourceLineNo">029</span>                }<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                return (ScriptException) new ScriptException(t.getMessage()).initCause(t);<a name="line.30"></a>
+<span class="sourceLineNo">031</span>        }<a name="line.31"></a>
+<span class="sourceLineNo">032</span>        <a name="line.32"></a>
+<span class="sourceLineNo">033</span>        private StackTraceElement[] getFirstStackTrace(Throwable e) {<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                if (e instanceof org.jruby.exceptions.RaiseException) {<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                        return e.getStackTrace();<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                }<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                if (e.getCause()!=null) { return getFirstStackTrace(e.getCause()); }<a name="line.37"></a>
+<span class="sourceLineNo">038</span>                // no RaiseException in stacktrace<a name="line.38"></a>
+<span class="sourceLineNo">039</span>                return e.getStackTrace();<a name="line.39"></a>
+<span class="sourceLineNo">040</span>        }<a name="line.40"></a>
+<span class="sourceLineNo">041</span><a name="line.41"></a>
+<span class="sourceLineNo">042</span>}<a name="line.42"></a>
 
 
 

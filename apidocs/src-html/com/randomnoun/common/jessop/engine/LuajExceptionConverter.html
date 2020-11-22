@@ -25,39 +25,36 @@
 <span class="sourceLineNo">017</span><a name="line.17"></a>
 <span class="sourceLineNo">018</span>public class LuajExceptionConverter implements JessopExceptionConverter {<a name="line.18"></a>
 <span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>    /** A revision marker to be used in exception stack traces. */<a name="line.20"></a>
-<span class="sourceLineNo">021</span>    public static final String _revision = "$Id$";<a name="line.21"></a>
-<span class="sourceLineNo">022</span><a name="line.22"></a>
-<span class="sourceLineNo">023</span>        /* because lua's special */ <a name="line.23"></a>
-<span class="sourceLineNo">024</span>        @Override<a name="line.24"></a>
-<span class="sourceLineNo">025</span>        public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {<a name="line.25"></a>
-<span class="sourceLineNo">026</span>                if (t instanceof ScriptException) { <a name="line.26"></a>
-<span class="sourceLineNo">027</span>                        return (ScriptException) t;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>                } else if (t instanceof LuaError) {<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                        // there's a 'fileline' attribute in the LuaError, which isn't public, but is<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                        // set in the LuaClosure class to<a name="line.30"></a>
-<span class="sourceLineNo">031</span>                        // le.fileline = (p.source != null? p.source.tojstring(): "?") + ":" <a name="line.31"></a>
-<span class="sourceLineNo">032</span>                        //  + (p.lineinfo != null &amp;&amp; pc &gt;= 0 &amp;&amp; pc &lt; p.lineinfo.length? String.valueOf(p.lineinfo[pc]): "?");<a name="line.32"></a>
-<span class="sourceLineNo">033</span>                        // it's prepended to the error message<a name="line.33"></a>
-<span class="sourceLineNo">034</span>                        <a name="line.34"></a>
-<span class="sourceLineNo">035</span>                        LuaError le = (LuaError) t;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>                        String msg = le.getMessage();<a name="line.36"></a>
-<span class="sourceLineNo">037</span>                        Pattern p = Pattern.compile("^(.*):([0-9+]|\\?) (.*)$", Pattern.DOTALL);<a name="line.37"></a>
-<span class="sourceLineNo">038</span>                        Matcher m = p.matcher(msg);<a name="line.38"></a>
-<span class="sourceLineNo">039</span>                        if (m.matches()) {<a name="line.39"></a>
-<span class="sourceLineNo">040</span>                                // just to make things even more annoying, the<a name="line.40"></a>
-<span class="sourceLineNo">041</span>                                //   public CompiledScript compile(Reader script) throws ScriptException<a name="line.41"></a>
-<span class="sourceLineNo">042</span>                                // method in LuaScriptEngine hardcodes the name 'script' as the script filename<a name="line.42"></a>
-<span class="sourceLineNo">043</span>                                // String filename = m.group(1);<a name="line.43"></a>
-<span class="sourceLineNo">044</span>                                String filename = (String) scriptContext.getAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);<a name="line.44"></a>
-<span class="sourceLineNo">045</span>                                return (ScriptException) new ScriptException(m.group(3), filename, <a name="line.45"></a>
-<span class="sourceLineNo">046</span>                                        m.group(2).equals("?") ? -1 : Integer.parseInt(m.group(2))).initCause(t);<a name="line.46"></a>
-<span class="sourceLineNo">047</span>                        } <a name="line.47"></a>
-<span class="sourceLineNo">048</span>                }<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                return (ScriptException) new ScriptException(t.getMessage()).initCause(t);<a name="line.49"></a>
-<span class="sourceLineNo">050</span>        }<a name="line.50"></a>
-<span class="sourceLineNo">051</span><a name="line.51"></a>
-<span class="sourceLineNo">052</span>}<a name="line.52"></a>
+<span class="sourceLineNo">020</span>        /* because lua's special */ <a name="line.20"></a>
+<span class="sourceLineNo">021</span>        @Override<a name="line.21"></a>
+<span class="sourceLineNo">022</span>        public ScriptException toScriptException(ScriptContext scriptContext, Throwable t) {<a name="line.22"></a>
+<span class="sourceLineNo">023</span>                if (t instanceof ScriptException) { <a name="line.23"></a>
+<span class="sourceLineNo">024</span>                        return (ScriptException) t;<a name="line.24"></a>
+<span class="sourceLineNo">025</span>                } else if (t instanceof LuaError) {<a name="line.25"></a>
+<span class="sourceLineNo">026</span>                        // there's a 'fileline' attribute in the LuaError, which isn't public, but is<a name="line.26"></a>
+<span class="sourceLineNo">027</span>                        // set in the LuaClosure class to<a name="line.27"></a>
+<span class="sourceLineNo">028</span>                        // le.fileline = (p.source != null? p.source.tojstring(): "?") + ":" <a name="line.28"></a>
+<span class="sourceLineNo">029</span>                        //  + (p.lineinfo != null &amp;&amp; pc &gt;= 0 &amp;&amp; pc &lt; p.lineinfo.length? String.valueOf(p.lineinfo[pc]): "?");<a name="line.29"></a>
+<span class="sourceLineNo">030</span>                        // it's prepended to the error message<a name="line.30"></a>
+<span class="sourceLineNo">031</span>                        <a name="line.31"></a>
+<span class="sourceLineNo">032</span>                        LuaError le = (LuaError) t;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>                        String msg = le.getMessage();<a name="line.33"></a>
+<span class="sourceLineNo">034</span>                        Pattern p = Pattern.compile("^(.*):([0-9+]|\\?) (.*)$", Pattern.DOTALL);<a name="line.34"></a>
+<span class="sourceLineNo">035</span>                        Matcher m = p.matcher(msg);<a name="line.35"></a>
+<span class="sourceLineNo">036</span>                        if (m.matches()) {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>                                // just to make things even more annoying, the<a name="line.37"></a>
+<span class="sourceLineNo">038</span>                                //   public CompiledScript compile(Reader script) throws ScriptException<a name="line.38"></a>
+<span class="sourceLineNo">039</span>                                // method in LuaScriptEngine hardcodes the name 'script' as the script filename<a name="line.39"></a>
+<span class="sourceLineNo">040</span>                                // String filename = m.group(1);<a name="line.40"></a>
+<span class="sourceLineNo">041</span>                                String filename = (String) scriptContext.getAttribute(ScriptEngine.FILENAME, ScriptContext.ENGINE_SCOPE);<a name="line.41"></a>
+<span class="sourceLineNo">042</span>                                return (ScriptException) new ScriptException(m.group(3), filename, <a name="line.42"></a>
+<span class="sourceLineNo">043</span>                                        m.group(2).equals("?") ? -1 : Integer.parseInt(m.group(2))).initCause(t);<a name="line.43"></a>
+<span class="sourceLineNo">044</span>                        } <a name="line.44"></a>
+<span class="sourceLineNo">045</span>                }<a name="line.45"></a>
+<span class="sourceLineNo">046</span>                return (ScriptException) new ScriptException(t.getMessage()).initCause(t);<a name="line.46"></a>
+<span class="sourceLineNo">047</span>        }<a name="line.47"></a>
+<span class="sourceLineNo">048</span><a name="line.48"></a>
+<span class="sourceLineNo">049</span>}<a name="line.49"></a>
 
 
 
