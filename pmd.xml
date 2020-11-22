@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd version="4.2.5" timestamp="2020-11-22T12:11:33.231">
+<file name="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\JessopCompiledScript.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="22" rule="UnusedImports" ruleset="Import Statement Rules" package="com.randomnoun.common.jessop" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'java.io.Writer'
+</violation>
+<violation beginline="73" endline="75" begincolumn="77" endcolumn="33" rule="EmptyIfStmt" ruleset="Basic Rules" package="com.randomnoun.common.jessop" class="JessopCompiledScript" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+<violation beginline="122" endline="124" begincolumn="87" endcolumn="33" rule="EmptyIfStmt" ruleset="Basic Rules" package="com.randomnoun.common.jessop" class="JessopCompiledScript" method="eval" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+</file>
+<file name="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\Tokeniser.java">
+<violation beginline="145" endline="148" begincolumn="40" endcolumn="33" rule="EmptyIfStmt" ruleset="Basic Rules" package="com.randomnoun.common.jessop" class="Tokeniser" method="parseChar" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="3">
+Avoid empty if statements
+</violation>
+</file>
+<file name="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\engine\JRubyExceptionConverter.java">
+<violation beginline="8" endline="8" begincolumn="1" endcolumn="33" rule="UnusedImports" ruleset="Import Statement Rules" package="com.randomnoun.common.jessop.engine" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports" priority="4">
+Avoid unused imports such as 'javax.script.ScriptEngine'
+</violation>
+</file>
+<file name="C:\Users\knoxg\workspace-4.15.0-sts-4.6.0-randomnoun\git\jessop\src\main\java\com\randomnoun\common\jessop\lang\JavascriptJessopScriptBuilder.java">
+<violation beginline="116" endline="116" begincolumn="27" endcolumn="65" rule="EmptyCatchBlock" ruleset="Basic Rules" package="com.randomnoun.common.jessop.lang" class="JavascriptJessopScriptBuilder" method="getDefaultBindingsConverterClassName" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+<violation beginline="125" endline="125" begincolumn="27" endcolumn="66" rule="EmptyCatchBlock" ruleset="Basic Rules" package="com.randomnoun.common.jessop.lang" class="JavascriptJessopScriptBuilder" method="getDefaultBindingsConverterClassName" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+Avoid empty catch blocks
+</violation>
+</file>
+</pmd>
