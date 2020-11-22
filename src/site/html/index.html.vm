@@ -27,8 +27,8 @@
 
 <p><b>Jessop</b> is a polyglot templating language in the style of Java Server Pages (JSPs).</p>
 
-<p>Like all templating languages, the output can be any text stream ( e.g. English text, HTML/CSS or 
-if generating boilerplate, other programming code),
+<p>Like all templating languages, output can be any text stream ( e.g. English text, HTML/CSS or 
+other text-based programming or markup languages),
 but the statements, conditions and expressions within the language can be 
 written in any language that the Java scripting engine ( javax.script ) supports.
 
