@@ -1,3 +1,4 @@
+
 # Jessop
 
 **Jessop**  is a polyglot templating language in the style of Java Server Pages (JSPs).
@@ -32,6 +33,13 @@ See the  [Javadoc overview](https://randomnoun.github.io/jessop/apidocs/index.ht
 ## Why another template language ?
 
 See http://www.randomnoun.com/wp/2016/07/04/2897/
+
+## What languages can be used within jessop ?
+* Javascript ( via rhino or nashorn )
+* Python ( jython )
+* Ruby ( jruby )
+* Lua ( luaj )
+* Lisp ( abcl )
 
 ## Licensing
 
