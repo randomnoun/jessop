@@ -86,6 +86,8 @@
 		  <groupId>com.sun.jre</groupId>
 		  <artifactId>rhino</artifactId>
 		  <version>1.7.0_80</version>
+		  <scope>compile</scope>
+		  <optional>true</optional>
 		</dependency>
 		
 		
