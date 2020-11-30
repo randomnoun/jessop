@@ -75,20 +75,35 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 	public String getDefaultScriptEngineName() {
 		// the phobos jsr223 wrapper calls itself 'rhino-nonjdk', as well as 'rhino'
 		
-		// if we have nashorn, then use that, otherwise rhino
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		// if we have graalvm, then use that otherwise nashorn, otherwise rhino
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
 		if (engine!=null) {
-			return "nashorn";
+			return "graal-js";
 		} else {
-			return "rhino";
+			engine = new ScriptEngineManager().getEngineByName("nashorn");
+			if (engine!=null) {
+				return "nashorn";
+			} else {
+				return "rhino";
+			}
 		}
 	}
+	
+	
+	// this method should probably take an engine name parameter which is the engine in effect
+	
 	@Override
 	public String getDefaultBindingsConverterClassName() {
 
 		boolean isComSunRhino = false; // rhino engine is under the com.sun package
 		
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
+		if (engine!=null) {
+			//  com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
+			return "com.randomnoun.common.jessop.engine.graaljs.GraalJsBindingsConverter";
+		}
+		
+		engine = new ScriptEngineManager().getEngineByName("nashorn");
 		if (engine!=null) {
 			// jdk.nashorn.api.scripting.NashornScriptEngine
 			return null; // nashorn doesn't need a bindingsconverter
@@ -136,6 +151,17 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 		
 		return result;
 	}
+	
+	@Override
+	public String getDefaultExceptionConverterClassName() {
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
+		if (engine!=null) {
+			return "com.randomnoun.common.jessop.engine.graaljs.GraalJsExceptionConverter";
+		}
+		return null; // graal doesn't need a bindingsconverter
+	}
+
+	
 	
 	// going to use this for debugging only
 	public void testEngine() {

@@ -43,13 +43,13 @@ public class ErrorHandlingTest extends TestCase {
 	// with some nonsense thrown on the end to create a runtime error.
 	// note that some languages allow undeclared variables, so we have even more contrived nonsense for them.
 	
-	public final static String JAVSCRIPT_COUNTING_SCRIPT = 
+	public final static String JAVSCRIPT_COUNTING_SCRIPT_RHINO = 
 	  "<%@ jessop language=\"javascript\" engine=\"rhino\" %>\n" +
 	  "Hello, <%= name %>\n" +
 	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>\n" +
-	  "<% floob; %>\n";  // where 'floob' is the canonical representation of a 'foo'...'bar' block
+	  "<% floob; %>\n";  // intentional runtime error
 
 	public final static String JAVSCRIPT_COUNTING_SCRIPT_NASHORN = 
 	  "<%@ jessop language=\"javascript\" engine=\"nashorn\" %>\n" +
@@ -57,7 +57,15 @@ public class ErrorHandlingTest extends TestCase {
 	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
 	  "<%= i %>\n" +
 	  "<% } %>\n" +
-	  "<% floob; %>\n";  // where 'floob' is the canonical representation of a 'foo'...'bar' block
+	  "<% floob; %>\n";  // intentional runtime error
+
+	public final static String JAVSCRIPT_COUNTING_SCRIPT_GRAALVM = 
+	  "<%@ jessop language=\"javascript\" engine=\"graal-js\" %>\n" +
+	  "Hello, <%= name %>\n" +
+	  "<% for (var i=1; i<maxCount; i++) { %>\n" +
+	  "<%= i %>\n" +
+	  "<% } %>\n" +
+	  "<% floob; %>\n";  // intentional runtime error
 
 	
 	public final static String LUA_COUNTING_SCRIPT = 
@@ -107,7 +115,7 @@ public class ErrorHandlingTest extends TestCase {
 	  "<% end %>\n" +
 	  "<% floob %>\n";
 
-	
+	/*
 	public void testJessopCompile() throws ScriptException {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
 		if (engine==null) { throw new IllegalStateException("Missing engine 'jessop'"); }
@@ -119,7 +127,7 @@ public class ErrorHandlingTest extends TestCase {
 		Compilable compilableEngine = (Compilable) engine;
 		CompiledScript script;
 		try {
-			script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT);
+			script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT_RHINO);
 		} catch (ScriptException se) { // java.scriptx engine 'rhino' not found
 			script = compilableEngine.compile(JAVSCRIPT_COUNTING_SCRIPT_NASHORN);
 		}
@@ -131,6 +139,7 @@ public class ErrorHandlingTest extends TestCase {
 		logger.info("End source");
 		
 	}
+	*/
 	
 	public void _testScript(String input, int expectedLine) {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("jessop");
@@ -145,28 +154,36 @@ public class ErrorHandlingTest extends TestCase {
 			engine.eval(input, b);
 			fail("script runtime exception expected");
 		} catch (ScriptException e) {
-			logger.info("caught ScriptException");
+			logger.info("caught ScriptException", e);
+			// e.printStackTrace();
 			assertEquals("test.jessop", e.getFileName());
 			assertEquals(expectedLine, e.getLineNumber());
 		}
 	}
 	
-	public void testJessop1() throws ScriptException {
-		boolean hasRhino = false;
+	// @TODO better support for multiple js engines in the same JVM
+	public void testJessopJavascript() throws ScriptException {
+		boolean hasGraalvm = false;
+		boolean hasNashorn = false;
 		try { 
-			hasRhino = new ScriptEngineManager().getEngineByName("rhino") != null;
+			hasGraalvm = new ScriptEngineManager().getEngineByName("graal-js") != null;
 		} catch (Exception e) {
 			// ignore
 		}
-		if (hasRhino) {
-			_testScript(JAVSCRIPT_COUNTING_SCRIPT, 6);
-		} else {
+		try { 
+			hasNashorn = new ScriptEngineManager().getEngineByName("nashorn") != null;
+		} catch (Exception e) {
+			// ignore
+		}
+		if (hasGraalvm) {
+			_testScript(JAVSCRIPT_COUNTING_SCRIPT_GRAALVM, 6);
+		} else if (hasNashorn) {
 			_testScript(JAVSCRIPT_COUNTING_SCRIPT_NASHORN, 6);
+		} else {
+			_testScript(JAVSCRIPT_COUNTING_SCRIPT_RHINO, 6);
 		}
 	}
 	
-	
-
 	public void testJessopLua() throws ScriptException {
 		// logger.info("lua source: " + ((JessopCompiledScript) (((Compilable) engine).compile(LUA_COUNTING_SCRIPT))).getSource());
 		_testScript(LUA_COUNTING_SCRIPT, 6);
