@@ -79,11 +79,11 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	
     /** Reserved key for a named value that controls whether the target script is compiled
      * (providing the target engine allows it).
-     * If not set, will default to 'true'.
+     * If not set, will default to 'false'.
      */
 	public static final String JESSOP_COMPILE_TARGET = "com.randommoun.common.jessop.compileTarget";
 
-	/** Default value for the JESSOP_ENGINE key; has the value "false" */
+	/** Default value for the JESSOP_COMPILE_TARGET key; has the value "false" */
 	public static final String JESSOP_DEFAULT_COMPILE_TARGET = "false";
 
 	
