@@ -17,8 +17,6 @@ public class GraalJsExceptionConverter implements JessopExceptionConverter {
 			Throwable chain = t;
 			while (chain != null && filename == null) {
 				for (StackTraceElement ste : chain.getStackTrace()) {
-					
-					// declaringClass = '<js>', methodName = ':program'
 					if (ste.getClassName().equals("<js>")) {
 						innerMessage = chain.getMessage();
 						filename = ste.getFileName();
