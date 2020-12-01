@@ -4,7 +4,7 @@
 	<groupId>com.randomnoun.common</groupId>
 	<artifactId>jessop</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.11-SNAPSHOT</version>
 	<description>Multi-language templates in the style of Java Server Pages</description>
 	<url>http://code.randomnoun.com/jessop/index.html</url>
 	<inceptionYear>2016-09-16</inceptionYear>
@@ -360,6 +360,7 @@
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>2.19.1</version>
 				<configuration>
+					<argLine>-Dnashorn.args="--no-deprecation-warning"</argLine>
 				</configuration>
 			</plugin>
 
