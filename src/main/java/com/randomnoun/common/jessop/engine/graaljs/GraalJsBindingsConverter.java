@@ -3,6 +3,8 @@ package com.randomnoun.common.jessop.engine.graaljs;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -21,16 +23,19 @@ public class GraalJsBindingsConverter implements JessopBindingsConverter {
 
 		// return the same bindings and add a few graaljs-specific properties
 		// see https://github.com/graalvm/graaljs/blob/master/docs/user/ScriptEngine.md
-		// bindings.put("polyglot.js.allowAllAccess", true);
-		// return bindings;
-		
-		Bindings newBindings = engine.createBindings();
 		bindings.put("polyglot.js.allowAllAccess", true);
-		for (String k : bindings.keySet()) {
+		
+		// return bindings;
+		// Bindings newBindings = engine.createBindings();
+		// bindings.put("polyglot.js.allowAllAccess", true);
+		// this fails with 'failed to set graal-js option "polyglot.js.allowAllAccess": js context is already initialized'
+		
+		Set<String> keySet = new TreeSet<String>(bindings.keySet());
+		for (String k : keySet) {
 			Object v = bindings.get(k);
-			newBindings.put(k, toScriptObject(v)); 
+			bindings.put(k, toScriptObject(v)); 
 		}
-		return newBindings;
+		return bindings;
 	}
 	
 	// wrap Maps and Lists in ProxyObject
