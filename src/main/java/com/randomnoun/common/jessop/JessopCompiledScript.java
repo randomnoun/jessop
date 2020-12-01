@@ -89,48 +89,49 @@ public class JessopCompiledScript extends CompiledScript {
 		
 		if (context==null) { 
 			context = engine.getContext();
+		}
+		
+		// some engines may require us to wrap/unwrap maps and lists to 
+		// other data structures in order to treat them as native maps/dicts and arrays 
+		// in that engine's language
+		
+		// may have to convert this context to whatever this engine expects (here's looking at you, lua)
+		if (jbc!=null) {
+			ScriptContext newContext = engine.getContext();
+			Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+	        if (gs != null) {
+	        	Bindings newGs = jbc.toScriptBindings(engine, newContext, gs, ScriptContext.GLOBAL_SCOPE); 
+	            newContext.setBindings(newGs, ScriptContext.GLOBAL_SCOPE);
+	        }
+	        // this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.
+	        Bindings es = context.getBindings(ScriptContext.ENGINE_SCOPE);
+	        Bindings newEs = jbc.toScriptBindings(engine, newContext, es, ScriptContext.ENGINE_SCOPE); 
+            newContext.setBindings(newEs, ScriptContext.ENGINE_SCOPE);
+	        newContext.setReader(context.getReader());
+	        newContext.setWriter(context.getWriter());
+	        newContext.setErrorWriter(context.getErrorWriter());
+	        context = newContext;
 		} else {
-			// some engines may require us to wrap/unwrap maps and lists to 
-			// other data structures in order to treat them as native maps/dicts and arrays 
-			// in that engine's language
+			// see if the class changes
+			// (could probably put this into a LuaBindingConverter instead now)
 			
-			// may have to convert this context to whatever this engine expects (here's looking at you, lua)
-			if (jbc!=null) {
-				ScriptContext newContext = engine.getContext();
-				Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+			ScriptContext newContext = engine.getContext();
+			if (newContext.getClass().equals(context.getClass())) {
+				// it's fine
+			} else {
+		        Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
 		        if (gs != null) {
-		        	Bindings newGs = jbc.toScriptBindings(engine, newContext, gs, ScriptContext.GLOBAL_SCOPE); 
-		            newContext.setBindings(newGs, ScriptContext.GLOBAL_SCOPE);
+		            newContext.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
 		        }
 		        // this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.
-		        Bindings es = context.getBindings(ScriptContext.ENGINE_SCOPE);
-		        Bindings newEs = jbc.toScriptBindings(engine, newContext, es, ScriptContext.ENGINE_SCOPE); 
-	            newContext.setBindings(newEs, ScriptContext.ENGINE_SCOPE);
+	            newContext.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
 		        newContext.setReader(context.getReader());
 		        newContext.setWriter(context.getWriter());
 		        newContext.setErrorWriter(context.getErrorWriter());
 		        context = newContext;
-			} else {
-				// see if the class changes
-				// (could probably put this into a LuaBindingConverter instead now)
-				
-				ScriptContext newContext = engine.getContext();
-				if (newContext.getClass().equals(context.getClass())) {
-					// it's fine
-				} else {
-			        Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
-			        if (gs != null) {
-			            newContext.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
-			        }
-			        // this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.
-		            newContext.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
-			        newContext.setReader(context.getReader());
-			        newContext.setWriter(context.getWriter());
-			        newContext.setErrorWriter(context.getErrorWriter());
-			        context = newContext;
-				}
 			}
 		}
+		
 		// get this from the jessop declaration eventually, but for now
 		PrintWriter out;
 		if (context.getWriter()==null) {  // jruby has a 'null' default writer
