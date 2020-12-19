@@ -1,5 +1,6 @@
 package com.randomnoun.common.jessop.engine.graaljs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,11 @@ public class GraalJsBindingsConverter implements JessopBindingsConverter {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object toScriptObject(Object o) {
 		Object result;
-		if (o instanceof Map) {
+		
+		if (o == null) {
+			return null;
+		
+		} else if (o instanceof Map) {
 			Map javaMap = (Map) o;
 			Map jsMap = new HashMap<String, Object>();
 			
@@ -51,27 +56,19 @@ public class GraalJsBindingsConverter implements JessopBindingsConverter {
 				jsMap.put((String) entry.getKey(), toScriptObject(entry.getValue()));
 			}
 			result = ProxyObject.fromMap(jsMap);
+
 		} else if (o instanceof List) {
-			return o;
-			
-			/* looks like we don't need to wrap these 
+			// return o;
 			List javaList = (List) o;
-			Object[] newArray = new Object[javaList.size()]; 
-			for (int i=0; i< javaList.size(); i++) {
-				newArray[i] = toScriptObject(javaList.get(i));
+			List newList = new ArrayList(javaList.size()); 
+			for (int i=0; i < javaList.size(); i++) {
+				newList.add(toScriptObject(javaList.get(i)));
 			}
-			// NativeArray jsArray = new NativeArray(newArray);
-			result = Value.asValue(newArray);
-			*/
+			result = newList;
 
 		// possibly array types here
 		} else if (o instanceof String) { 
-			// result = new NativeString((String) o); // private constructor
 			result = o;
-			
-			//Context context = Context.getCurrentContext();
-			//Scriptable scope = ScriptRuntime.getTopCallScope( context );
-			//return context.newObject( scope, "String", new Object[] { o } );
 		
 		} else {
 			result = o; 
