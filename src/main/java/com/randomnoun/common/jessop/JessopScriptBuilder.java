@@ -15,7 +15,7 @@ import javax.script.ScriptException;
  * {@link #getLanguage()} and {@link #getDefaultScriptEngineName()} methods.
  * 
  * <p>These values will be used to select the correct JessopScriptBuilder identified in the 
- * <tt>&lt;%@ jessop language="xxx"%&gt;</tt>
+ * <code>&lt;%@ jessop language="xxx"%&gt;</code>
  * declaration in the jessop source file.
  * 
  * <p>When this class is instantiated, the caller will invoke {@link #setPrintWriter(PrintWriter)} and 
@@ -90,47 +90,47 @@ public interface JessopScriptBuilder {
 	void emitText(int line, String s);        
 	
 	/** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some evaluated output.
-	 * i.e. process a <tt>&lt;%= ... %&gt;</tt> expression.
+	 * i.e. process a <code>&lt;%= ... %&gt;</code> expression.
 	 * 
-	 * <p>This method should generate the code to evaluate and output the contents of the <tt>&lt;%= ... %&gt;</tt> expression.
+	 * <p>This method should generate the code to evaluate and output the contents of the <code>&lt;%= ... %&gt;</code> expression.
 	 * 
 	 * <p>This method should attempt to preserve line numbers between the jessop source file and the generated code file.
 	 * 
 	 * @param line jessop source line number that begins this text output.
-	 * @param s the contents of the <tt>&lt;%= ... %&gt;</tt> expression.
+	 * @param s the contents of the <code>&lt;%= ... %&gt;</code> expression.
 	 */
 	void emitExpression(int line, String s);  // <%= ... %>
 	
 
 	/** Called by the tokeniser and requests that this JessopScriptBuilder copy the included code into the generated script.
- 	 * i.e. process a <tt>&lt;% ... %&gt;</tt> scriptlet. (The 'scriptlet' term is the term used in the JSP specification)
+ 	 * i.e. process a <code>&lt;% ... %&gt;</code> scriptlet. (The 'scriptlet' term is the term used in the JSP specification)
  	 * 
-	 * <p>This method should generate the same code that is contained within the <tt>&lt;% ... %&gt;</tt> scriptlet.
+	 * <p>This method should generate the same code that is contained within the <code>&lt;% ... %&gt;</code> scriptlet.
 	 * 
 	 * <p>This method should attempt to preserve line numbers between the jessop source file and the generated code file.
 	 * 
 	 * <p>This scriptlet may not be syntactically correct by itself and may require further scriptlets to function, e.g.
 	 * <pre>
-	 * &lt;% if (a>b) { %&gt;
+	 * &lt;% if (a &gt; b) { %&gt;
 	 * something
 	 * &lt;% } %&gt;
 	 * </pre>
 	 * 
 	 * @param line jessop source line number that begins this scriptlet.
-	 * @param s the contents of the <tt>&lt;%= ... %&gt;</tt> expression.
+	 * @param s the contents of the <code>&lt;%= ... %&gt;</code> expression.
 	 */
 	void emitScriptlet(int line, String s);
 
-	/** Called by the tokeniser and requests that this JessopScriptBuilder process a <tt>&lt;%@ ... %&gt;</tt> directive.
+	/** Called by the tokeniser and requests that this JessopScriptBuilder process a <code>&lt;%@ ... %&gt;</code> directive.
 	 * 
 	 * <p>The exact semantics of these declarations can be defined per-language, but 'jessop' declarations 
 	 * should be processed by the AbstractJessopScriptBuilder, i.e. declarations that are in the form
-	 * <tt>&lt;%@ jessop language="xxx" %&gt;</tt>
+	 * <code>&lt;%@ jessop language="xxx" %&gt;</code>
 	 * 
 	 * <p>Ideally, there's only one declaration, at the top of the source script.
 	 * 
 	 * @param line jessop source line number that begins this directive
-	 * @param s the contents of the <tt>&lt;%@ ... %&gt;</tt> directive
+	 * @param s the contents of the <code>&lt;%@ ... %&gt;</code> directive
 	 * @throws ScriptException
 	 */
 	void emitDeclaration(int line, String s) throws ScriptException; 

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /** This is an abstract class that supports generic support for creating template scripts from jessop source.
  * 
- * <p>This class is responsible for processing jessop declarations (e.g. <tt>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</tt>),
+ * <p>This class is responsible for processing jessop declarations (e.g. <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>),
  * and switching to the correct language JessopScriptBuilder implementation.
  * 
  * <p>Note that having multiple languages in the same script file is not yet supported by jessop. 
@@ -177,9 +177,9 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 
 	/** Conditionally remove the first newline from the supplied string.
 	 * 
-	 * <p>This method is used to perform <tt>suppressEol</tt> declaration processing.
+	 * <p>This method is used to perform <code>suppressEol</code> declaration processing.
 	 * 
-	 * <p>When the <tt>suppressEol</tt> declaration is <tt>true</tt>, and the text to be emitted by the output script
+	 * <p>When the <code>suppressEol</code> declaration is <code>true</code>, and the text to be emitted by the output script
 	 * immediately follows a scriptlet and begins with a newline (or whitespace followed by a newline), 
 	 * then we want to remove that (whitespace and) newline.
 	 * 

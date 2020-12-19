@@ -14,7 +14,7 @@
 <li><b>unprocessed text</b>
 <li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>
 <li><b>expressions</b> to generate output in the form <code>&lt;%= name %&gt;</code> 
-<li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><tt> No name </tt><code>&lt;% } %&gt;</code>
+<li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><code> No name </code><code>&lt;% } %&gt;</code>
 </ul> 
 
 <p>Other JSP features such as JSP-EL, beans, tag libraries, and access to HTTP session, request or 
@@ -53,6 +53,7 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
 <p>Current <b>jessop declaration attributes</b> are:
 
 <table class="padded">
+<caption>Jessop declaration attributes</caption>
 <tr><th>Attribute name <th>JessopScriptEngine constant  <th>jessop-defined default  <th>Description
 <tr><td>filename  
     <td>{@link javax.script.ScriptEngine#FILENAME FILENAME}  <td><i>null</i>
@@ -60,13 +61,13 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
         ScriptExceptions that occur when the target language script is evaluated.
 <tr><td>language  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_LANGUAGE JESSOP_LANGUAGE}  
-    <td><tt>javascript</tt>  
+    <td><code>javascript</code>  
     <td>The target language used within the jessop script for expressions and scriptlets
         <p>This must be the same string returned by the 
         {@link com.randomnoun.common.jessop.JessopScriptBuilder#getLanguage()} method.
 <tr><td>engine  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_ENGINE JESSOP_ENGINE}  
-    <td><tt>rhino</tt>  
+    <td><code>rhino</code>  
     <td>The name of the ScriptEngine used to evaluate the target language script.
         <p>This should be the same string that the ScriptEngine uses to identify itself; see
         {@link javax.script.ScriptEngineManager#getEngineByName(String)}.
@@ -78,12 +79,12 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
         the beanshell and luaj engines, which do not do this properly).
 <tr><td>compileTarget  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_COMPILE_TARGET JESSOP_COMPILE_TARGET}
-    <td><tt>true</tt>
+    <td><code>true</code>
     <td>If true, and if the target language ScriptEngine supports it, will attempt to compile 
         the target script before evaluation. This may result in increased execution speed.
 <tr><td>suppressEol  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_SUPPRESS_EOL JESSOP_SUPPRESS_EOL}  
-    <td><tt>false</tt>
+    <td><code>false</code>
     <td>This attribute will suppress any trailing whitespace and the newline character that
         appears after a <code>&lt;% ... %&gt;</code> scriptlet from appearing in the 
         evaluated target language script output. Whitespace/newline suppression will

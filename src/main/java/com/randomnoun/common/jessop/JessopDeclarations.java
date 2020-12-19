@@ -4,10 +4,10 @@ package com.randomnoun.common.jessop;
  * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
  */
 
-/** This object contains values that are defined in the <%@ jessop ... %> declaration attributes.
+/** This object contains values that are defined in the &lt;%@ jessop ... %&gt; declaration attributes.
  * 
- * <p>The {@link AbstractJessopScriptBuilder} currently processes all <tt>&lt;%@ ... %&gt;</tt> declarations,
- * including the <tt>jessop</tt> declarationType.
+ * <p>The {@link AbstractJessopScriptBuilder} currently processes all <code>&lt;%@ ... %&gt;</code> declarations,
+ * including the <code>jessop</code> declarationType.
  *
  * <p>This class acts as a Plain Old Java Object (POJO) and does not perform any processing of directives.
  * 
