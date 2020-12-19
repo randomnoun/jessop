@@ -5,6 +5,8 @@
 	<artifactId>jessop</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.15-SNAPSHOT</version>
+	
+	<name>Jessop</name>
 	<description>Multi-language templates in the style of Java Server Pages</description>
 	<url>http://code.randomnoun.com/jessop/index.html</url>
 	<inceptionYear>2016-09-16</inceptionYear>
