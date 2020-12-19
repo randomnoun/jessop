@@ -23,7 +23,7 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * {@link #getLanguage()} and {@link #getDefaultScriptEngineName()} methods.</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;These values will be used to select the correct JessopScriptBuilder identified in the </em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;tt&gt;&amp;lt;%@ jessop language="xxx"%&amp;gt;&lt;/tt&gt;</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;code&gt;&amp;lt;%@ jessop language="xxx"%&amp;gt;&lt;/code&gt;</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * declaration in the jessop source file.</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;When this class is instantiated, the caller will invoke {@link #setPrintWriter(PrintWriter)} and </em>
@@ -98,47 +98,47 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  	<strong class="jxr_keyword">void</strong> emitText(<strong class="jxr_keyword">int</strong> line, String s);        
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  	
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  	<em class="jxr_javadoccomment">/** Called by the tokeniser and requests that this JessopScriptBuilder generate code to generate some evaluated output.</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">	 * i.e. process a &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">	 * i.e. process a &lt;code&gt;&amp;lt;%= ... %&amp;gt;&lt;/code&gt; expression.</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">	 * </em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should generate the code to evaluate and output the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should generate the code to evaluate and output the contents of the &lt;code&gt;&amp;lt;%= ... %&amp;gt;&lt;/code&gt; expression.</em>
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.</em>
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">	 * @param line jessop source line number that begins this text output.</em>
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;code&gt;&amp;lt;%= ... %&amp;gt;&lt;/code&gt; expression.</em>
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">	 */</em>
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 	<strong class="jxr_keyword">void</strong> emitExpression(<strong class="jxr_keyword">int</strong> line, String s);  <em class="jxr_comment">// &lt;%= ... %&gt;</em>
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 	
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 	<em class="jxr_javadoccomment">/** Called by the tokeniser and requests that this JessopScriptBuilder copy the included code into the generated script.</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment"> 	 * i.e. process a &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet. (The 'scriptlet' term is the term used in the JSP specification)</em>
+<a class="jxr_linenumber" name="L106" href="#L106">106</a> <em class="jxr_javadoccomment"> 	 * i.e. process a &lt;code&gt;&amp;lt;% ... %&amp;gt;&lt;/code&gt; scriptlet. (The 'scriptlet' term is the term used in the JSP specification)</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> <em class="jxr_javadoccomment"> 	 * </em>
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should generate the same code that is contained within the &lt;tt&gt;&amp;lt;% ... %&amp;gt;&lt;/tt&gt; scriptlet.</em>
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should generate the same code that is contained within the &lt;code&gt;&amp;lt;% ... %&amp;gt;&lt;/code&gt; scriptlet.</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This method should attempt to preserve line numbers between the jessop source file and the generated code file.</em>
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This scriptlet may not be syntactically correct by itself and may require further scriptlets to function, e.g.</em>
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">	 * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">	 * &amp;lt;% if (a&gt;b) { %&amp;gt;</em>
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">	 * &amp;lt;% if (a &amp;gt; b) { %&amp;gt;</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">	 * something</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">	 * &amp;lt;% } %&amp;gt;</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">	 * &lt;/pre&gt;</em>
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">	 * @param line jessop source line number that begins this scriptlet.</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;tt&gt;&amp;lt;%= ... %&amp;gt;&lt;/tt&gt; expression.</em>
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;code&gt;&amp;lt;%= ... %&amp;gt;&lt;/code&gt; expression.</em>
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">	 */</em>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 	<strong class="jxr_keyword">void</strong> emitScriptlet(<strong class="jxr_keyword">int</strong> line, String s);
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> 
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 	<em class="jxr_javadoccomment">/** Called by the tokeniser and requests that this JessopScriptBuilder process a &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive.</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 	<em class="jxr_javadoccomment">/** Called by the tokeniser and requests that this JessopScriptBuilder process a &lt;code&gt;&amp;lt;%@ ... %&amp;gt;&lt;/code&gt; directive.</em>
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;The exact semantics of these declarations can be defined per-language, but 'jessop' declarations </em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">	 * should be processed by the AbstractJessopScriptBuilder, i.e. declarations that are in the form</em>
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">	 * &lt;tt&gt;&amp;lt;%@ jessop language="xxx" %&amp;gt;&lt;/tt&gt;</em>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">	 * &lt;code&gt;&amp;lt;%@ jessop language="xxx" %&amp;gt;&lt;/code&gt;</em>
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;Ideally, there's only one declaration, at the top of the source script.</em>
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">	 * </em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">	 * @param line jessop source line number that begins this directive</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;tt&gt;&amp;lt;%@ ... %&amp;gt;&lt;/tt&gt; directive</em>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">	 * @param s the contents of the &lt;code&gt;&amp;lt;%@ ... %&amp;gt;&lt;/code&gt; directive</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> <em class="jxr_javadoccomment">	 * @throws ScriptException</em>
 <a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_javadoccomment">	 */</em>
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 	<strong class="jxr_keyword">void</strong> emitDeclaration(<strong class="jxr_keyword">int</strong> line, String s) <strong class="jxr_keyword">throws</strong> ScriptException; 

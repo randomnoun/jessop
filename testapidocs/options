@@ -1,30 +1,32 @@
 -classpath
-'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/classes;C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/test-classes;C:/Users/knoxg/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar;C:/Users/knoxg/.m2/repository/rhino/js/1.7R2/js-1.7R2.jar;C:/Users/knoxg/.m2/repository/net/java/openjdk/icedtea/rhino/1.7.0.79-randomnoun/rhino-1.7.0.79-randomnoun.jar;C:/Users/knoxg/.m2/repository/org/python/jython/2.5.3/jython-2.5.3.jar;C:/Users/knoxg/.m2/repository/org/abcl/abcl/1.4.0/abcl-1.4.0.jar;C:/Users/knoxg/.m2/repository/org/luaj/luaj-jse/3.0.1/luaj-jse-3.0.1.jar;C:/Users/knoxg/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar;C:/Users/knoxg/.m2/repository/org/abcl/abcl-contrib/1.4.0/abcl-contrib-1.4.0.jar;C:/Users/knoxg/.m2/repository/org/beanshell/bsh/2.0b5/bsh-2.0b5.jar;C:/Users/knoxg/.m2/repository/org/jruby/jruby-complete/9.1.2.0/jruby-complete-9.1.2.0.jar;C:/Users/knoxg/.m2/repository/junit/junit/4.12/junit-4.12.jar'
+'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/target/classes;C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/target/test-classes;C:/Users/knoxg/.m2/repository/junit/junit/4.12/junit-4.12.jar;C:/Users/knoxg/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar;C:/Users/knoxg/.m2/repository/org/apache/logging/log4j/log4j-core/2.14.0/log4j-core-2.14.0.jar;C:/Users/knoxg/.m2/repository/org/apache/logging/log4j/log4j-api/2.14.0/log4j-api-2.14.0.jar;C:/Users/knoxg/.m2/repository/org/apache/logging/log4j/log4j-1.2-api/2.14.0/log4j-1.2-api-2.14.0.jar;C:/Users/knoxg/.m2/repository/org/luaj/luaj-jse/3.0.1/luaj-jse-3.0.1.jar;C:/Users/knoxg/.m2/repository/org/python/jython/2.5.3/jython-2.5.3.jar;C:/Users/knoxg/.m2/repository/org/beanshell/bsh/2.0b5/bsh-2.0b5.jar;C:/Users/knoxg/.m2/repository/net/java/openjdk/icedtea/rhino/1.7.0.79-randomnoun/rhino-1.7.0.79-randomnoun.jar;C:/Users/knoxg/.m2/repository/rhino/js/1.7R2/js-1.7R2.jar;C:/Users/knoxg/.m2/repository/com/sun/jre/rhino/1.7.0_80/rhino-1.7.0_80.jar;C:/Users/knoxg/.m2/repository/org/jruby/jruby-complete/9.1.2.0/jruby-complete-9.1.2.0.jar;C:/Users/knoxg/.m2/repository/org/abcl/abcl/1.4.0/abcl-1.4.0.jar;C:/Users/knoxg/.m2/repository/org/abcl/abcl-contrib/1.4.0/abcl-contrib-1.4.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/sdk/graal-sdk/20.3.0/graal-sdk-20.3.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/js/js/20.3.0/js-20.3.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/regex/regex/20.3.0/regex-20.3.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/truffle/truffle-api/20.3.0/truffle-api-20.3.0.jar;C:/Users/knoxg/.m2/repository/com/ibm/icu/icu4j/67.1/icu4j-67.1.jar;C:/Users/knoxg/.m2/repository/org/graalvm/js/js-scriptengine/20.3.0/js-scriptengine-20.3.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/tools/profiler/20.3.0/profiler-20.3.0.jar;C:/Users/knoxg/.m2/repository/org/graalvm/tools/chromeinspector/20.3.0/chromeinspector-20.3.0.jar'
 -encoding
 'UTF-8'
 -protected
+-source
+'8'
 -sourcepath
-'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/src/test/java'
+'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/src/test/java;C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/target/generated-test-sources/test-annotations'
 -author
 -bottom
 'Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.'
 -charset
 'UTF-8'
 -d
-'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/site/testapidocs'
+'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/target/site/testapidocs'
 -docencoding
 'UTF-8'
 -docfilessubdirs
 -doctitle
-'jessop 1.0.9-SNAPSHOT Test API'
+'jessop 1.0.14 Test API'
 -link
 '../apidocs'
 -linkoffline
-'http://docs.oracle.com/javase/7/docs/api' 'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/javadoc-bundle-options'
+'https://docs.oracle.com/en/java/javase/11/docs/api' 'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/target/javadoc-bundle-options'
 -linksource
 -stylesheetfile
-'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/src/main/javadoc/stylesheet.css'
+'C:/Users/knoxg/workspace-4.15.0-sts-4.6.0-randomnoun/git/jessop/target/checkout/src/main/javadoc/stylesheet.css'
 -use
 -version
 -windowtitle
-'jessop 1.0.9-SNAPSHOT Test API'
+'jessop 1.0.14 Test API'

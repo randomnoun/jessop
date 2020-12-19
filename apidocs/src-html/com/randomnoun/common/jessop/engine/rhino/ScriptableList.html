@@ -1,232 +1,233 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>// downloaded and modified from https://github.com/ringo/ringojs/blob/master/src/org/ringojs/wrappers/ScriptableMap.java<a name="line.1"></a>
-<span class="sourceLineNo">002</span>// by knoxg on 2016-07-13<a name="line.2"></a>
-<span class="sourceLineNo">003</span><a name="line.3"></a>
-<span class="sourceLineNo">004</span>/*<a name="line.4"></a>
-<span class="sourceLineNo">005</span> *  Copyright 2006 Hannes Wallnoefer &lt;hannes@helma.at&gt;<a name="line.5"></a>
-<span class="sourceLineNo">006</span> *<a name="line.6"></a>
-<span class="sourceLineNo">007</span> *  Licensed under the Apache License, Version 2.0 (the "License");<a name="line.7"></a>
-<span class="sourceLineNo">008</span> *  you may not use this file except in compliance with the License.<a name="line.8"></a>
-<span class="sourceLineNo">009</span> *  You may obtain a copy of the License at<a name="line.9"></a>
-<span class="sourceLineNo">010</span> *<a name="line.10"></a>
-<span class="sourceLineNo">011</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.11"></a>
-<span class="sourceLineNo">012</span> *<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *  Unless required by applicable law or agreed to in writing, software<a name="line.13"></a>
-<span class="sourceLineNo">014</span> *  distributed under the License is distributed on an "AS IS" BASIS,<a name="line.14"></a>
-<span class="sourceLineNo">015</span> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.15"></a>
-<span class="sourceLineNo">016</span> *  See the License for the specific language governing permissions and<a name="line.16"></a>
-<span class="sourceLineNo">017</span> *  limitations under the License.<a name="line.17"></a>
-<span class="sourceLineNo">018</span> */<a name="line.18"></a>
-<span class="sourceLineNo">019</span><a name="line.19"></a>
-<span class="sourceLineNo">020</span>package com.randomnoun.common.jessop.engine.rhino;<a name="line.20"></a>
-<span class="sourceLineNo">021</span><a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.mozilla.javascript.*;<a name="line.22"></a>
-<span class="sourceLineNo">023</span><a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.util.List;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import java.util.ArrayList;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.Collection;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import java.util.Map;<a name="line.27"></a>
-<span class="sourceLineNo">028</span><a name="line.28"></a>
-<span class="sourceLineNo">029</span>/**<a name="line.29"></a>
-<span class="sourceLineNo">030</span> * ScriptableList is a wrapper for java.util.List instances that allows developers<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * to interact with them like it was a native JavaScript array.<a name="line.31"></a>
-<span class="sourceLineNo">032</span> */<a name="line.32"></a>
-<span class="sourceLineNo">033</span>public class ScriptableList extends NativeJavaObject {<a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
-<span class="sourceLineNo">035</span>    List&lt;Object&gt; list;<a name="line.35"></a>
-<span class="sourceLineNo">036</span>    static final String CLASSNAME = "ScriptableList";<a name="line.36"></a>
-<span class="sourceLineNo">037</span><a name="line.37"></a>
-<span class="sourceLineNo">038</span>    // Set up a custom constructor, for this class is somewhere between a host class and<a name="line.38"></a>
-<span class="sourceLineNo">039</span>    // a native wrapper, for which no standard constructor class exists<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    public static void init(Scriptable scope) throws NoSuchMethodException {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>        BaseFunction ctor = new BaseFunction(scope, ScriptableObject.getFunctionPrototype(scope)) {<a name="line.41"></a>
-<span class="sourceLineNo">042</span>            @Override<a name="line.42"></a>
-<span class="sourceLineNo">043</span>            public Scriptable construct(Context cx, Scriptable scope, Object[] args) {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>                if (args.length &gt; 1) {<a name="line.44"></a>
-<span class="sourceLineNo">045</span>                    throw new EvaluatorException("ScriptableList() requires a java.util.List argument");<a name="line.45"></a>
-<span class="sourceLineNo">046</span>                }<a name="line.46"></a>
-<span class="sourceLineNo">047</span>                return new ScriptableList(scope, args.length == 0 ? null : args[0]);<a name="line.47"></a>
-<span class="sourceLineNo">048</span>            }<a name="line.48"></a>
-<span class="sourceLineNo">049</span>            @Override<a name="line.49"></a>
-<span class="sourceLineNo">050</span>            public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                return construct(cx, scope, args);<a name="line.51"></a>
-<span class="sourceLineNo">052</span>            }<a name="line.52"></a>
-<span class="sourceLineNo">053</span>        };<a name="line.53"></a>
-<span class="sourceLineNo">054</span>        ScriptableObject.defineProperty(scope, CLASSNAME, ctor,<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                ScriptableObject.DONTENUM | ScriptableObject.READONLY);<a name="line.55"></a>
-<span class="sourceLineNo">056</span>    }<a name="line.56"></a>
-<span class="sourceLineNo">057</span><a name="line.57"></a>
-<span class="sourceLineNo">058</span>    /**<a name="line.58"></a>
-<span class="sourceLineNo">059</span>     * Create a ScriptableList wrapper around a java.util.List<a name="line.59"></a>
-<span class="sourceLineNo">060</span>     * @param scope the scope<a name="line.60"></a>
-<span class="sourceLineNo">061</span>     * @param obj the list, possibly wrapped<a name="line.61"></a>
-<span class="sourceLineNo">062</span>     */<a name="line.62"></a>
-<span class="sourceLineNo">063</span>    @SuppressWarnings("unchecked")<a name="line.63"></a>
-<span class="sourceLineNo">064</span>    private ScriptableList(Scriptable scope, Object obj) {<a name="line.64"></a>
-<span class="sourceLineNo">065</span>        this.parent = scope;<a name="line.65"></a>
-<span class="sourceLineNo">066</span>        if (obj instanceof Wrapper) {<a name="line.66"></a>
-<span class="sourceLineNo">067</span>            obj = ((Wrapper) obj).unwrap();<a name="line.67"></a>
-<span class="sourceLineNo">068</span>        }<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        if (obj instanceof List) {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>            this.javaObject = this.list = (List) obj;<a name="line.70"></a>
-<span class="sourceLineNo">071</span>        } else if (obj instanceof Collection) {<a name="line.71"></a>
-<span class="sourceLineNo">072</span>            this.javaObject = this.list = new ArrayList&lt;Object&gt;((Collection&lt;?&gt;) obj);<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        } else if (obj instanceof Map) {<a name="line.73"></a>
-<span class="sourceLineNo">074</span>            this.javaObject = this.list = new ArrayList&lt;Object&gt;(((Map&lt;?,?&gt;)obj).values());<a name="line.74"></a>
-<span class="sourceLineNo">075</span>        } else if (obj == null || obj == Undefined.instance) {<a name="line.75"></a>
-<span class="sourceLineNo">076</span>            this.javaObject = this.list = new ArrayList&lt;Object&gt;();<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        } else {<a name="line.77"></a>
-<span class="sourceLineNo">078</span>            throw new EvaluatorException("Invalid argument to ScriptableList(): " + obj);<a name="line.78"></a>
-<span class="sourceLineNo">079</span>        }<a name="line.79"></a>
-<span class="sourceLineNo">080</span>        this.staticType = this.list.getClass();<a name="line.80"></a>
-<span class="sourceLineNo">081</span>        initMembers();<a name="line.81"></a>
-<span class="sourceLineNo">082</span>        initPrototype(scope);<a name="line.82"></a>
-<span class="sourceLineNo">083</span>    }<a name="line.83"></a>
-<span class="sourceLineNo">084</span><a name="line.84"></a>
-<span class="sourceLineNo">085</span><a name="line.85"></a>
-<span class="sourceLineNo">086</span>    /**<a name="line.86"></a>
-<span class="sourceLineNo">087</span>     * Create a ScriptableList wrapper around a java.util.List.<a name="line.87"></a>
-<span class="sourceLineNo">088</span>     * @param scope the scope<a name="line.88"></a>
-<span class="sourceLineNo">089</span>     * @param list the list instance<a name="line.89"></a>
-<span class="sourceLineNo">090</span>     */<a name="line.90"></a>
-<span class="sourceLineNo">091</span>    @SuppressWarnings("unchecked")<a name="line.91"></a>
-<span class="sourceLineNo">092</span>    public ScriptableList(Scriptable scope, List list) {<a name="line.92"></a>
-<span class="sourceLineNo">093</span>        super(scope, list, list.getClass());<a name="line.93"></a>
-<span class="sourceLineNo">094</span>        this.list = list;<a name="line.94"></a>
-<span class="sourceLineNo">095</span>        initPrototype(scope);<a name="line.95"></a>
-<span class="sourceLineNo">096</span>    }<a name="line.96"></a>
-<span class="sourceLineNo">097</span><a name="line.97"></a>
-<span class="sourceLineNo">098</span>    /**<a name="line.98"></a>
-<span class="sourceLineNo">099</span>     * Set the prototype to the Array prototype so we can use array methds such as<a name="line.99"></a>
-<span class="sourceLineNo">100</span>     * push, pop, shift, slice etc.<a name="line.100"></a>
-<span class="sourceLineNo">101</span>     * @param scope the global scope for looking up the Array constructor<a name="line.101"></a>
-<span class="sourceLineNo">102</span>     */<a name="line.102"></a>
-<span class="sourceLineNo">103</span>    protected void initPrototype(Scriptable scope) {<a name="line.103"></a>
-<span class="sourceLineNo">104</span>        Scriptable arrayProto = ScriptableObject.getClassPrototype(scope, "Array");<a name="line.104"></a>
-<span class="sourceLineNo">105</span>        if (arrayProto != null) {<a name="line.105"></a>
-<span class="sourceLineNo">106</span>            this.setPrototype(arrayProto);<a name="line.106"></a>
-<span class="sourceLineNo">107</span>        }<a name="line.107"></a>
-<span class="sourceLineNo">108</span>    }<a name="line.108"></a>
-<span class="sourceLineNo">109</span><a name="line.109"></a>
-<span class="sourceLineNo">110</span>    public void delete(int index) {<a name="line.110"></a>
-<span class="sourceLineNo">111</span>        if (list != null) {<a name="line.111"></a>
-<span class="sourceLineNo">112</span>            try {<a name="line.112"></a>
-<span class="sourceLineNo">113</span>                list.remove(index);<a name="line.113"></a>
-<span class="sourceLineNo">114</span>            } catch (RuntimeException e) {<a name="line.114"></a>
-<span class="sourceLineNo">115</span>                throw Context.throwAsScriptRuntimeEx(e);<a name="line.115"></a>
-<span class="sourceLineNo">116</span>            }<a name="line.116"></a>
-<span class="sourceLineNo">117</span>        } else {<a name="line.117"></a>
-<span class="sourceLineNo">118</span>            super.delete(index);<a name="line.118"></a>
-<span class="sourceLineNo">119</span>        }<a name="line.119"></a>
-<span class="sourceLineNo">120</span>    }<a name="line.120"></a>
-<span class="sourceLineNo">121</span><a name="line.121"></a>
-<span class="sourceLineNo">122</span>    public Object get(int index, Scriptable start) {<a name="line.122"></a>
-<span class="sourceLineNo">123</span>        if (list == null)<a name="line.123"></a>
-<span class="sourceLineNo">124</span>            return super.get(index, start);<a name="line.124"></a>
-<span class="sourceLineNo">125</span>        try {<a name="line.125"></a>
-<span class="sourceLineNo">126</span>            if (index &lt; 0 || index &gt;= list.size()) {<a name="line.126"></a>
-<span class="sourceLineNo">127</span>                return Undefined.instance;<a name="line.127"></a>
-<span class="sourceLineNo">128</span>            } else {<a name="line.128"></a>
-<span class="sourceLineNo">129</span>                return ScriptUtils.javaToJS(list.get(index), getParentScope());<a name="line.129"></a>
-<span class="sourceLineNo">130</span>            }<a name="line.130"></a>
-<span class="sourceLineNo">131</span>        } catch (RuntimeException e) {<a name="line.131"></a>
-<span class="sourceLineNo">132</span>            throw Context.throwAsScriptRuntimeEx(e);<a name="line.132"></a>
-<span class="sourceLineNo">133</span>        }<a name="line.133"></a>
-<span class="sourceLineNo">134</span>    }<a name="line.134"></a>
-<span class="sourceLineNo">135</span><a name="line.135"></a>
-<span class="sourceLineNo">136</span>    public boolean has(int index, Scriptable start) {<a name="line.136"></a>
-<span class="sourceLineNo">137</span>        if (list == null)<a name="line.137"></a>
-<span class="sourceLineNo">138</span>            return super.has(index, start);<a name="line.138"></a>
-<span class="sourceLineNo">139</span>        return index &gt;= 0 &amp;&amp; index &lt; list.size();<a name="line.139"></a>
-<span class="sourceLineNo">140</span>    }<a name="line.140"></a>
-<span class="sourceLineNo">141</span><a name="line.141"></a>
-<span class="sourceLineNo">142</span>    public void put(String name, Scriptable start, Object value) {<a name="line.142"></a>
-<span class="sourceLineNo">143</span>        if (list != null &amp;&amp; "length".equals(name)) {<a name="line.143"></a>
-<span class="sourceLineNo">144</span>            double d = ScriptRuntime.toNumber(value);<a name="line.144"></a>
-<span class="sourceLineNo">145</span>            long longVal = ScriptRuntime.toUint32(d);<a name="line.145"></a>
-<span class="sourceLineNo">146</span>            if (longVal != d) {<a name="line.146"></a>
-<span class="sourceLineNo">147</span>                String msg = ScriptRuntime.getMessage0("msg.arraylength.bad");<a name="line.147"></a>
-<span class="sourceLineNo">148</span>                throw ScriptRuntime.constructError("RangeError", msg);<a name="line.148"></a>
-<span class="sourceLineNo">149</span>            }<a name="line.149"></a>
-<span class="sourceLineNo">150</span>            int size = list.size();<a name="line.150"></a>
-<span class="sourceLineNo">151</span>            if (longVal &gt; size) {<a name="line.151"></a>
-<span class="sourceLineNo">152</span>                for (int i = size; i &lt; longVal; i++) {<a name="line.152"></a>
-<span class="sourceLineNo">153</span>                    // push nulls as undefined is probably meaningless to java code<a name="line.153"></a>
-<span class="sourceLineNo">154</span>                    list.add(null);<a name="line.154"></a>
-<span class="sourceLineNo">155</span>                }<a name="line.155"></a>
-<span class="sourceLineNo">156</span>            } else if (longVal &lt; size) {<a name="line.156"></a>
-<span class="sourceLineNo">157</span>                for (int i = size - 1; i &gt;= longVal; i--) {<a name="line.157"></a>
-<span class="sourceLineNo">158</span>                    list.remove(i);<a name="line.158"></a>
-<span class="sourceLineNo">159</span>                }<a name="line.159"></a>
-<span class="sourceLineNo">160</span>            }<a name="line.160"></a>
-<span class="sourceLineNo">161</span>        } else {<a name="line.161"></a>
-<span class="sourceLineNo">162</span>            super.put(name, start, value);<a name="line.162"></a>
-<span class="sourceLineNo">163</span>        }<a name="line.163"></a>
-<span class="sourceLineNo">164</span>    }<a name="line.164"></a>
-<span class="sourceLineNo">165</span><a name="line.165"></a>
-<span class="sourceLineNo">166</span>    public void put(int index, Scriptable start, Object value) {<a name="line.166"></a>
-<span class="sourceLineNo">167</span>        if (list != null) {<a name="line.167"></a>
-<span class="sourceLineNo">168</span>            try {<a name="line.168"></a>
-<span class="sourceLineNo">169</span>                if (index == list.size()) {<a name="line.169"></a>
-<span class="sourceLineNo">170</span>                    list.add(ScriptUtils.jsToJava(value));<a name="line.170"></a>
-<span class="sourceLineNo">171</span>                } else {<a name="line.171"></a>
-<span class="sourceLineNo">172</span>                    list.set(index, ScriptUtils.jsToJava(value));<a name="line.172"></a>
-<span class="sourceLineNo">173</span>                }<a name="line.173"></a>
-<span class="sourceLineNo">174</span>            } catch (RuntimeException e) {<a name="line.174"></a>
-<span class="sourceLineNo">175</span>                Context.throwAsScriptRuntimeEx(e);<a name="line.175"></a>
-<span class="sourceLineNo">176</span>            }<a name="line.176"></a>
-<span class="sourceLineNo">177</span>        } else {<a name="line.177"></a>
-<span class="sourceLineNo">178</span>            super.put(index, start, value);<a name="line.178"></a>
-<span class="sourceLineNo">179</span>        }<a name="line.179"></a>
-<span class="sourceLineNo">180</span>    }<a name="line.180"></a>
-<span class="sourceLineNo">181</span><a name="line.181"></a>
-<span class="sourceLineNo">182</span>    public Object get(String name, Scriptable start) {<a name="line.182"></a>
-<span class="sourceLineNo">183</span>        if ("length".equals(name) &amp;&amp; list != null) {<a name="line.183"></a>
-<span class="sourceLineNo">184</span>            return new Integer(list.size());<a name="line.184"></a>
-<span class="sourceLineNo">185</span>        }<a name="line.185"></a>
-<span class="sourceLineNo">186</span>        return super.get(name, start);<a name="line.186"></a>
-<span class="sourceLineNo">187</span>    }<a name="line.187"></a>
-<span class="sourceLineNo">188</span><a name="line.188"></a>
-<span class="sourceLineNo">189</span>    public Object[] getIds() {<a name="line.189"></a>
-<span class="sourceLineNo">190</span>        if (list == null)<a name="line.190"></a>
-<span class="sourceLineNo">191</span>            return super.getIds();<a name="line.191"></a>
-<span class="sourceLineNo">192</span>        int size = list.size();<a name="line.192"></a>
-<span class="sourceLineNo">193</span>        Object[] ids = new Object[size];<a name="line.193"></a>
-<span class="sourceLineNo">194</span>        for (int i = 0; i &lt; size; ++i) {<a name="line.194"></a>
-<span class="sourceLineNo">195</span>            ids[i] = new Integer(i);<a name="line.195"></a>
-<span class="sourceLineNo">196</span>        }<a name="line.196"></a>
-<span class="sourceLineNo">197</span>        return ids;<a name="line.197"></a>
-<span class="sourceLineNo">198</span>    }<a name="line.198"></a>
-<span class="sourceLineNo">199</span><a name="line.199"></a>
-<span class="sourceLineNo">200</span>    public String toString() {<a name="line.200"></a>
-<span class="sourceLineNo">201</span>        if (list == null)<a name="line.201"></a>
-<span class="sourceLineNo">202</span>            return super.toString();<a name="line.202"></a>
-<span class="sourceLineNo">203</span>        return list.toString();<a name="line.203"></a>
-<span class="sourceLineNo">204</span>    }<a name="line.204"></a>
-<span class="sourceLineNo">205</span><a name="line.205"></a>
-<span class="sourceLineNo">206</span>    public Object getDefaultValue(Class typeHint) {<a name="line.206"></a>
-<span class="sourceLineNo">207</span>        return toString();<a name="line.207"></a>
-<span class="sourceLineNo">208</span>    }<a name="line.208"></a>
-<span class="sourceLineNo">209</span><a name="line.209"></a>
-<span class="sourceLineNo">210</span>    public Object unwrap() {<a name="line.210"></a>
-<span class="sourceLineNo">211</span>        return list;<a name="line.211"></a>
-<span class="sourceLineNo">212</span>    }<a name="line.212"></a>
-<span class="sourceLineNo">213</span><a name="line.213"></a>
-<span class="sourceLineNo">214</span>    public List getList() {<a name="line.214"></a>
-<span class="sourceLineNo">215</span>        return list;<a name="line.215"></a>
-<span class="sourceLineNo">216</span>    }<a name="line.216"></a>
-<span class="sourceLineNo">217</span><a name="line.217"></a>
-<span class="sourceLineNo">218</span>    public String getClassName() {<a name="line.218"></a>
-<span class="sourceLineNo">219</span>        return CLASSNAME;<a name="line.219"></a>
-<span class="sourceLineNo">220</span>    }<a name="line.220"></a>
-<span class="sourceLineNo">221</span>}<a name="line.221"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">// downloaded and modified from https://github.com/ringo/ringojs/blob/master/src/org/ringojs/wrappers/ScriptableMap.java</a>
+<span class="sourceLineNo">002</span><a id="line.2">// by knoxg on 2016-07-13</a>
+<span class="sourceLineNo">003</span><a id="line.3"></a>
+<span class="sourceLineNo">004</span><a id="line.4">/*</a>
+<span class="sourceLineNo">005</span><a id="line.5"> *  Copyright 2006 Hannes Wallnoefer &lt;hannes@helma.at&gt;</a>
+<span class="sourceLineNo">006</span><a id="line.6"> *</a>
+<span class="sourceLineNo">007</span><a id="line.7"> *  Licensed under the Apache License, Version 2.0 (the "License");</a>
+<span class="sourceLineNo">008</span><a id="line.8"> *  you may not use this file except in compliance with the License.</a>
+<span class="sourceLineNo">009</span><a id="line.9"> *  You may obtain a copy of the License at</a>
+<span class="sourceLineNo">010</span><a id="line.10"> *</a>
+<span class="sourceLineNo">011</span><a id="line.11"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">012</span><a id="line.12"> *</a>
+<span class="sourceLineNo">013</span><a id="line.13"> *  Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">014</span><a id="line.14"> *  distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">015</span><a id="line.15"> *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">016</span><a id="line.16"> *  See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">017</span><a id="line.17"> *  limitations under the License.</a>
+<span class="sourceLineNo">018</span><a id="line.18"> */</a>
+<span class="sourceLineNo">019</span><a id="line.19"></a>
+<span class="sourceLineNo">020</span><a id="line.20">package com.randomnoun.common.jessop.engine.rhino;</a>
+<span class="sourceLineNo">021</span><a id="line.21"></a>
+<span class="sourceLineNo">022</span><a id="line.22">import org.mozilla.javascript.*;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.List;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import java.util.ArrayList;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import java.util.Collection;</a>
+<span class="sourceLineNo">027</span><a id="line.27">import java.util.Map;</a>
+<span class="sourceLineNo">028</span><a id="line.28"></a>
+<span class="sourceLineNo">029</span><a id="line.29">/**</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * ScriptableList is a wrapper for java.util.List instances that allows developers</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * to interact with them like it was a native JavaScript array.</a>
+<span class="sourceLineNo">032</span><a id="line.32"> */</a>
+<span class="sourceLineNo">033</span><a id="line.33">public class ScriptableList extends NativeJavaObject {</a>
+<span class="sourceLineNo">034</span><a id="line.34"></a>
+<span class="sourceLineNo">035</span><a id="line.35">    List&lt;Object&gt; list;</a>
+<span class="sourceLineNo">036</span><a id="line.36">    static final String CLASSNAME = "ScriptableList";</a>
+<span class="sourceLineNo">037</span><a id="line.37"></a>
+<span class="sourceLineNo">038</span><a id="line.38">    // Set up a custom constructor, for this class is somewhere between a host class and</a>
+<span class="sourceLineNo">039</span><a id="line.39">    // a native wrapper, for which no standard constructor class exists</a>
+<span class="sourceLineNo">040</span><a id="line.40">    public static void init(Scriptable scope) throws NoSuchMethodException {</a>
+<span class="sourceLineNo">041</span><a id="line.41">        BaseFunction ctor = new BaseFunction(scope, ScriptableObject.getFunctionPrototype(scope)) {</a>
+<span class="sourceLineNo">042</span><a id="line.42">            @Override</a>
+<span class="sourceLineNo">043</span><a id="line.43">            public Scriptable construct(Context cx, Scriptable scope, Object[] args) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">                if (args.length &gt; 1) {</a>
+<span class="sourceLineNo">045</span><a id="line.45">                    throw new EvaluatorException("ScriptableList() requires a java.util.List argument");</a>
+<span class="sourceLineNo">046</span><a id="line.46">                }</a>
+<span class="sourceLineNo">047</span><a id="line.47">                return new ScriptableList(scope, args.length == 0 ? null : args[0]);</a>
+<span class="sourceLineNo">048</span><a id="line.48">            }</a>
+<span class="sourceLineNo">049</span><a id="line.49">            @Override</a>
+<span class="sourceLineNo">050</span><a id="line.50">            public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {</a>
+<span class="sourceLineNo">051</span><a id="line.51">                return construct(cx, scope, args);</a>
+<span class="sourceLineNo">052</span><a id="line.52">            }</a>
+<span class="sourceLineNo">053</span><a id="line.53">        };</a>
+<span class="sourceLineNo">054</span><a id="line.54">        ScriptableObject.defineProperty(scope, CLASSNAME, ctor,</a>
+<span class="sourceLineNo">055</span><a id="line.55">                ScriptableObject.DONTENUM | ScriptableObject.READONLY);</a>
+<span class="sourceLineNo">056</span><a id="line.56">    }</a>
+<span class="sourceLineNo">057</span><a id="line.57"></a>
+<span class="sourceLineNo">058</span><a id="line.58">    /**</a>
+<span class="sourceLineNo">059</span><a id="line.59">     * Create a ScriptableList wrapper around a java.util.List</a>
+<span class="sourceLineNo">060</span><a id="line.60">     * @param scope the scope</a>
+<span class="sourceLineNo">061</span><a id="line.61">     * @param obj the list, possibly wrapped</a>
+<span class="sourceLineNo">062</span><a id="line.62">     */</a>
+<span class="sourceLineNo">063</span><a id="line.63">    @SuppressWarnings("unchecked")</a>
+<span class="sourceLineNo">064</span><a id="line.64">    private ScriptableList(Scriptable scope, Object obj) {</a>
+<span class="sourceLineNo">065</span><a id="line.65">        this.parent = scope;</a>
+<span class="sourceLineNo">066</span><a id="line.66">        if (obj instanceof Wrapper) {</a>
+<span class="sourceLineNo">067</span><a id="line.67">            obj = ((Wrapper) obj).unwrap();</a>
+<span class="sourceLineNo">068</span><a id="line.68">        }</a>
+<span class="sourceLineNo">069</span><a id="line.69">        if (obj instanceof List) {</a>
+<span class="sourceLineNo">070</span><a id="line.70">            this.javaObject = this.list = (List) obj;</a>
+<span class="sourceLineNo">071</span><a id="line.71">        } else if (obj instanceof Collection) {</a>
+<span class="sourceLineNo">072</span><a id="line.72">            this.javaObject = this.list = new ArrayList&lt;Object&gt;((Collection&lt;?&gt;) obj);</a>
+<span class="sourceLineNo">073</span><a id="line.73">        } else if (obj instanceof Map) {</a>
+<span class="sourceLineNo">074</span><a id="line.74">            this.javaObject = this.list = new ArrayList&lt;Object&gt;(((Map&lt;?,?&gt;)obj).values());</a>
+<span class="sourceLineNo">075</span><a id="line.75">        } else if (obj == null || obj == Undefined.instance) {</a>
+<span class="sourceLineNo">076</span><a id="line.76">            this.javaObject = this.list = new ArrayList&lt;Object&gt;();</a>
+<span class="sourceLineNo">077</span><a id="line.77">        } else {</a>
+<span class="sourceLineNo">078</span><a id="line.78">            throw new EvaluatorException("Invalid argument to ScriptableList(): " + obj);</a>
+<span class="sourceLineNo">079</span><a id="line.79">        }</a>
+<span class="sourceLineNo">080</span><a id="line.80">        this.staticType = this.list.getClass();</a>
+<span class="sourceLineNo">081</span><a id="line.81">        initMembers();</a>
+<span class="sourceLineNo">082</span><a id="line.82">        initPrototype(scope);</a>
+<span class="sourceLineNo">083</span><a id="line.83">    }</a>
+<span class="sourceLineNo">084</span><a id="line.84"></a>
+<span class="sourceLineNo">085</span><a id="line.85"></a>
+<span class="sourceLineNo">086</span><a id="line.86">    /**</a>
+<span class="sourceLineNo">087</span><a id="line.87">     * Create a ScriptableList wrapper around a java.util.List.</a>
+<span class="sourceLineNo">088</span><a id="line.88">     * @param scope the scope</a>
+<span class="sourceLineNo">089</span><a id="line.89">     * @param list the list instance</a>
+<span class="sourceLineNo">090</span><a id="line.90">     */</a>
+<span class="sourceLineNo">091</span><a id="line.91">    @SuppressWarnings("unchecked")</a>
+<span class="sourceLineNo">092</span><a id="line.92">    public ScriptableList(Scriptable scope, List list) {</a>
+<span class="sourceLineNo">093</span><a id="line.93">        super(scope, list, list.getClass());</a>
+<span class="sourceLineNo">094</span><a id="line.94">        this.list = list;</a>
+<span class="sourceLineNo">095</span><a id="line.95">        initPrototype(scope);</a>
+<span class="sourceLineNo">096</span><a id="line.96">    }</a>
+<span class="sourceLineNo">097</span><a id="line.97"></a>
+<span class="sourceLineNo">098</span><a id="line.98">    /**</a>
+<span class="sourceLineNo">099</span><a id="line.99">     * Set the prototype to the Array prototype so we can use array methds such as</a>
+<span class="sourceLineNo">100</span><a id="line.100">     * push, pop, shift, slice etc.</a>
+<span class="sourceLineNo">101</span><a id="line.101">     * @param scope the global scope for looking up the Array constructor</a>
+<span class="sourceLineNo">102</span><a id="line.102">     */</a>
+<span class="sourceLineNo">103</span><a id="line.103">    protected void initPrototype(Scriptable scope) {</a>
+<span class="sourceLineNo">104</span><a id="line.104">        Scriptable arrayProto = ScriptableObject.getClassPrototype(scope, "Array");</a>
+<span class="sourceLineNo">105</span><a id="line.105">        if (arrayProto != null) {</a>
+<span class="sourceLineNo">106</span><a id="line.106">            this.setPrototype(arrayProto);</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108">    }</a>
+<span class="sourceLineNo">109</span><a id="line.109"></a>
+<span class="sourceLineNo">110</span><a id="line.110">    public void delete(int index) {</a>
+<span class="sourceLineNo">111</span><a id="line.111">        if (list != null) {</a>
+<span class="sourceLineNo">112</span><a id="line.112">            try {</a>
+<span class="sourceLineNo">113</span><a id="line.113">                list.remove(index);</a>
+<span class="sourceLineNo">114</span><a id="line.114">            } catch (RuntimeException e) {</a>
+<span class="sourceLineNo">115</span><a id="line.115">                throw Context.throwAsScriptRuntimeEx(e);</a>
+<span class="sourceLineNo">116</span><a id="line.116">            }</a>
+<span class="sourceLineNo">117</span><a id="line.117">        } else {</a>
+<span class="sourceLineNo">118</span><a id="line.118">            super.delete(index);</a>
+<span class="sourceLineNo">119</span><a id="line.119">        }</a>
+<span class="sourceLineNo">120</span><a id="line.120">    }</a>
+<span class="sourceLineNo">121</span><a id="line.121"></a>
+<span class="sourceLineNo">122</span><a id="line.122">    public Object get(int index, Scriptable start) {</a>
+<span class="sourceLineNo">123</span><a id="line.123">        if (list == null)</a>
+<span class="sourceLineNo">124</span><a id="line.124">            return super.get(index, start);</a>
+<span class="sourceLineNo">125</span><a id="line.125">        try {</a>
+<span class="sourceLineNo">126</span><a id="line.126">            if (index &lt; 0 || index &gt;= list.size()) {</a>
+<span class="sourceLineNo">127</span><a id="line.127">                return Undefined.instance;</a>
+<span class="sourceLineNo">128</span><a id="line.128">            } else {</a>
+<span class="sourceLineNo">129</span><a id="line.129">                return ScriptUtils.javaToJS(list.get(index), getParentScope());</a>
+<span class="sourceLineNo">130</span><a id="line.130">            }</a>
+<span class="sourceLineNo">131</span><a id="line.131">        } catch (RuntimeException e) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">            throw Context.throwAsScriptRuntimeEx(e);</a>
+<span class="sourceLineNo">133</span><a id="line.133">        }</a>
+<span class="sourceLineNo">134</span><a id="line.134">    }</a>
+<span class="sourceLineNo">135</span><a id="line.135"></a>
+<span class="sourceLineNo">136</span><a id="line.136">    public boolean has(int index, Scriptable start) {</a>
+<span class="sourceLineNo">137</span><a id="line.137">        if (list == null)</a>
+<span class="sourceLineNo">138</span><a id="line.138">            return super.has(index, start);</a>
+<span class="sourceLineNo">139</span><a id="line.139">        return index &gt;= 0 &amp;&amp; index &lt; list.size();</a>
+<span class="sourceLineNo">140</span><a id="line.140">    }</a>
+<span class="sourceLineNo">141</span><a id="line.141"></a>
+<span class="sourceLineNo">142</span><a id="line.142">    public void put(String name, Scriptable start, Object value) {</a>
+<span class="sourceLineNo">143</span><a id="line.143">        if (list != null &amp;&amp; "length".equals(name)) {</a>
+<span class="sourceLineNo">144</span><a id="line.144">            double d = ScriptRuntime.toNumber(value);</a>
+<span class="sourceLineNo">145</span><a id="line.145">            long longVal = ScriptRuntime.toUint32(d);</a>
+<span class="sourceLineNo">146</span><a id="line.146">            if (longVal != d) {</a>
+<span class="sourceLineNo">147</span><a id="line.147">                String msg = ScriptRuntime.getMessage0("msg.arraylength.bad");</a>
+<span class="sourceLineNo">148</span><a id="line.148">                throw ScriptRuntime.constructError("RangeError", msg);</a>
+<span class="sourceLineNo">149</span><a id="line.149">            }</a>
+<span class="sourceLineNo">150</span><a id="line.150">            int size = list.size();</a>
+<span class="sourceLineNo">151</span><a id="line.151">            if (longVal &gt; size) {</a>
+<span class="sourceLineNo">152</span><a id="line.152">                for (int i = size; i &lt; longVal; i++) {</a>
+<span class="sourceLineNo">153</span><a id="line.153">                    // push nulls as undefined is probably meaningless to java code</a>
+<span class="sourceLineNo">154</span><a id="line.154">                    list.add(null);</a>
+<span class="sourceLineNo">155</span><a id="line.155">                }</a>
+<span class="sourceLineNo">156</span><a id="line.156">            } else if (longVal &lt; size) {</a>
+<span class="sourceLineNo">157</span><a id="line.157">                for (int i = size - 1; i &gt;= longVal; i--) {</a>
+<span class="sourceLineNo">158</span><a id="line.158">                    list.remove(i);</a>
+<span class="sourceLineNo">159</span><a id="line.159">                }</a>
+<span class="sourceLineNo">160</span><a id="line.160">            }</a>
+<span class="sourceLineNo">161</span><a id="line.161">        } else {</a>
+<span class="sourceLineNo">162</span><a id="line.162">            super.put(name, start, value);</a>
+<span class="sourceLineNo">163</span><a id="line.163">        }</a>
+<span class="sourceLineNo">164</span><a id="line.164">    }</a>
+<span class="sourceLineNo">165</span><a id="line.165"></a>
+<span class="sourceLineNo">166</span><a id="line.166">    public void put(int index, Scriptable start, Object value) {</a>
+<span class="sourceLineNo">167</span><a id="line.167">        if (list != null) {</a>
+<span class="sourceLineNo">168</span><a id="line.168">            try {</a>
+<span class="sourceLineNo">169</span><a id="line.169">                if (index == list.size()) {</a>
+<span class="sourceLineNo">170</span><a id="line.170">                    list.add(ScriptUtils.jsToJava(value));</a>
+<span class="sourceLineNo">171</span><a id="line.171">                } else {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                    list.set(index, ScriptUtils.jsToJava(value));</a>
+<span class="sourceLineNo">173</span><a id="line.173">                }</a>
+<span class="sourceLineNo">174</span><a id="line.174">            } catch (RuntimeException e) {</a>
+<span class="sourceLineNo">175</span><a id="line.175">                Context.throwAsScriptRuntimeEx(e);</a>
+<span class="sourceLineNo">176</span><a id="line.176">            }</a>
+<span class="sourceLineNo">177</span><a id="line.177">        } else {</a>
+<span class="sourceLineNo">178</span><a id="line.178">            super.put(index, start, value);</a>
+<span class="sourceLineNo">179</span><a id="line.179">        }</a>
+<span class="sourceLineNo">180</span><a id="line.180">    }</a>
+<span class="sourceLineNo">181</span><a id="line.181"></a>
+<span class="sourceLineNo">182</span><a id="line.182">    public Object get(String name, Scriptable start) {</a>
+<span class="sourceLineNo">183</span><a id="line.183">        if ("length".equals(name) &amp;&amp; list != null) {</a>
+<span class="sourceLineNo">184</span><a id="line.184">            return new Integer(list.size());</a>
+<span class="sourceLineNo">185</span><a id="line.185">        }</a>
+<span class="sourceLineNo">186</span><a id="line.186">        return super.get(name, start);</a>
+<span class="sourceLineNo">187</span><a id="line.187">    }</a>
+<span class="sourceLineNo">188</span><a id="line.188"></a>
+<span class="sourceLineNo">189</span><a id="line.189">    public Object[] getIds() {</a>
+<span class="sourceLineNo">190</span><a id="line.190">        if (list == null)</a>
+<span class="sourceLineNo">191</span><a id="line.191">            return super.getIds();</a>
+<span class="sourceLineNo">192</span><a id="line.192">        int size = list.size();</a>
+<span class="sourceLineNo">193</span><a id="line.193">        Object[] ids = new Object[size];</a>
+<span class="sourceLineNo">194</span><a id="line.194">        for (int i = 0; i &lt; size; ++i) {</a>
+<span class="sourceLineNo">195</span><a id="line.195">            ids[i] = new Integer(i);</a>
+<span class="sourceLineNo">196</span><a id="line.196">        }</a>
+<span class="sourceLineNo">197</span><a id="line.197">        return ids;</a>
+<span class="sourceLineNo">198</span><a id="line.198">    }</a>
+<span class="sourceLineNo">199</span><a id="line.199"></a>
+<span class="sourceLineNo">200</span><a id="line.200">    public String toString() {</a>
+<span class="sourceLineNo">201</span><a id="line.201">        if (list == null)</a>
+<span class="sourceLineNo">202</span><a id="line.202">            return super.toString();</a>
+<span class="sourceLineNo">203</span><a id="line.203">        return list.toString();</a>
+<span class="sourceLineNo">204</span><a id="line.204">    }</a>
+<span class="sourceLineNo">205</span><a id="line.205"></a>
+<span class="sourceLineNo">206</span><a id="line.206">    public Object getDefaultValue(Class typeHint) {</a>
+<span class="sourceLineNo">207</span><a id="line.207">        return toString();</a>
+<span class="sourceLineNo">208</span><a id="line.208">    }</a>
+<span class="sourceLineNo">209</span><a id="line.209"></a>
+<span class="sourceLineNo">210</span><a id="line.210">    public Object unwrap() {</a>
+<span class="sourceLineNo">211</span><a id="line.211">        return list;</a>
+<span class="sourceLineNo">212</span><a id="line.212">    }</a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">    public List getList() {</a>
+<span class="sourceLineNo">215</span><a id="line.215">        return list;</a>
+<span class="sourceLineNo">216</span><a id="line.216">    }</a>
+<span class="sourceLineNo">217</span><a id="line.217"></a>
+<span class="sourceLineNo">218</span><a id="line.218">    public String getClassName() {</a>
+<span class="sourceLineNo">219</span><a id="line.219">        return CLASSNAME;</a>
+<span class="sourceLineNo">220</span><a id="line.220">    }</a>
+<span class="sourceLineNo">221</span><a id="line.221">}</a>
 
 
 
@@ -289,5 +290,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>

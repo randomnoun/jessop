@@ -1,88 +1,89 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../../../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package com.randomnoun.common.jessop.engine.rhino;<a name="line.1"></a>
-<span class="sourceLineNo">002</span><a name="line.2"></a>
-<span class="sourceLineNo">003</span>import javax.script.Bindings;<a name="line.3"></a>
-<span class="sourceLineNo">004</span>import javax.script.ScriptContext;<a name="line.4"></a>
-<span class="sourceLineNo">005</span>import javax.script.ScriptEngine;<a name="line.5"></a>
-<span class="sourceLineNo">006</span><a name="line.6"></a>
-<span class="sourceLineNo">007</span>import com.randomnoun.common.jessop.JessopBindingsConverter;<a name="line.7"></a>
-<span class="sourceLineNo">008</span><a name="line.8"></a>
-<span class="sourceLineNo">009</span>// exactly the same as the other rhino BindingsConverters except for this import statement<a name="line.9"></a>
-<span class="sourceLineNo">010</span>import org.mozilla.javascript.*;<a name="line.10"></a>
-<span class="sourceLineNo">011</span><a name="line.11"></a>
-<span class="sourceLineNo">012</span>public class RhinoBindingsConverter implements JessopBindingsConverter {<a name="line.12"></a>
-<span class="sourceLineNo">013</span><a name="line.13"></a>
-<span class="sourceLineNo">014</span>        @Override<a name="line.14"></a>
-<span class="sourceLineNo">015</span>        public Bindings toScriptBindings(ScriptEngine engine,<a name="line.15"></a>
-<span class="sourceLineNo">016</span>                        ScriptContext newContext, Bindings bindings, int engineScope) {<a name="line.16"></a>
-<span class="sourceLineNo">017</span>                Context cx = Context.enter();<a name="line.17"></a>
-<span class="sourceLineNo">018</span>                try {<a name="line.18"></a>
-<span class="sourceLineNo">019</span>                        // so hopefully initStandardObjects() is less expensive than cloning all these maps/lists<a name="line.19"></a>
-<span class="sourceLineNo">020</span>                        // this will be a different scope to that used at runtime, which hopefully won't be a problem later<a name="line.20"></a>
-<span class="sourceLineNo">021</span>                        ScriptableObject newScope = cx.initStandardObjects();<a name="line.21"></a>
-<span class="sourceLineNo">022</span>                        Bindings newBindings = engine.createBindings();<a name="line.22"></a>
-<span class="sourceLineNo">023</span>                        for (String k : bindings.keySet()) {<a name="line.23"></a>
-<span class="sourceLineNo">024</span>                                Object v = bindings.get(k);<a name="line.24"></a>
-<span class="sourceLineNo">025</span>                                newBindings.put(k, ScriptUtils.javaToJS(v, newScope)); <a name="line.25"></a>
-<span class="sourceLineNo">026</span>                                // newBindings.put(k, toScriptObject(newScope, v));<a name="line.26"></a>
-<span class="sourceLineNo">027</span>                        }<a name="line.27"></a>
-<span class="sourceLineNo">028</span>                        return newBindings;<a name="line.28"></a>
-<span class="sourceLineNo">029</span>                } finally {<a name="line.29"></a>
-<span class="sourceLineNo">030</span>                        Context.exit();<a name="line.30"></a>
-<span class="sourceLineNo">031</span>                }<a name="line.31"></a>
-<span class="sourceLineNo">032</span>        }<a name="line.32"></a>
-<span class="sourceLineNo">033</span>        <a name="line.33"></a>
-<span class="sourceLineNo">034</span><a name="line.34"></a>
-<span class="sourceLineNo">035</span>        // old code (clones all Map and List entries as NativeObjects <a name="line.35"></a>
-<span class="sourceLineNo">036</span>        /*<a name="line.36"></a>
-<span class="sourceLineNo">037</span>        @SuppressWarnings({ "restriction", "rawtypes" })<a name="line.37"></a>
-<span class="sourceLineNo">038</span>        private Object toScriptObject(Object o) {<a name="line.38"></a>
-<span class="sourceLineNo">039</span>                Object result;<a name="line.39"></a>
-<span class="sourceLineNo">040</span>                if (o instanceof Map) {<a name="line.40"></a>
-<span class="sourceLineNo">041</span>                        Map javaMap = (Map) o;<a name="line.41"></a>
-<span class="sourceLineNo">042</span>                        NativeObject jsMap = new NativeObject();<a name="line.42"></a>
-<span class="sourceLineNo">043</span>                        for (Object entryObj : javaMap.entrySet()) {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>                                Map.Entry entry = (Map.Entry) entryObj;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>                            jsMap.defineProperty(<a name="line.45"></a>
-<span class="sourceLineNo">046</span>                                (String) entry.getKey(), toScriptObject(entry.getValue()), NativeObject.READONLY<a name="line.46"></a>
-<span class="sourceLineNo">047</span>                            );<a name="line.47"></a>
-<span class="sourceLineNo">048</span>                        }<a name="line.48"></a>
-<span class="sourceLineNo">049</span>                        result = jsMap;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>                } else if (o instanceof List) {<a name="line.50"></a>
-<span class="sourceLineNo">051</span>                        List javaList = (List) o;<a name="line.51"></a>
-<span class="sourceLineNo">052</span>                        Object[] newArray = new Object[javaList.size()]; <a name="line.52"></a>
-<span class="sourceLineNo">053</span>                        for (int i=0; i&lt; javaList.size(); i++) {<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                                newArray[i] = toScriptObject(javaList.get(i));<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                        }<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                        NativeArray jsArray = new NativeArray(newArray);<a name="line.56"></a>
-<span class="sourceLineNo">057</span>                        result = jsArray;<a name="line.57"></a>
-<span class="sourceLineNo">058</span><a name="line.58"></a>
-<span class="sourceLineNo">059</span>                // possibly array types here<a name="line.59"></a>
-<span class="sourceLineNo">060</span>                } else if (o instanceof String) { <a name="line.60"></a>
-<span class="sourceLineNo">061</span>                        // result = new NativeString((String) o); // private constructor<a name="line.61"></a>
-<span class="sourceLineNo">062</span>                        result = o;<a name="line.62"></a>
-<span class="sourceLineNo">063</span>                        <a name="line.63"></a>
-<span class="sourceLineNo">064</span>                        //Context context = Context.getCurrentContext();<a name="line.64"></a>
-<span class="sourceLineNo">065</span>                        //Scriptable scope = ScriptRuntime.getTopCallScope( context );<a name="line.65"></a>
-<span class="sourceLineNo">066</span>                        //return context.newObject( scope, "String", new Object[] { o } );<a name="line.66"></a>
-<span class="sourceLineNo">067</span>                <a name="line.67"></a>
-<span class="sourceLineNo">068</span>                } else {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>                        result = o; <a name="line.69"></a>
-<span class="sourceLineNo">070</span>                }<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                return result;<a name="line.71"></a>
-<span class="sourceLineNo">072</span>        }<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        */<a name="line.73"></a>
-<span class="sourceLineNo">074</span>        <a name="line.74"></a>
-<span class="sourceLineNo">075</span>        <a name="line.75"></a>
-<span class="sourceLineNo">076</span><a name="line.76"></a>
-<span class="sourceLineNo">077</span>}<a name="line.77"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.jessop.engine.rhino;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import javax.script.Bindings;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import javax.script.ScriptContext;</a>
+<span class="sourceLineNo">005</span><a id="line.5">import javax.script.ScriptEngine;</a>
+<span class="sourceLineNo">006</span><a id="line.6"></a>
+<span class="sourceLineNo">007</span><a id="line.7">import com.randomnoun.common.jessop.JessopBindingsConverter;</a>
+<span class="sourceLineNo">008</span><a id="line.8"></a>
+<span class="sourceLineNo">009</span><a id="line.9">// exactly the same as the other rhino BindingsConverters except for this import statement</a>
+<span class="sourceLineNo">010</span><a id="line.10">import org.mozilla.javascript.*;</a>
+<span class="sourceLineNo">011</span><a id="line.11"></a>
+<span class="sourceLineNo">012</span><a id="line.12">public class RhinoBindingsConverter implements JessopBindingsConverter {</a>
+<span class="sourceLineNo">013</span><a id="line.13"></a>
+<span class="sourceLineNo">014</span><a id="line.14">        @Override</a>
+<span class="sourceLineNo">015</span><a id="line.15">        public Bindings toScriptBindings(ScriptEngine engine,</a>
+<span class="sourceLineNo">016</span><a id="line.16">                        ScriptContext newContext, Bindings bindings, int engineScope) {</a>
+<span class="sourceLineNo">017</span><a id="line.17">                Context cx = Context.enter();</a>
+<span class="sourceLineNo">018</span><a id="line.18">                try {</a>
+<span class="sourceLineNo">019</span><a id="line.19">                        // so hopefully initStandardObjects() is less expensive than cloning all these maps/lists</a>
+<span class="sourceLineNo">020</span><a id="line.20">                        // this will be a different scope to that used at runtime, which hopefully won't be a problem later</a>
+<span class="sourceLineNo">021</span><a id="line.21">                        ScriptableObject newScope = cx.initStandardObjects();</a>
+<span class="sourceLineNo">022</span><a id="line.22">                        Bindings newBindings = engine.createBindings();</a>
+<span class="sourceLineNo">023</span><a id="line.23">                        for (String k : bindings.keySet()) {</a>
+<span class="sourceLineNo">024</span><a id="line.24">                                Object v = bindings.get(k);</a>
+<span class="sourceLineNo">025</span><a id="line.25">                                newBindings.put(k, ScriptUtils.javaToJS(v, newScope)); </a>
+<span class="sourceLineNo">026</span><a id="line.26">                                // newBindings.put(k, toScriptObject(newScope, v));</a>
+<span class="sourceLineNo">027</span><a id="line.27">                        }</a>
+<span class="sourceLineNo">028</span><a id="line.28">                        return newBindings;</a>
+<span class="sourceLineNo">029</span><a id="line.29">                } finally {</a>
+<span class="sourceLineNo">030</span><a id="line.30">                        Context.exit();</a>
+<span class="sourceLineNo">031</span><a id="line.31">                }</a>
+<span class="sourceLineNo">032</span><a id="line.32">        }</a>
+<span class="sourceLineNo">033</span><a id="line.33">        </a>
+<span class="sourceLineNo">034</span><a id="line.34"></a>
+<span class="sourceLineNo">035</span><a id="line.35">        // old code (clones all Map and List entries as NativeObjects </a>
+<span class="sourceLineNo">036</span><a id="line.36">        /*</a>
+<span class="sourceLineNo">037</span><a id="line.37">        @SuppressWarnings({ "restriction", "rawtypes" })</a>
+<span class="sourceLineNo">038</span><a id="line.38">        private Object toScriptObject(Object o) {</a>
+<span class="sourceLineNo">039</span><a id="line.39">                Object result;</a>
+<span class="sourceLineNo">040</span><a id="line.40">                if (o instanceof Map) {</a>
+<span class="sourceLineNo">041</span><a id="line.41">                        Map javaMap = (Map) o;</a>
+<span class="sourceLineNo">042</span><a id="line.42">                        NativeObject jsMap = new NativeObject();</a>
+<span class="sourceLineNo">043</span><a id="line.43">                        for (Object entryObj : javaMap.entrySet()) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">                                Map.Entry entry = (Map.Entry) entryObj;</a>
+<span class="sourceLineNo">045</span><a id="line.45">                            jsMap.defineProperty(</a>
+<span class="sourceLineNo">046</span><a id="line.46">                                (String) entry.getKey(), toScriptObject(entry.getValue()), NativeObject.READONLY</a>
+<span class="sourceLineNo">047</span><a id="line.47">                            );</a>
+<span class="sourceLineNo">048</span><a id="line.48">                        }</a>
+<span class="sourceLineNo">049</span><a id="line.49">                        result = jsMap;</a>
+<span class="sourceLineNo">050</span><a id="line.50">                } else if (o instanceof List) {</a>
+<span class="sourceLineNo">051</span><a id="line.51">                        List javaList = (List) o;</a>
+<span class="sourceLineNo">052</span><a id="line.52">                        Object[] newArray = new Object[javaList.size()]; </a>
+<span class="sourceLineNo">053</span><a id="line.53">                        for (int i=0; i&lt; javaList.size(); i++) {</a>
+<span class="sourceLineNo">054</span><a id="line.54">                                newArray[i] = toScriptObject(javaList.get(i));</a>
+<span class="sourceLineNo">055</span><a id="line.55">                        }</a>
+<span class="sourceLineNo">056</span><a id="line.56">                        NativeArray jsArray = new NativeArray(newArray);</a>
+<span class="sourceLineNo">057</span><a id="line.57">                        result = jsArray;</a>
+<span class="sourceLineNo">058</span><a id="line.58"></a>
+<span class="sourceLineNo">059</span><a id="line.59">                // possibly array types here</a>
+<span class="sourceLineNo">060</span><a id="line.60">                } else if (o instanceof String) { </a>
+<span class="sourceLineNo">061</span><a id="line.61">                        // result = new NativeString((String) o); // private constructor</a>
+<span class="sourceLineNo">062</span><a id="line.62">                        result = o;</a>
+<span class="sourceLineNo">063</span><a id="line.63">                        </a>
+<span class="sourceLineNo">064</span><a id="line.64">                        //Context context = Context.getCurrentContext();</a>
+<span class="sourceLineNo">065</span><a id="line.65">                        //Scriptable scope = ScriptRuntime.getTopCallScope( context );</a>
+<span class="sourceLineNo">066</span><a id="line.66">                        //return context.newObject( scope, "String", new Object[] { o } );</a>
+<span class="sourceLineNo">067</span><a id="line.67">                </a>
+<span class="sourceLineNo">068</span><a id="line.68">                } else {</a>
+<span class="sourceLineNo">069</span><a id="line.69">                        result = o; </a>
+<span class="sourceLineNo">070</span><a id="line.70">                }</a>
+<span class="sourceLineNo">071</span><a id="line.71">                return result;</a>
+<span class="sourceLineNo">072</span><a id="line.72">        }</a>
+<span class="sourceLineNo">073</span><a id="line.73">        */</a>
+<span class="sourceLineNo">074</span><a id="line.74">        </a>
+<span class="sourceLineNo">075</span><a id="line.75">        </a>
+<span class="sourceLineNo">076</span><a id="line.76"></a>
+<span class="sourceLineNo">077</span><a id="line.77">}</a>
 
 
 
@@ -145,5 +146,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>

@@ -23,7 +23,7 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment">/** This is an abstract class that supports generic support for creating template scripts from jessop source.</em>
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * </em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This class is responsible for processing jessop declarations (e.g. &lt;tt&gt;&amp;lt;%@ jessop language="javascript" engine="rhino" %&amp;gt;&lt;/tt&gt;),</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This class is responsible for processing jessop declarations (e.g. &lt;code&gt;&amp;lt;%@ jessop language="javascript" engine="rhino" %&amp;gt;&lt;/code&gt;),</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * and switching to the correct language JessopScriptBuilder implementation.</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;Note that having multiple languages in the same script file is not yet supported by jessop. </em>
@@ -185,9 +185,9 @@
 <a class="jxr_linenumber" name="L177" href="#L177">177</a> 
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 	<em class="jxr_javadoccomment">/** Conditionally remove the first newline from the supplied string.</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> <em class="jxr_javadoccomment">	 * </em>
-<a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This method is used to perform &lt;tt&gt;suppressEol&lt;/tt&gt; declaration processing.</em>
+<a class="jxr_linenumber" name="L180" href="#L180">180</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;This method is used to perform &lt;code&gt;suppressEol&lt;/code&gt; declaration processing.</em>
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> <em class="jxr_javadoccomment">	 * </em>
-<a class="jxr_linenumber" name="L182" href="#L182">182</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;When the &lt;tt&gt;suppressEol&lt;/tt&gt; declaration is &lt;tt&gt;true&lt;/tt&gt;, and the text to be emitted by the output script</em>
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> <em class="jxr_javadoccomment">	 * &lt;p&gt;When the &lt;code&gt;suppressEol&lt;/code&gt; declaration is &lt;code&gt;true&lt;/code&gt;, and the text to be emitted by the output script</em>
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">	 * immediately follows a scriptlet and begins with a newline (or whitespace followed by a newline), </em>
 <a class="jxr_linenumber" name="L184" href="#L184">184</a> <em class="jxr_javadoccomment">	 * then we want to remove that (whitespace and) newline.</em>
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> <em class="jxr_javadoccomment">	 * </em>

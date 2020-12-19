@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.jessop;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import java.util.ArrayList;</a>
+<span class="sourceLineNo">004</span><a id="line.4">import java.util.HashMap;</a>
+<span class="sourceLineNo">005</span><a id="line.5"></a>
+<span class="sourceLineNo">006</span><a id="line.6">/* (c) 2020 randomnoun. All Rights Reserved. This work is licensed under a</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) </a>
+<span class="sourceLineNo">008</span><a id="line.8"> */</a>
+<span class="sourceLineNo">009</span><a id="line.9"></a>
+<span class="sourceLineNo">010</span><a id="line.10">import java.util.List;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import java.util.Map;</a>
+<span class="sourceLineNo">012</span><a id="line.12"></a>
+<span class="sourceLineNo">013</span><a id="line.13">import javax.script.Bindings;</a>
+<span class="sourceLineNo">014</span><a id="line.14">import javax.script.ScriptContext;</a>
+<span class="sourceLineNo">015</span><a id="line.15">import javax.script.ScriptEngine;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import javax.script.ScriptEngineFactory;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import javax.script.ScriptEngineManager;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import javax.script.ScriptException;</a>
+<span class="sourceLineNo">019</span><a id="line.19"></a>
+<span class="sourceLineNo">020</span><a id="line.20">import org.graalvm.polyglot.proxy.ProxyObject;</a>
+<span class="sourceLineNo">021</span><a id="line.21"></a>
+<span class="sourceLineNo">022</span><a id="line.22">import com.randomnoun.common.jessop.engine.graaljs.GraalJsBindingsConverter;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import junit.framework.TestCase;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">/** Test that graalvm works</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * </a>
+<span class="sourceLineNo">028</span><a id="line.28"> * @author knoxg</a>
+<span class="sourceLineNo">029</span><a id="line.29"> */</a>
+<span class="sourceLineNo">030</span><a id="line.30">public class GraalvmTest extends TestCase {</a>
+<span class="sourceLineNo">031</span><a id="line.31"></a>
+<span class="sourceLineNo">032</span><a id="line.32">        public static void listEngines(){ // Note 1</a>
+<span class="sourceLineNo">033</span><a id="line.33">        ScriptEngineManager mgr = new ScriptEngineManager();</a>
+<span class="sourceLineNo">034</span><a id="line.34">        List&lt;ScriptEngineFactory&gt; factories = mgr.getEngineFactories();</a>
+<span class="sourceLineNo">035</span><a id="line.35">        for (ScriptEngineFactory factory: factories) {</a>
+<span class="sourceLineNo">036</span><a id="line.36">            System.out.println("ScriptEngineFactory Info");</a>
+<span class="sourceLineNo">037</span><a id="line.37">            String engName = factory.getEngineName();</a>
+<span class="sourceLineNo">038</span><a id="line.38">            String engVersion = factory.getEngineVersion();</a>
+<span class="sourceLineNo">039</span><a id="line.39">            String langName = factory.getLanguageName();</a>
+<span class="sourceLineNo">040</span><a id="line.40">            String langVersion = factory.getLanguageVersion();</a>
+<span class="sourceLineNo">041</span><a id="line.41">            System.out.println("\tScript Engine: " + engName + ":" + engVersion);</a>
+<span class="sourceLineNo">042</span><a id="line.42">            List&lt;String&gt; engNames = factory.getNames();</a>
+<span class="sourceLineNo">043</span><a id="line.43">            for(String name: engNames) {</a>
+<span class="sourceLineNo">044</span><a id="line.44">                System.out.println("\tEngine Alias: " + name);</a>
+<span class="sourceLineNo">045</span><a id="line.45">            }</a>
+<span class="sourceLineNo">046</span><a id="line.46">            System.out.println("\tLanguage: " + langName + ":" + langVersion);</a>
+<span class="sourceLineNo">047</span><a id="line.47">        }</a>
+<span class="sourceLineNo">048</span><a id="line.48">    }</a>
+<span class="sourceLineNo">049</span><a id="line.49">        public void testGraalvm() throws ScriptException {</a>
+<span class="sourceLineNo">050</span><a id="line.50">        </a>
+<span class="sourceLineNo">051</span><a id="line.51">                listEngines();</a>
+<span class="sourceLineNo">052</span><a id="line.52">                </a>
+<span class="sourceLineNo">053</span><a id="line.53">                // this is the same test code as on https://wiki.python.org/jython/LearningJython#using-script-engine-support</a>
+<span class="sourceLineNo">054</span><a id="line.54">                ScriptEngineManager mgr = new ScriptEngineManager();</a>
+<span class="sourceLineNo">055</span><a id="line.55">            ScriptEngine eng = mgr.getEngineByName("graal-js");</a>
+<span class="sourceLineNo">056</span><a id="line.56">            Bindings bindings = eng.getBindings(ScriptContext.ENGINE_SCOPE);</a>
+<span class="sourceLineNo">057</span><a id="line.57">            bindings.put("polyglot.js.allowAllAccess", true);</a>
+<span class="sourceLineNo">058</span><a id="line.58">            </a>
+<span class="sourceLineNo">059</span><a id="line.59">                // ScriptEngine eng = mgr.getEngineByName("rhino");</a>
+<span class="sourceLineNo">060</span><a id="line.60">            </a>
+<span class="sourceLineNo">061</span><a id="line.61">            // this is GraalJSScriptEngine</a>
+<span class="sourceLineNo">062</span><a id="line.62">                // rhino is com.sun.script.javascript.RhinoScriptEngine</a>
+<span class="sourceLineNo">063</span><a id="line.63">            // graal is  com.oracle.truffle.js.scriptengine.GraalJSScriptEngine</a>
+<span class="sourceLineNo">064</span><a id="line.64">            System.out.println("eng is " + eng.getClass().getName());</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">            // except that eng here is null.</a>
+<span class="sourceLineNo">067</span><a id="line.67">            System.out.println("eng: " + String.valueOf(eng));</a>
+<span class="sourceLineNo">068</span><a id="line.68">            eng.put("var1", Integer.valueOf(257));</a>
+<span class="sourceLineNo">069</span><a id="line.69">            Object result = eng.eval("var1");</a>
+<span class="sourceLineNo">070</span><a id="line.70">            System.out.println("result is " + result);</a>
+<span class="sourceLineNo">071</span><a id="line.71">            </a>
+<span class="sourceLineNo">072</span><a id="line.72">            Map&lt;String, Object&gt; v = new HashMap();</a>
+<span class="sourceLineNo">073</span><a id="line.73">            v.put("x", 1234);</a>
+<span class="sourceLineNo">074</span><a id="line.74">            </a>
+<span class="sourceLineNo">075</span><a id="line.75">            Map&lt;String, Object&gt; v2 = new HashMap();</a>
+<span class="sourceLineNo">076</span><a id="line.76">            v.put("y", v2);</a>
+<span class="sourceLineNo">077</span><a id="line.77">            v2.put("z", 1234);</a>
+<span class="sourceLineNo">078</span><a id="line.78">            </a>
+<span class="sourceLineNo">079</span><a id="line.79">            List&lt;Object&gt; list = new ArrayList();</a>
+<span class="sourceLineNo">080</span><a id="line.80">            list.add("abc");</a>
+<span class="sourceLineNo">081</span><a id="line.81">            Map&lt;String, Object&gt; v3 = new HashMap();</a>
+<span class="sourceLineNo">082</span><a id="line.82">            v3.put("the", "thing");</a>
+<span class="sourceLineNo">083</span><a id="line.83">            list.add(v3);</a>
+<span class="sourceLineNo">084</span><a id="line.84">            </a>
+<span class="sourceLineNo">085</span><a id="line.85">            v.put("list", list);</a>
+<span class="sourceLineNo">086</span><a id="line.86">            </a>
+<span class="sourceLineNo">087</span><a id="line.87">            result = eng.eval("var1.x");</a>
+<span class="sourceLineNo">088</span><a id="line.88">            System.out.println("var1.x is " + result);</a>
+<span class="sourceLineNo">089</span><a id="line.89"></a>
+<span class="sourceLineNo">090</span><a id="line.90">            result = eng.eval("var1.y");</a>
+<span class="sourceLineNo">091</span><a id="line.91">            System.out.println("var1.y is " + result);</a>
+<span class="sourceLineNo">092</span><a id="line.92"></a>
+<span class="sourceLineNo">093</span><a id="line.93">            // z is undefined</a>
+<span class="sourceLineNo">094</span><a id="line.94">            //result = eng.eval("var1.y.z");</a>
+<span class="sourceLineNo">095</span><a id="line.95">            //System.out.println("var1.y.z is " + result);</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">            // list is not defined</a>
+<span class="sourceLineNo">098</span><a id="line.98">            //result = eng.eval("var1.list[0]");</a>
+<span class="sourceLineNo">099</span><a id="line.99">            //System.out.println("var1.list[0] is " + result);</a>
+<span class="sourceLineNo">100</span><a id="line.100"></a>
+<span class="sourceLineNo">101</span><a id="line.101">            </a>
+<span class="sourceLineNo">102</span><a id="line.102">            System.out.println("=== var2");</a>
+<span class="sourceLineNo">103</span><a id="line.103">            </a>
+<span class="sourceLineNo">104</span><a id="line.104">            eng.put("var2", v);</a>
+<span class="sourceLineNo">105</span><a id="line.105">            // var2.get('x') works</a>
+<span class="sourceLineNo">106</span><a id="line.106">            // var2['x'] is null</a>
+<span class="sourceLineNo">107</span><a id="line.107">            // var2.x is null</a>
+<span class="sourceLineNo">108</span><a id="line.108">            result = eng.eval("var2.x");</a>
+<span class="sourceLineNo">109</span><a id="line.109">            System.out.println("result is " + result);</a>
+<span class="sourceLineNo">110</span><a id="line.110"></a>
+<span class="sourceLineNo">111</span><a id="line.111">            System.out.println("=== var3");</a>
+<span class="sourceLineNo">112</span><a id="line.112">            </a>
+<span class="sourceLineNo">113</span><a id="line.113">            eng.put("var3", ProxyObject.fromMap(v));</a>
+<span class="sourceLineNo">114</span><a id="line.114">            // var2.get('x') works</a>
+<span class="sourceLineNo">115</span><a id="line.115">            // var2['x'] is null</a>
+<span class="sourceLineNo">116</span><a id="line.116">            // var2.x is null</a>
+<span class="sourceLineNo">117</span><a id="line.117">            result = eng.eval("var3.x");</a>
+<span class="sourceLineNo">118</span><a id="line.118">            System.out.println("var3.x is " + result);</a>
+<span class="sourceLineNo">119</span><a id="line.119">            result = eng.eval("var3.y");</a>
+<span class="sourceLineNo">120</span><a id="line.120">            System.out.println("var3.y is " + result);</a>
+<span class="sourceLineNo">121</span><a id="line.121">            result = eng.eval("var3.y.z");</a>
+<span class="sourceLineNo">122</span><a id="line.122">            System.out.println("var3.y.z is " + result);</a>
+<span class="sourceLineNo">123</span><a id="line.123">            result = eng.eval("var3.list");</a>
+<span class="sourceLineNo">124</span><a id="line.124">            System.out.println("var3.list is " + result);</a>
+<span class="sourceLineNo">125</span><a id="line.125">            result = eng.eval("var3.list[0]");</a>
+<span class="sourceLineNo">126</span><a id="line.126">            System.out.println("var3.list[0] is " + result);</a>
+<span class="sourceLineNo">127</span><a id="line.127"></a>
+<span class="sourceLineNo">128</span><a id="line.128">            System.out.println("=== var4");</a>
+<span class="sourceLineNo">129</span><a id="line.129">            </a>
+<span class="sourceLineNo">130</span><a id="line.130">            GraalJsBindingsConverter bc = new GraalJsBindingsConverter();</a>
+<span class="sourceLineNo">131</span><a id="line.131">            eng.put("var4", bc.toScriptObject(v));</a>
+<span class="sourceLineNo">132</span><a id="line.132">            eng.put("var4List", bc.toScriptObject(v.get("list")));</a>
+<span class="sourceLineNo">133</span><a id="line.133">            </a>
+<span class="sourceLineNo">134</span><a id="line.134">            // var2.get('x') works</a>
+<span class="sourceLineNo">135</span><a id="line.135">            // var2['x'] is null</a>
+<span class="sourceLineNo">136</span><a id="line.136">            // var2.x is null</a>
+<span class="sourceLineNo">137</span><a id="line.137">            </a>
+<span class="sourceLineNo">138</span><a id="line.138">            // lists in maps</a>
+<span class="sourceLineNo">139</span><a id="line.139">            </a>
+<span class="sourceLineNo">140</span><a id="line.140">            result = eng.eval("var4.x");</a>
+<span class="sourceLineNo">141</span><a id="line.141">            System.out.println("var4.x is " + result);</a>
+<span class="sourceLineNo">142</span><a id="line.142">            result = eng.eval("var4.y");</a>
+<span class="sourceLineNo">143</span><a id="line.143">            System.out.println("var4.y is " + result);</a>
+<span class="sourceLineNo">144</span><a id="line.144">            result = eng.eval("var4.y.z");</a>
+<span class="sourceLineNo">145</span><a id="line.145">            System.out.println("var4.y.z is " + result);</a>
+<span class="sourceLineNo">146</span><a id="line.146">            result = eng.eval("var4.list");</a>
+<span class="sourceLineNo">147</span><a id="line.147">            System.out.println("var4.list is " + result);</a>
+<span class="sourceLineNo">148</span><a id="line.148">            result = eng.eval("var4.list[0]");</a>
+<span class="sourceLineNo">149</span><a id="line.149">            System.out.println("var4.list[0] is " + result);</a>
+<span class="sourceLineNo">150</span><a id="line.150">            </a>
+<span class="sourceLineNo">151</span><a id="line.151">            // maps in lists</a>
+<span class="sourceLineNo">152</span><a id="line.152">            </a>
+<span class="sourceLineNo">153</span><a id="line.153">            result = eng.eval("var4List");</a>
+<span class="sourceLineNo">154</span><a id="line.154">            System.out.println("var4List is " + result);</a>
+<span class="sourceLineNo">155</span><a id="line.155">            result = eng.eval("var4List[0]");</a>
+<span class="sourceLineNo">156</span><a id="line.156">            System.out.println("var4List[0] is " + result);</a>
+<span class="sourceLineNo">157</span><a id="line.157">            result = eng.eval("var4List[1]");</a>
+<span class="sourceLineNo">158</span><a id="line.158">            System.out.println("var4List[1] is " + result);</a>
+<span class="sourceLineNo">159</span><a id="line.159">            result = eng.eval("var4List[1].the");</a>
+<span class="sourceLineNo">160</span><a id="line.160">            System.out.println("var4List[1].the is " + result);</a>
+<span class="sourceLineNo">161</span><a id="line.161">            </a>
+<span class="sourceLineNo">162</span><a id="line.162">            </a>
+<span class="sourceLineNo">163</span><a id="line.163">            /*</a>
+<span class="sourceLineNo">164</span><a id="line.164">                ScriptContext defaultContext = eng.getContext();</a>
+<span class="sourceLineNo">165</span><a id="line.165">                if (eng instanceof Compilable) {</a>
+<span class="sourceLineNo">166</span><a id="line.166">                        defaultContext.setAttribute(ScriptEngine.FILENAME, "THEFILENAME", ScriptContext.ENGINE_SCOPE);</a>
+<span class="sourceLineNo">167</span><a id="line.167">                }</a>
+<span class="sourceLineNo">168</span><a id="line.168">            result = eng.eval("fnarg");</a>
+<span class="sourceLineNo">169</span><a id="line.169">            */</a>
+<span class="sourceLineNo">170</span><a id="line.170">            </a>
+<span class="sourceLineNo">171</span><a id="line.171">        }</a>
+<span class="sourceLineNo">172</span><a id="line.172">    </a>
+<span class="sourceLineNo">173</span><a id="line.173">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

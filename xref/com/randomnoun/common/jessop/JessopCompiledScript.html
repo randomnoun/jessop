@@ -97,90 +97,91 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  		
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  		<strong class="jxr_keyword">if</strong> (context==<strong class="jxr_keyword">null</strong>) { 
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  			context = engine.getContext();
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  		} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  			<em class="jxr_comment">// some engines may require us to wrap/unwrap maps and lists to </em>
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  			<em class="jxr_comment">// other data structures in order to treat them as native maps/dicts and arrays </em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>  			<em class="jxr_comment">// in that engine's language</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  			
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  			<em class="jxr_comment">// may have to convert this context to whatever this engine expects (here's looking at you, lua)</em>
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  			<strong class="jxr_keyword">if</strong> (jbc!=<strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  				ScriptContext newContext = engine.getContext();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a> 				Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a> 		        <strong class="jxr_keyword">if</strong> (gs != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 		        	Bindings newGs = jbc.toScriptBindings(engine, newContext, gs, ScriptContext.GLOBAL_SCOPE); 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a> 		            newContext.setBindings(newGs, ScriptContext.GLOBAL_SCOPE);
-<a class="jxr_linenumber" name="L104" href="#L104">104</a> 		        }
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 		        <em class="jxr_comment">// this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a> 		        Bindings es = context.getBindings(ScriptContext.ENGINE_SCOPE);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> 		        Bindings newEs = jbc.toScriptBindings(engine, newContext, es, ScriptContext.ENGINE_SCOPE); 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a> 	            newContext.setBindings(newEs, ScriptContext.ENGINE_SCOPE);
-<a class="jxr_linenumber" name="L109" href="#L109">109</a> 		        newContext.setReader(context.getReader());
-<a class="jxr_linenumber" name="L110" href="#L110">110</a> 		        newContext.setWriter(context.getWriter());
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> 		        newContext.setErrorWriter(context.getErrorWriter());
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> 		        context = newContext;
-<a class="jxr_linenumber" name="L113" href="#L113">113</a> 			} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L114" href="#L114">114</a> 				<em class="jxr_comment">// see if the class changes</em>
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> 				<em class="jxr_comment">// (could probably put this into a LuaBindingConverter instead now)</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a> 				
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> 				ScriptContext newContext = engine.getContext();
-<a class="jxr_linenumber" name="L118" href="#L118">118</a> 				<strong class="jxr_keyword">if</strong> (newContext.getClass().equals(context.getClass())) {
-<a class="jxr_linenumber" name="L119" href="#L119">119</a> 					<em class="jxr_comment">// it's fine</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a> 				} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 			        Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
-<a class="jxr_linenumber" name="L122" href="#L122">122</a> 			        <strong class="jxr_keyword">if</strong> (gs != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L123" href="#L123">123</a> 			            newContext.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 			        }
-<a class="jxr_linenumber" name="L125" href="#L125">125</a> 			        <em class="jxr_comment">// this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.</em>
-<a class="jxr_linenumber" name="L126" href="#L126">126</a> 		            newContext.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> 			        newContext.setReader(context.getReader());
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> 			        newContext.setWriter(context.getWriter());
-<a class="jxr_linenumber" name="L129" href="#L129">129</a> 			        newContext.setErrorWriter(context.getErrorWriter());
-<a class="jxr_linenumber" name="L130" href="#L130">130</a> 			        context = newContext;
-<a class="jxr_linenumber" name="L131" href="#L131">131</a> 				}
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  		}
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  		
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  		<em class="jxr_comment">// some engines may require us to wrap/unwrap maps and lists to </em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  		<em class="jxr_comment">// other data structures in order to treat them as native maps/dicts and arrays </em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  		<em class="jxr_comment">// in that engine's language</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  		
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  		<em class="jxr_comment">// may have to convert this context to whatever this engine expects (here's looking at you, lua)</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  		<strong class="jxr_keyword">if</strong> (jbc!=<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a> 			ScriptContext newContext = engine.getContext();
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> 			Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a> 	        <strong class="jxr_keyword">if</strong> (gs != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 	        	Bindings newGs = jbc.toScriptBindings(engine, newContext, gs, ScriptContext.GLOBAL_SCOPE); 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 	            newContext.setBindings(newGs, ScriptContext.GLOBAL_SCOPE);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 	        }
+<a class="jxr_linenumber" name="L106" href="#L106">106</a> 	        <em class="jxr_comment">// this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.</em>
+<a class="jxr_linenumber" name="L107" href="#L107">107</a> 	        Bindings es = context.getBindings(ScriptContext.ENGINE_SCOPE);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a> 	        Bindings newEs = jbc.toScriptBindings(engine, newContext, es, ScriptContext.ENGINE_SCOPE); 
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>             newContext.setBindings(newEs, ScriptContext.ENGINE_SCOPE);
+<a class="jxr_linenumber" name="L110" href="#L110">110</a> 	        newContext.setReader(context.getReader());
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 	        newContext.setWriter(context.getWriter());
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> 	        newContext.setErrorWriter(context.getErrorWriter());
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 	        context = newContext;
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> 		} <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 			<em class="jxr_comment">// see if the class changes</em>
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> 			<em class="jxr_comment">// (could probably put this into a LuaBindingConverter instead now)</em>
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 			
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 			ScriptContext newContext = engine.getContext();
+<a class="jxr_linenumber" name="L119" href="#L119">119</a> 			<strong class="jxr_keyword">if</strong> (newContext.getClass().equals(context.getClass())) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 				<em class="jxr_comment">// it's fine</em>
+<a class="jxr_linenumber" name="L121" href="#L121">121</a> 			} <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 		        Bindings gs = context.getBindings(ScriptContext.GLOBAL_SCOPE);
+<a class="jxr_linenumber" name="L123" href="#L123">123</a> 		        <strong class="jxr_keyword">if</strong> (gs != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 		            newContext.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> 		        }
+<a class="jxr_linenumber" name="L126" href="#L126">126</a> 		        <em class="jxr_comment">// this should transfer the filename for lua, but doesn't. Ah. filename may not be in the source context yet.</em>
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> 	            newContext.setBindings(context.getBindings(ScriptContext.ENGINE_SCOPE), ScriptContext.ENGINE_SCOPE);
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> 		        newContext.setReader(context.getReader());
+<a class="jxr_linenumber" name="L129" href="#L129">129</a> 		        newContext.setWriter(context.getWriter());
+<a class="jxr_linenumber" name="L130" href="#L130">130</a> 		        newContext.setErrorWriter(context.getErrorWriter());
+<a class="jxr_linenumber" name="L131" href="#L131">131</a> 		        context = newContext;
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 			}
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 		}
-<a class="jxr_linenumber" name="L134" href="#L134">134</a> 		<em class="jxr_comment">// get this from the jessop declaration eventually, but for now</em>
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> 		PrintWriter out;
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> 		<strong class="jxr_keyword">if</strong> (context.getWriter()==<strong class="jxr_keyword">null</strong>) {  <em class="jxr_comment">// jruby has a 'null' default writer</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a> 			out = <strong class="jxr_keyword">new</strong> PrintWriter(System.out, <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a> 		} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 			out = <strong class="jxr_keyword">new</strong> PrintWriter(context.getWriter(), <strong class="jxr_keyword">true</strong>);
-<a class="jxr_linenumber" name="L140" href="#L140">140</a> 		}
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> 		context.setAttribute(<span class="jxr_string">"out"</span>,  out, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// should be something like SCRIPT_SCOPE, really</em>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a> 		context.setAttribute(ScriptEngine.FILENAME,  filename, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// for engines that need this at runtime</em>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a> 		Object result;
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 		<strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a> 			<strong class="jxr_keyword">if</strong> (compiledSource!=<strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> 				result = compiledSource.eval(context); <em class="jxr_comment">// these throw LuaErrors instead of ScriptExceptions</em>
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> 			} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L148" href="#L148">148</a> 				result = engine.eval(source, context);
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> 			}
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> 		} <strong class="jxr_keyword">catch</strong> (Throwable t) {
-<a class="jxr_linenumber" name="L151" href="#L151">151</a> 			<strong class="jxr_keyword">if</strong> (jec==<strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a> 				<strong class="jxr_keyword">throw</strong> t;
-<a class="jxr_linenumber" name="L153" href="#L153">153</a> 			} <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> 				<strong class="jxr_keyword">throw</strong> jec.toScriptException(context, t);
-<a class="jxr_linenumber" name="L155" href="#L155">155</a> 			}
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> 		}
-<a class="jxr_linenumber" name="L157" href="#L157">157</a> 		out.flush();
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		<strong class="jxr_keyword">return</strong> result;
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> 	}
-<a class="jxr_linenumber" name="L160" href="#L160">160</a> 
-<a class="jxr_linenumber" name="L161" href="#L161">161</a> 	<em class="jxr_javadoccomment">/** {@inheritDoc} */</em>
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> 	@Override
-<a class="jxr_linenumber" name="L163" href="#L163">163</a> 	<strong class="jxr_keyword">public</strong> ScriptEngine getEngine() {
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> 		<strong class="jxr_keyword">return</strong> engine;
-<a class="jxr_linenumber" name="L165" href="#L165">165</a> 	}
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> 	
-<a class="jxr_linenumber" name="L167" href="#L167">167</a> 	<em class="jxr_javadoccomment">/** Return the generated source; can be used for debugging.</em>
-<a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">	 * </em>
-<a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">	 * @return the generated source</em>
-<a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">	 */</em>
-<a class="jxr_linenumber" name="L171" href="#L171">171</a> 	<strong class="jxr_keyword">public</strong> String getSource() {
-<a class="jxr_linenumber" name="L172" href="#L172">172</a> 		<strong class="jxr_keyword">return</strong> source;
-<a class="jxr_linenumber" name="L173" href="#L173">173</a> 	}
-<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
-<a class="jxr_linenumber" name="L175" href="#L175">175</a> }
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 		
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> 		<em class="jxr_comment">// get this from the jessop declaration eventually, but for now</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> 		PrintWriter out;
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> 		<strong class="jxr_keyword">if</strong> (context.getWriter()==<strong class="jxr_keyword">null</strong>) {  <em class="jxr_comment">// jruby has a 'null' default writer</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> 			out = <strong class="jxr_keyword">new</strong> PrintWriter(System.out, <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 		} <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L140" href="#L140">140</a> 			out = <strong class="jxr_keyword">new</strong> PrintWriter(context.getWriter(), <strong class="jxr_keyword">true</strong>);
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> 		}
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> 		context.setAttribute(<span class="jxr_string">"out"</span>,  out, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// should be something like SCRIPT_SCOPE, really</em>
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 		context.setAttribute(ScriptEngine.FILENAME,  filename, ScriptContext.ENGINE_SCOPE); <em class="jxr_comment">// for engines that need this at runtime</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> 		Object result;
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> 		<strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 			<strong class="jxr_keyword">if</strong> (compiledSource!=<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 				result = compiledSource.eval(context); <em class="jxr_comment">// these throw LuaErrors instead of ScriptExceptions</em>
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 			} <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 				result = engine.eval(source, context);
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> 			}
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> 		} <strong class="jxr_keyword">catch</strong> (Throwable t) {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> 			<strong class="jxr_keyword">if</strong> (jec==<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 				<strong class="jxr_keyword">throw</strong> t;
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> 			} <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 				<strong class="jxr_keyword">throw</strong> jec.toScriptException(context, t);
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> 			}
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> 		}
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		out.flush();
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 		<strong class="jxr_keyword">return</strong> result;
+<a class="jxr_linenumber" name="L160" href="#L160">160</a> 	}
+<a class="jxr_linenumber" name="L161" href="#L161">161</a> 
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> 	<em class="jxr_javadoccomment">/** {@inheritDoc} */</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> 	@Override
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> 	<strong class="jxr_keyword">public</strong> ScriptEngine getEngine() {
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> 		<strong class="jxr_keyword">return</strong> engine;
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> 	}
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> 	
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> 	<em class="jxr_javadoccomment">/** Return the generated source; can be used for debugging.</em>
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">	 * </em>
+<a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">	 * @return the generated source</em>
+<a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">	 */</em>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a> 	<strong class="jxr_keyword">public</strong> String getSource() {
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> 		<strong class="jxr_keyword">return</strong> source;
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> 	}
+<a class="jxr_linenumber" name="L175" href="#L175">175</a> 
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016-09-16&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>
