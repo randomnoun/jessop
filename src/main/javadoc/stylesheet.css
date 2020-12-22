@@ -2,7 +2,7 @@
  * Javadoc style sheet
  */
 
-@import url('resources/fonts/dejavu.css');
+/* knoxg @import url('resources/fonts/dejavu.css'); */
 
 /*
  * Styles for individual HTML elements.
@@ -919,13 +919,19 @@ table.striped > tbody > tr > th {
 
 /* overrides to make it look more like reflow */
 body {
-	background-image: url("../images/bg.png");
 	font-size: 14px; /* was 76% */
 	color: black;
 }
+h1 {
+    font-size: 24px;
+}    
 h2 {
-	font-size: 30px;
+	font-size: 26px;
 }
+h3 {
+    font-size: 18px;
+    font-style: normal; 
+}    
 pre {
     font-family: Lucida Console, Courier New, monospace;
     font-size: 13px;
@@ -950,12 +956,15 @@ UL.inheritance {
 DIV.block {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 14px;
+    line-height: 1.4;
 }
 .contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd  {
     font-family: Arial,Helvetica,sans-serif;
 }
 
 
+TH { vertical-align: top; }
+TD { vertical-align: top; }
 /* the overview text is also shoved into a subTitle div for some reason 
 DIV.footer DIV.subTitle {
     font-family: Arial,Helvetica,sans-serif;
@@ -1046,12 +1055,13 @@ ul.subNavList li:first-child {
 	background-color: #0088CC;
 	padding: 4px 2px 2px 4px;
 }
-.overviewSummary caption span span, 
-.packageSummary caption span span, 
-.contentContainer ul.blockList li.blockList caption span span, 
-.summary caption span span, 
-.classUseContainer caption span span, 
-.constantValuesContainer caption span span
+.overviewSummary caption span, 
+.packageSummary caption span, 
+.memberSummary caption span, 
+.contentContainer ul.blockList li.blockList caption span, 
+.summary caption span, 
+.classUseContainer caption span, 
+.constantValuesContainer caption span
 {
     background-color: #f0f0f0;
     background-image: none;
@@ -1078,6 +1088,12 @@ ul.subNavList li:first-child {
     text-decoration: none;
     /* text-shadow: 0 1px 0 #FFFFFF; */
 }
+.memberSummary caption span.tableTab, .memberSummary caption span.activeTableTab,
+.packagesSummary caption span.tableTab, .packagesSummary caption span.activeTableTab,
+.overviewSummary caption span.tableTab, .overviewSummary caption span.activeTableTab,
+.typeSummary caption span.tableTab, .typeSummary caption span.activeTableTab {
+    border: none;
+}
 
 .overviewSummary caption span.tableTab a:link, 
 .packageSummary caption span.tableTab a:link, 
@@ -1092,7 +1108,7 @@ ul.subNavList li:first-child {
 
 
 
-/*
+
 .overviewSummary .tabEnd, 
 .packageSummary .tabEnd, 
 .contentContainer ul.blockList li.blockList .tabEnd, .summary .tabEnd, 
@@ -1105,7 +1121,7 @@ ul.subNavList li:first-child {
     background-color: transparent;
     box-shadow: none;
 }
-*/
+
 
 
 .altColor {
@@ -1176,7 +1192,15 @@ a:active {
     text-decoration:none;
     color:#005580;
 }
-*/
+
+#search { 
+    border-width: 1px; 
+    padding: 4px 4px 4px 25px;
+    background-position: 5px 5px;
+}
+:focus { outline: none; }
+
+TABLE.padded caption { display: none; }
 
 /* the (new) oracle jdk7 javadoc processor puts the overview within a <div style="footer"> block, which breaks LI elements 
 .footer UL.bullet LI {
@@ -1186,4 +1210,9 @@ a:active {
 }  
 TABLE.padded TD { padding-bottom: 10px; padding-right: 10px; vertical-align: top; }
 */
+
+
+
+
+
 
