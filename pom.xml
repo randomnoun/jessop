@@ -10,7 +10,7 @@
 	<groupId>com.randomnoun.common</groupId>
 	<artifactId>jessop</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.15-SNAPSHOT</version>
+	<version>1.0.15</version>
 	
 	<name>Jessop</name>
 	<description>Multi-language templates in the style of Java Server Pages</description>
@@ -184,7 +184,7 @@
 		<connection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</connection>
 		<developerConnection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</developerConnection>
 		<url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
-  	  <tag>jessop-1.0.12</tag>
+  	  <tag>jessop-1.0.15</tag>
   </scm>
 	
 	<build>
