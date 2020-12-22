@@ -298,13 +298,11 @@ public class JessopExample {
 <td>To build jessop from source, unpackage this archive and run <tt>mvn compile</tt>
 </table>
 
-<p>Artifacts are contained within the <a href="https://search.maven.org/">maven central repository</a>
-
 <hr/>
 
 <h2>Target languages</h2>
 
-<p>Jessop has initial support for five target languages (using five script engines).</p> 
+<p>Jessop has support for six target languages (using eight script engines).</p> 
 
 <p>You will need to add the appropriate maven dependency to target these languages and engines.</p>
 
