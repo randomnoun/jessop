@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>parent-pom</artifactId>
 		<groupId>com.randomnoun.build</groupId>
-		<version>1.23-SNAPSHOT</version>
+		<version>1.23</version>
 	</parent>
 
 	<groupId>com.randomnoun.common</groupId>
