@@ -10,7 +10,7 @@
 <span class="color-highlight">randomnoun</span> jessop
 ]]>
     </name>
-    <href>http://code.randomnoun.com/jessop/index.html</href>
+    <href>https://randomnoun.github.io/jessop/</href>
   </bannerLeft>
   
   <skin>
@@ -37,7 +37,7 @@
 <span class="color-highlight">randomnoun</span> jessop
 ]]>
         </name>
-        <href>http://code.randomnoun.com/jessop/index.html</href>
+        <href>https://randomnoun.github.io/jessop/</href>
       </brand>
       <slogan>Multi-language templates in the style of Java Server Pages</slogan>
       <titleTemplate>%2$s | %1$s</titleTemplate>
@@ -133,7 +133,7 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
     </menu>
     <menu name="Documentation" inherit="bottom">
       <item name="Usage" href="index.html" />
-      <item name="Javadocs" href="apidocs/index.html" />
+      <item name="Javadocs" href="apidocs/index.html?overview-summary.html" />
       <item name="Code coverage" href="cobertura/index.html" />
       <item name="Source XRef" href="xref/index.html" />
       <item name="Test XRef" href="xref-test/index.html" />
