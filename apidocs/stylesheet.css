@@ -963,7 +963,7 @@ DIV.block {
 }
 
 
-TH { vertical-align: top; text-align: left; }
+TH { vertical-align: top; }
 TD { vertical-align: top; }
 /* the overview text is also shoved into a subTitle div for some reason 
 DIV.footer DIV.subTitle {

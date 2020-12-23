@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.randomnoun.common"},{"l":"com.randomnoun.common.db"},{"l":"com.randomnoun.common.jna"},{"l":"com.randomnoun.common.log4j2"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.example.contrived"},{"l":"com.randomnoun.common.jessop"}]
