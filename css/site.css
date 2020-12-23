@@ -48,4 +48,32 @@
     decoration: none;
 }
 
+p.inline, p.inline-code {
+  display: inline-block;
+  font-size: 1em;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  padding: 2px 4px;
+  font-size: 90%;
+  border-radius: 4px;
+  color: #333;
+  white-space: nowrap;
+}
 
+p.inline-code {
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+  color: #d14;
+  padding: 2px 4px;
+}
+
+/* reflow-skin override */
+/* unsure why it was putting these massive whitespace blocks before each of these elements */
+h1[id]::before, h2[id]::before, h3[id]::before, h4[id]::before, h5[id]::before, h6[id]::before, a[name]::before {
+	content: "";
+    height: 0px;
+    margin: 0;
+}
+/* set margin on the header elements themselves */
+h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0;
+}  

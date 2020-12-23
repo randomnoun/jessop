@@ -8,7 +8,7 @@
 
 	<head>
 		<meta charset="UTF-8" />
-		<title>Dependency Convergence | randomnoun common-public</title>
+		<title>Dependency Convergence | randomnoun jessop</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
 		<meta http-equiv="content-language" content="en" />
@@ -33,7 +33,7 @@
 <link rel="author" href="mailto:knoxg@randomnoun.com"/>
 	</head>
 
-	<body class="page-dependency-convergence project-common-public" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
+	<body class="page-dependency-convergence project-jessop" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
 
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -43,11 +43,11 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</a>
-					<a class="brand" href="https://randomnoun.github.io/common-public/"><span class="color-highlight">randomnoun</span> common-public</a>
+					<a class="brand" href="./"><span class="color-highlight">randomnoun</span> jessop</a>
 					<div class="nav-collapse">
 						<ul class="nav pull-right">
 							<li><a href="index.html#Usage" title="Download">Download </a></li>
-							<li><a href="./" title="Github">Github </a></li>
+							<li><a href="https://github.com/randomnoun/jessop" title="Github" class="externalLink">Github </a></li>
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -72,8 +72,8 @@
 		<div class="row" id="banner">
 			<div class="span12">
 				<div class="pull-left">
-					<a href="https://randomnoun.github.io/common-public/" id="bannerLeft"><h1><span class="color-highlight">randomnoun</span> common-public</h1></a>
-					<p class="lead">Common utility classes</p>
+					<a href="./" id="bannerLeft"><h1><span class="color-highlight">randomnoun</span> jessop</h1></a>
+					<p class="lead">Multi-language templates in the style of Java Server Pages</p>
 				</div>
 				<div class="pull-right">
 				</div>
@@ -81,11 +81,11 @@
 		</div>
 		<div>
 			<ul class="breadcrumb">
-				<li class="projectVersion version-date">Version: 1.0.1</li>
+				<li class="projectVersion version-date">Version: 1.0.15</li>
 				<li class="divider">|</li>
 				<li class="publishDate version-date">Last Published: 2020-12-23</li>
 				<li class="divider">|</li>
-				<li><a href="./" title="common-public">common-public </a></li>
+				<li><a href="./" title="jessop">jessop </a></li>
 				<li class="divider">/</li>
 				<li>Dependency Convergence</li>
 			</ul>
@@ -96,16 +96,6 @@
 				<div id="toc-scroll-target" class="container">
 					<ul id="toc" class="nav">
 						<li class="toplevel"><a href="#Dependency_Convergence" title="Dependency Convergence">Dependency Convergence</a></li>
-						<li class="dropdown">
-							<a href="#Dependencies_used_in_this_project" title="Dependencies used in this project" class="dropdown-toggle" role="button" data-toggle="dropdown" data-target="#">Dependencies used in this project <b class="caret"></b></a>
-							<ul class="dropdown-menu" role="menu">
-								<!-- Repeat the item, otherwise it is not clickable as the dropdown root -->
-								<li><a href="#Dependencies_used_in_this_project" title="Dependencies used in this project">Dependencies used in this project</a></li>
-								<li class="divider"></li>
-								<li><a href="#commons-loggingcommons-logging" title="commons-logging:commons-logging">commons-logging:commons-logging</a></li>
-
-							</ul>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -121,52 +111,40 @@
   <h2 id="Dependency_Convergence">Dependency Convergence</h2>
  </div> 
  <table border="0" class="bodyTable table table-striped table-hover"> 
-  <caption> 
-   <b>Legend:</b> 
-  </caption> 
-  <tbody> 
-   <tr class="a"> 
-    <td><i class="icon-exclamation-sign"></i></td> 
-    <td>At least one dependency has a differing version of the dependency or has SNAPSHOT dependencies.</td> 
+  <thead> 
+   <tr class="b"> 
+    <th>Ready for release (100% convergence and no SNAPSHOTS):</th> 
+    <td><i class="icon-ok"></i>&nbsp;<b>Success</b></td> 
    </tr> 
-  </tbody> 
- </table> 
- <br /> 
- <table border="0" class="bodyTable table table-striped table-hover"> 
+  </thead> 
   <thead> 
    <tr class="a"> 
-    <th>Ready for release (100% convergence and no SNAPSHOTS):</th> 
-    <td><i class="icon-exclamation-sign"></i>&nbsp;<b>Error</b><br />You do not have 100% convergence.</td> 
+    <th>Convergence (NOD/NOA):</th> 
+    <td><i class="icon-ok"></i>&nbsp;<b>100 %</b></td> 
    </tr> 
   </thead> 
   <thead> 
    <tr class="b"> 
-    <th>Convergence (NOD/NOA):</th> 
-    <td><i class="icon-exclamation-sign"></i>&nbsp;<b>97 %</b></td> 
-   </tr> 
-  </thead> 
-  <thead> 
-   <tr class="a"> 
     <th>Number of SNAPSHOT artifacts (NOS):</th> 
     <td>0</td> 
    </tr> 
   </thead> 
   <thead> 
-   <tr class="b"> 
+   <tr class="a"> 
     <th>Number of version-conflicting artifacts (NOC):</th> 
-    <td>1</td> 
+    <td>0</td> 
+   </tr> 
+  </thead> 
+  <thead> 
+   <tr class="b"> 
+    <th>Number of unique artifacts (NOA):</th> 
+    <td>22</td> 
    </tr> 
   </thead> 
   <thead> 
    <tr class="a"> 
-    <th>Number of unique artifacts (NOA):</th> 
-    <td>39</td> 
-   </tr> 
-  </thead> 
-  <thead> 
-   <tr class="b"> 
     <th>Number of dependencies (NOD):</th> 
-    <td>38</td> 
+    <td>22</td> 
    </tr> 
   </thead> 
   <caption> 
@@ -175,46 +153,6 @@
   <tbody> 
   </tbody> 
  </table> 
-</div> 
-<div class="section"> 
- <h3 id="Dependencies_used_in_this_project">Dependencies used in this project</h3> 
- <div class="section"> 
-  <h4 id="commons-loggingcommons-logging">commons-logging:commons-logging</h4> 
-  <table border="0" class="bodyTable table table-striped table-hover"> 
-   <tbody> 
-    <tr class="b"> 
-     <td><i class="icon-exclamation-sign"></i></td> 
-     <td> 
-      <table border="0" class="bodyTable table table-striped table-hover"> 
-       <tbody> 
-        <tr class="a"> 
-         <td width="25%">1.0.4</td> 
-         <td> 
-          <ol style="list-style-type: decimal">
-            com.randomnoun.common:common-public:jar:1.0.1 
-           <br />\-&nbsp;commons-httpclient:commons-httpclient:jar:3.1:compile 
-           <br />&nbsp;&nbsp;&nbsp;\-&nbsp;commons-logging:commons-logging:jar:1.0.4:compile 
-           <br /> 
-           <br /> 
-          </ol></td> 
-        </tr> 
-        <tr class="b"> 
-         <td width="25%">1.2</td> 
-         <td> 
-          <ol style="list-style-type: decimal">
-            com.randomnoun.common:common-public:jar:1.0.1 
-           <br />\-&nbsp;commons-beanutils:commons-beanutils:jar:1.9.4:compile 
-           <br />&nbsp;&nbsp;&nbsp;\-&nbsp;(commons-logging:commons-logging:jar:1.2:compile - omitted for conflict with 1.0.4) 
-           <br /> 
-           <br /> 
-          </ol></td> 
-        </tr> 
-       </tbody> 
-      </table></td> 
-    </tr> 
-   </tbody> 
-  </table> 
- </div> 
 </div>
 			</div>
 		</div>
@@ -235,10 +173,7 @@
 							<a href="index.html" title="Home">Home </a>
 						</li>
 						<li>
-							<a href="./" title="Github project">Github project </a>
-						</li>
-						<li>
-							<a href="http://www.randomnoun.com/wp" title="Blog" class="externalLink">Blog </a>
+							<a href="https://github.com/randomnoun/jessop" title="Github project" class="externalLink">Github project </a>
 						</li>
 						<li>
 							<a href="changes-report.html" title="Release notes">Release notes </a>
@@ -282,9 +217,6 @@
 						<li>
 							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-down"></i></a>
 							<ul class="nav nav-list">
-						<li>
-							<a href="integration.html" title="CI Management">CI Management </a>
-						</li>
 						<li>
 							<a href="dependencies.html" title="Dependencies">Dependencies </a>
 						</li>
@@ -332,8 +264,8 @@
 					</ul>
 				</div>
 				<div class="span3 bottom-description">
-					<blockquote><span class="color-highlight">common-public</span> is a Maven project which provides
-a set of common utility classes.</blockquote>
+					<blockquote><span class="color-highlight">jessop</span> is a Maven project which provides
+multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/detail?id=245">Java Server Pages</a>.</blockquote>
 				</div>
 			</div>
 		</div>
@@ -343,7 +275,7 @@ a set of common utility classes.</blockquote>
 		<div class="row">
 			<div class="span12">
 				<p class="pull-right"><a href="#">Back to top</a></p>
-				<p class="copyright">Copyright &copy;2013-2020 <a href="http://www.randomnoun.com">randomnoun</a>. All Rights Reserved.</p>
+				<p class="copyright">Copyright &copy;2016-09-16-2020 <a href="http://www.randomnoun.com">randomnoun</a>. All Rights Reserved.</p>
 				<p><a href="http://github.com/andriusvelykis/reflow-maven-skin" title="Reflow Maven skin">Reflow Maven skin</a> by <a href="http://andrius.velykis.lt" target="_blank" title="Andrius Velykis">Andrius Velykis</a>.</p>
 			</div>
 		</div>
