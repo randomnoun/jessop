@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.spring;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">/* (c) 2013 randomnoun. All Rights Reserved. This work is licensed under a</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * BSD Simplified License. (http://www.randomnoun.com/bsd-simplified.html)</a>
+<span class="sourceLineNo">005</span><a id="line.5"> */</a>
+<span class="sourceLineNo">006</span><a id="line.6"></a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.sql.*;</a>
+<span class="sourceLineNo">008</span><a id="line.8"></a>
+<span class="sourceLineNo">009</span><a id="line.9">import org.springframework.dao.TypeMismatchDataAccessException;</a>
+<span class="sourceLineNo">010</span><a id="line.10">import org.springframework.jdbc.core.*;</a>
+<span class="sourceLineNo">011</span><a id="line.11"></a>
+<span class="sourceLineNo">012</span><a id="line.12"></a>
+<span class="sourceLineNo">013</span><a id="line.13">/**</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * This class is intended to replace the standard RowMapper provided by Spring</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * to return a List of Long objects (rather than a List of Maps). The</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * queries executed by this rowMapper must therefore always evaluate to</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * a single numeric column </a>
+<span class="sourceLineNo">018</span><a id="line.18"> *</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * &lt;p&gt;This class can be used as in the following code fragment:</a>
+<span class="sourceLineNo">020</span><a id="line.20"> *</a>
+<span class="sourceLineNo">021</span><a id="line.21"> * &lt;pre style="code"&gt;</a>
+<span class="sourceLineNo">022</span><a id="line.22">                List longList = jt.query(</a>
+<span class="sourceLineNo">023</span><a id="line.23">                    "SELECT DISTINCT lngId FROM tblCave " +</a>
+<span class="sourceLineNo">024</span><a id="line.24">                    "WHERE txtSecretPassword = ? ",</a>
+<span class="sourceLineNo">025</span><a id="line.25">                    new Object[] { "open sesame" },</a>
+<span class="sourceLineNo">026</span><a id="line.26">                    new RowMapperResultReader(new LongRowMapper() ));</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * &lt;/pre&gt;</a>
+<span class="sourceLineNo">028</span><a id="line.28"> *</a>
+<span class="sourceLineNo">029</span><a id="line.29"> *</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * </a>
+<span class="sourceLineNo">031</span><a id="line.31"> * @author knoxg</a>
+<span class="sourceLineNo">032</span><a id="line.32"> */</a>
+<span class="sourceLineNo">033</span><a id="line.33">public class LongRowMapper</a>
+<span class="sourceLineNo">034</span><a id="line.34">    implements RowMapper&lt;Long&gt;</a>
+<span class="sourceLineNo">035</span><a id="line.35">{</a>
+<span class="sourceLineNo">036</span><a id="line.36">    </a>
+<span class="sourceLineNo">037</span><a id="line.37">    </a>
+<span class="sourceLineNo">038</span><a id="line.38"></a>
+<span class="sourceLineNo">039</span><a id="line.39">    /**</a>
+<span class="sourceLineNo">040</span><a id="line.40">     * Creates a new ClobRowMapper object.</a>
+<span class="sourceLineNo">041</span><a id="line.41">     */</a>
+<span class="sourceLineNo">042</span><a id="line.42">    public LongRowMapper()</a>
+<span class="sourceLineNo">043</span><a id="line.43">    {</a>
+<span class="sourceLineNo">044</span><a id="line.44">    }</a>
+<span class="sourceLineNo">045</span><a id="line.45"></a>
+<span class="sourceLineNo">046</span><a id="line.46">    /**</a>
+<span class="sourceLineNo">047</span><a id="line.47">     * Returns a single Long representing this row.</a>
+<span class="sourceLineNo">048</span><a id="line.48">     *</a>
+<span class="sourceLineNo">049</span><a id="line.49">     * @param resultSet The resultset to map</a>
+<span class="sourceLineNo">050</span><a id="line.50">     * @param rowNumber The current row number</a>
+<span class="sourceLineNo">051</span><a id="line.51">     *</a>
+<span class="sourceLineNo">052</span><a id="line.52">     * @return a single object representing this row.</a>
+<span class="sourceLineNo">053</span><a id="line.53">     *</a>
+<span class="sourceLineNo">054</span><a id="line.54">     * @throws TypeMismatchDataAccessException if the first column of the resultset is not</a>
+<span class="sourceLineNo">055</span><a id="line.55">     *   numeric.</a>
+<span class="sourceLineNo">056</span><a id="line.56">     */</a>
+<span class="sourceLineNo">057</span><a id="line.57">    public Long mapRow(ResultSet resultSet, int rowNumber)</a>
+<span class="sourceLineNo">058</span><a id="line.58">        throws SQLException</a>
+<span class="sourceLineNo">059</span><a id="line.59">    {</a>
+<span class="sourceLineNo">060</span><a id="line.60">        Object value;</a>
+<span class="sourceLineNo">061</span><a id="line.61"></a>
+<span class="sourceLineNo">062</span><a id="line.62">        value = resultSet.getObject(1);</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">        if (value == null) {</a>
+<span class="sourceLineNo">065</span><a id="line.65">            // just keep it as a null</a>
+<span class="sourceLineNo">066</span><a id="line.66">                return null;</a>
+<span class="sourceLineNo">067</span><a id="line.67">        } else if (value instanceof Number) {</a>
+<span class="sourceLineNo">068</span><a id="line.68">            return ((Number) value).longValue();</a>
+<span class="sourceLineNo">069</span><a id="line.69">        } else {</a>
+<span class="sourceLineNo">070</span><a id="line.70">            throw new TypeMismatchDataAccessException(</a>
+<span class="sourceLineNo">071</span><a id="line.71">              "Expecting numeric value in column 1 of query (found " +</a>
+<span class="sourceLineNo">072</span><a id="line.72">              value.getClass().getName() + ")");</a>
+<span class="sourceLineNo">073</span><a id="line.73">        }</a>
+<span class="sourceLineNo">074</span><a id="line.74">    }</a>
+<span class="sourceLineNo">075</span><a id="line.75">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

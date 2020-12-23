@@ -1,0 +1,449 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">import static org.junit.Assert.assertArrayEquals;</a>
+<span class="sourceLineNo">004</span><a id="line.4"></a>
+<span class="sourceLineNo">005</span><a id="line.5">import java.text.ParseException;</a>
+<span class="sourceLineNo">006</span><a id="line.6">import java.util.Arrays;</a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.util.Properties;</a>
+<span class="sourceLineNo">008</span><a id="line.8"></a>
+<span class="sourceLineNo">009</span><a id="line.9">import junit.framework.TestCase;</a>
+<span class="sourceLineNo">010</span><a id="line.10"></a>
+<span class="sourceLineNo">011</span><a id="line.11"></a>
+<span class="sourceLineNo">012</span><a id="line.12">/**</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * </a>
+<span class="sourceLineNo">014</span><a id="line.14"> * @author knoxg</a>
+<span class="sourceLineNo">015</span><a id="line.15"> */</a>
+<span class="sourceLineNo">016</span><a id="line.16">public class TextTest</a>
+<span class="sourceLineNo">017</span><a id="line.17">    extends TestCase</a>
+<span class="sourceLineNo">018</span><a id="line.18">{</a>
+<span class="sourceLineNo">019</span><a id="line.19">        public TextTest(String name)</a>
+<span class="sourceLineNo">020</span><a id="line.20">    {</a>
+<span class="sourceLineNo">021</span><a id="line.21">        super(name);</a>
+<span class="sourceLineNo">022</span><a id="line.22">    }</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">    public void testIsBlank()</a>
+<span class="sourceLineNo">025</span><a id="line.25">    {</a>
+<span class="sourceLineNo">026</span><a id="line.26">        assertTrue("isBlank(null)", Text.isBlank(null));</a>
+<span class="sourceLineNo">027</span><a id="line.27">        assertTrue("isBlank('')", Text.isBlank(""));</a>
+<span class="sourceLineNo">028</span><a id="line.28">        assertFalse("isBlank('abc')", Text.isBlank("abc"));</a>
+<span class="sourceLineNo">029</span><a id="line.29">    }</a>
+<span class="sourceLineNo">030</span><a id="line.30"></a>
+<span class="sourceLineNo">031</span><a id="line.31">    public void testEscapeHtml()</a>
+<span class="sourceLineNo">032</span><a id="line.32">    {</a>
+<span class="sourceLineNo">033</span><a id="line.33">        assertEquals("escapeHtml(null)", Text.escapeHtml(null), "");</a>
+<span class="sourceLineNo">034</span><a id="line.34">        assertEquals("escapeHtml('')", Text.escapeHtml(""), "");</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">        assertEquals("escapeHtml(&lt;)", "&amp;lt;", Text.escapeHtml("&lt;"));</a>
+<span class="sourceLineNo">037</span><a id="line.37">        assertEquals("escapeHtml(&gt;)", "&amp;gt;", Text.escapeHtml("&gt;"));</a>
+<span class="sourceLineNo">038</span><a id="line.38">        assertEquals("escapeHtml(&amp;)", "&amp;amp;", Text.escapeHtml("&amp;"));</a>
+<span class="sourceLineNo">039</span><a id="line.39">        assertEquals("escapeHtml(mixed)", "ab&amp;lt;&amp;amp;&amp;gt;cd", Text.escapeHtml("ab&lt;&amp;&gt;cd"));</a>
+<span class="sourceLineNo">040</span><a id="line.40"></a>
+<span class="sourceLineNo">041</span><a id="line.41">        assertEquals("escapeHtml(\u0007)", "&amp;#xfffd;", Text.escapeHtml("\u0007")); // i see you have the machine that goes ping</a>
+<span class="sourceLineNo">042</span><a id="line.42">        assertEquals("escapeHtml(\u1234)", "&amp;#x1234;", Text.escapeHtml("\u1234"));</a>
+<span class="sourceLineNo">043</span><a id="line.43">    }</a>
+<span class="sourceLineNo">044</span><a id="line.44"></a>
+<span class="sourceLineNo">045</span><a id="line.45">    public void testEscapeCss()</a>
+<span class="sourceLineNo">046</span><a id="line.46">    {</a>
+<span class="sourceLineNo">047</span><a id="line.47">        assertEquals("escapeCss(null)", Text.escapeCss(null), "");</a>
+<span class="sourceLineNo">048</span><a id="line.48">        assertEquals("escapeCss('')", Text.escapeCss(""), "");</a>
+<span class="sourceLineNo">049</span><a id="line.49"></a>
+<span class="sourceLineNo">050</span><a id="line.50">        assertEquals("escapeCss(&lt;)", "\\3c ", Text.escapeCss("&lt;"));</a>
+<span class="sourceLineNo">051</span><a id="line.51">        assertEquals("escapeCss(&gt;)", "\\3e ", Text.escapeCss("&gt;"));</a>
+<span class="sourceLineNo">052</span><a id="line.52">        assertEquals("escapeCss(&amp;)", "\\26 ", Text.escapeCss("&amp;"));</a>
+<span class="sourceLineNo">053</span><a id="line.53">        assertEquals("escapeCss(mixed)", "ab\\3c \\26 \\3e cd", Text.escapeCss("ab&lt;&amp;&gt;cd"));</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">        assertEquals("escapeCss(\u0007)", "\\7 ", Text.escapeCss("\u0007")); // ESAPI lets this through; may want to check later</a>
+<span class="sourceLineNo">056</span><a id="line.56">        assertEquals("escapeCss(\u1234)", "\\1234 ", Text.escapeCss("\u1234"));</a>
+<span class="sourceLineNo">057</span><a id="line.57">    }</a>
+<span class="sourceLineNo">058</span><a id="line.58"></a>
+<span class="sourceLineNo">059</span><a id="line.59">    </a>
+<span class="sourceLineNo">060</span><a id="line.60">    public void testGetDisplayString()</a>
+<span class="sourceLineNo">061</span><a id="line.61">    {</a>
+<span class="sourceLineNo">062</span><a id="line.62">        String a;</a>
+<span class="sourceLineNo">063</span><a id="line.63"></a>
+<span class="sourceLineNo">064</span><a id="line.64">        try</a>
+<span class="sourceLineNo">065</span><a id="line.65">        {</a>
+<span class="sourceLineNo">066</span><a id="line.66">            a = Text.getDisplayString(null, null);</a>
+<span class="sourceLineNo">067</span><a id="line.67">            fail("Text.getDisplayString(null, null) should throw NullPointerException");</a>
+<span class="sourceLineNo">068</span><a id="line.68">        }</a>
+<span class="sourceLineNo">069</span><a id="line.69">        catch (NullPointerException ne)</a>
+<span class="sourceLineNo">070</span><a id="line.70">        {</a>
+<span class="sourceLineNo">071</span><a id="line.71">            // ok  </a>
+<span class="sourceLineNo">072</span><a id="line.72">        }</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">        try</a>
+<span class="sourceLineNo">075</span><a id="line.75">        {</a>
+<span class="sourceLineNo">076</span><a id="line.76">            a = Text.getDisplayString(null, "abc");</a>
+<span class="sourceLineNo">077</span><a id="line.77">            fail("Text.getDisplayString(null, 'abc') should throw NullPointerException");</a>
+<span class="sourceLineNo">078</span><a id="line.78">        }</a>
+<span class="sourceLineNo">079</span><a id="line.79">        catch (NullPointerException ne)</a>
+<span class="sourceLineNo">080</span><a id="line.80">        {</a>
+<span class="sourceLineNo">081</span><a id="line.81">            // ok  </a>
+<span class="sourceLineNo">082</span><a id="line.82">        }</a>
+<span class="sourceLineNo">083</span><a id="line.83"></a>
+<span class="sourceLineNo">084</span><a id="line.84">        assertEquals("getDisplayString('abc', null)", "(null)",</a>
+<span class="sourceLineNo">085</span><a id="line.85">            Text.getDisplayString("abc", null));</a>
+<span class="sourceLineNo">086</span><a id="line.86">        assertEquals("getDisplayString('password', null)", "********",</a>
+<span class="sourceLineNo">087</span><a id="line.87">            Text.getDisplayString("password", null));</a>
+<span class="sourceLineNo">088</span><a id="line.88">        assertEquals("getDisplayString('pAsSwOrD', null)", "(null)",</a>
+<span class="sourceLineNo">089</span><a id="line.89">            Text.getDisplayString("pAsSwOrD", null));</a>
+<span class="sourceLineNo">090</span><a id="line.90">        assertEquals("getDisplayString('credentials', null)", "********",</a>
+<span class="sourceLineNo">091</span><a id="line.91">            Text.getDisplayString("credentials", null));</a>
+<span class="sourceLineNo">092</span><a id="line.92"></a>
+<span class="sourceLineNo">093</span><a id="line.93">        assertEquals("getDisplayString('abc', 'def')", "def",</a>
+<span class="sourceLineNo">094</span><a id="line.94">            Text.getDisplayString("abc", "def"));</a>
+<span class="sourceLineNo">095</span><a id="line.95">        assertEquals("getDisplayString('password', 'def')", "********",</a>
+<span class="sourceLineNo">096</span><a id="line.96">            Text.getDisplayString("password", "def"));</a>
+<span class="sourceLineNo">097</span><a id="line.97">        assertEquals("getDisplayString('pAsSwOrD', 'def')", "def",</a>
+<span class="sourceLineNo">098</span><a id="line.98">            Text.getDisplayString("pAsSwOrD", "def"));</a>
+<span class="sourceLineNo">099</span><a id="line.99">        assertEquals("getDisplayString('credentials', 'def')", "********",</a>
+<span class="sourceLineNo">100</span><a id="line.100">            Text.getDisplayString("credentials", "def"));</a>
+<span class="sourceLineNo">101</span><a id="line.101"></a>
+<span class="sourceLineNo">102</span><a id="line.102">        a = "";</a>
+<span class="sourceLineNo">103</span><a id="line.103"></a>
+<span class="sourceLineNo">104</span><a id="line.104">        for (int i = 0; i &lt; 200; i++)</a>
+<span class="sourceLineNo">105</span><a id="line.105">        {</a>
+<span class="sourceLineNo">106</span><a id="line.106">            a = a + "1234567890";</a>
+<span class="sourceLineNo">107</span><a id="line.107">        }</a>
+<span class="sourceLineNo">108</span><a id="line.108"></a>
+<span class="sourceLineNo">109</span><a id="line.109">        ;</a>
+<span class="sourceLineNo">110</span><a id="line.110">        assertEquals("getDisplayString('abc', longstring)",</a>
+<span class="sourceLineNo">111</span><a id="line.111">            a.substring(0, 300) + "... (1700 more characters truncated)",</a>
+<span class="sourceLineNo">112</span><a id="line.112">            Text.getDisplayString("abc", a));</a>
+<span class="sourceLineNo">113</span><a id="line.113">    }</a>
+<span class="sourceLineNo">114</span><a id="line.114"></a>
+<span class="sourceLineNo">115</span><a id="line.115">    public void testStrDefault()</a>
+<span class="sourceLineNo">116</span><a id="line.116">    {</a>
+<span class="sourceLineNo">117</span><a id="line.117">        assertNull("strDefault(null, null)", Text.strDefault(null, null));</a>
+<span class="sourceLineNo">118</span><a id="line.118">        assertEquals("strDefault(null, 'abc')", "abc", Text.strDefault(null, "abc"));</a>
+<span class="sourceLineNo">119</span><a id="line.119">        assertEquals("strDefault(null, '')", "", Text.strDefault(null, ""));</a>
+<span class="sourceLineNo">120</span><a id="line.120"></a>
+<span class="sourceLineNo">121</span><a id="line.121">        assertEquals("strDefault('def', null)", "def", Text.strDefault("def", null));</a>
+<span class="sourceLineNo">122</span><a id="line.122">        assertEquals("strDefault('def', 'abc')", "def", Text.strDefault("def", "abc"));</a>
+<span class="sourceLineNo">123</span><a id="line.123">        assertEquals("strDefault('def', '')", "def", Text.strDefault("def", ""));</a>
+<span class="sourceLineNo">124</span><a id="line.124"></a>
+<span class="sourceLineNo">125</span><a id="line.125">        assertEquals("strDefault('', null)", "", Text.strDefault("", null));</a>
+<span class="sourceLineNo">126</span><a id="line.126">        assertEquals("strDefault('', 'abc')", "", Text.strDefault("", "abc"));</a>
+<span class="sourceLineNo">127</span><a id="line.127">        assertEquals("strDefault('', '')", "", Text.strDefault("", ""));</a>
+<span class="sourceLineNo">128</span><a id="line.128">    }</a>
+<span class="sourceLineNo">129</span><a id="line.129"></a>
+<span class="sourceLineNo">130</span><a id="line.130">    public void testReplaceString()</a>
+<span class="sourceLineNo">131</span><a id="line.131">    {</a>
+<span class="sourceLineNo">132</span><a id="line.132">        </a>
+<span class="sourceLineNo">133</span><a id="line.133"></a>
+<span class="sourceLineNo">134</span><a id="line.134">        // single char replacement        </a>
+<span class="sourceLineNo">135</span><a id="line.135">        assertEquals("replaceString('', 'b', 'x')", "", Text.replaceString("", "b", "x"));</a>
+<span class="sourceLineNo">136</span><a id="line.136">        assertEquals("replaceString('abc', 'b', 'x')", "axc",</a>
+<span class="sourceLineNo">137</span><a id="line.137">            Text.replaceString("abc", "b", "x"));</a>
+<span class="sourceLineNo">138</span><a id="line.138">        assertEquals("replaceString('abc', 'd', 'x')", "abc",</a>
+<span class="sourceLineNo">139</span><a id="line.139">            Text.replaceString("abc", "d", "x"));</a>
+<span class="sourceLineNo">140</span><a id="line.140">        assertEquals("replaceString('abc', 'bc', 'x')", "ax",</a>
+<span class="sourceLineNo">141</span><a id="line.141">            Text.replaceString("abc", "bc", "x"));</a>
+<span class="sourceLineNo">142</span><a id="line.142">        assertEquals("replaceString('abababa', 'b', 'x')", "axaxaxa",</a>
+<span class="sourceLineNo">143</span><a id="line.143">            Text.replaceString("abababa", "b", "x"));</a>
+<span class="sourceLineNo">144</span><a id="line.144">        assertEquals("replaceString('abababa', 'bab', 'x')", "axaba",</a>
+<span class="sourceLineNo">145</span><a id="line.145">            Text.replaceString("abababa", "bab", "x"));</a>
+<span class="sourceLineNo">146</span><a id="line.146"></a>
+<span class="sourceLineNo">147</span><a id="line.147">        // multiple char replacement</a>
+<span class="sourceLineNo">148</span><a id="line.148">        assertEquals("replaceString('', 'b', 'fish')", "",</a>
+<span class="sourceLineNo">149</span><a id="line.149">            Text.replaceString("", "b", "x"));</a>
+<span class="sourceLineNo">150</span><a id="line.150">        assertEquals("replaceString('abc', 'b', 'fish')", "afishc",</a>
+<span class="sourceLineNo">151</span><a id="line.151">            Text.replaceString("abc", "b", "fish"));</a>
+<span class="sourceLineNo">152</span><a id="line.152">        assertEquals("replaceString('abc', 'd', 'fish')", "abc",</a>
+<span class="sourceLineNo">153</span><a id="line.153">            Text.replaceString("abc", "d", "fish"));</a>
+<span class="sourceLineNo">154</span><a id="line.154">        assertEquals("replaceString('abc', 'bc', 'fish')", "afish",</a>
+<span class="sourceLineNo">155</span><a id="line.155">            Text.replaceString("abc", "bc", "fish"));</a>
+<span class="sourceLineNo">156</span><a id="line.156">        assertEquals("replaceString('abababa', 'b', 'fish')", "afishafishafisha",</a>
+<span class="sourceLineNo">157</span><a id="line.157">            Text.replaceString("abababa", "b", "fish"));</a>
+<span class="sourceLineNo">158</span><a id="line.158">        assertEquals("replaceString('abababa', 'bab', 'fish')", "afishaba",</a>
+<span class="sourceLineNo">159</span><a id="line.159">            Text.replaceString("abababa", "bab", "fish"));</a>
+<span class="sourceLineNo">160</span><a id="line.160"></a>
+<span class="sourceLineNo">161</span><a id="line.161">        // replace with text already in original string</a>
+<span class="sourceLineNo">162</span><a id="line.162">        assertEquals("replaceString('', 'b', 'a')", "", Text.replaceString("", "b", "a"));</a>
+<span class="sourceLineNo">163</span><a id="line.163">        assertEquals("replaceString('abc', 'b', 'a')", "aac",</a>
+<span class="sourceLineNo">164</span><a id="line.164">            Text.replaceString("abc", "b", "a"));</a>
+<span class="sourceLineNo">165</span><a id="line.165">        assertEquals("replaceString('abc', 'd', 'a')", "abc",</a>
+<span class="sourceLineNo">166</span><a id="line.166">            Text.replaceString("abc", "d", "a"));</a>
+<span class="sourceLineNo">167</span><a id="line.167">        assertEquals("replaceString('abc', 'bc', 'a')", "aa",</a>
+<span class="sourceLineNo">168</span><a id="line.168">            Text.replaceString("abc", "bc", "a"));</a>
+<span class="sourceLineNo">169</span><a id="line.169">        assertEquals("replaceString('abababa', 'b', 'a')", "aaaaaaa",</a>
+<span class="sourceLineNo">170</span><a id="line.170">            Text.replaceString("abababa", "b", "a"));</a>
+<span class="sourceLineNo">171</span><a id="line.171">        assertEquals("replaceString('abababa', 'bab', 'a')", "aaaba",</a>
+<span class="sourceLineNo">172</span><a id="line.172">            Text.replaceString("abababa", "bab", "a"));</a>
+<span class="sourceLineNo">173</span><a id="line.173">    }</a>
+<span class="sourceLineNo">174</span><a id="line.174"></a>
+<span class="sourceLineNo">175</span><a id="line.175">    public void testGetFileContents()</a>
+<span class="sourceLineNo">176</span><a id="line.176">    {</a>
+<span class="sourceLineNo">177</span><a id="line.177">    }</a>
+<span class="sourceLineNo">178</span><a id="line.178"></a>
+<span class="sourceLineNo">179</span><a id="line.179">    public void testIndent()</a>
+<span class="sourceLineNo">180</span><a id="line.180">    {</a>
+<span class="sourceLineNo">181</span><a id="line.181">    }</a>
+<span class="sourceLineNo">182</span><a id="line.182"></a>
+<span class="sourceLineNo">183</span><a id="line.183">    public void testStructuredListToString()</a>
+<span class="sourceLineNo">184</span><a id="line.184">    {</a>
+<span class="sourceLineNo">185</span><a id="line.185">    }</a>
+<span class="sourceLineNo">186</span><a id="line.186"></a>
+<span class="sourceLineNo">187</span><a id="line.187">    public void testStructuredMapToString()</a>
+<span class="sourceLineNo">188</span><a id="line.188">    {</a>
+<span class="sourceLineNo">189</span><a id="line.189">    }</a>
+<span class="sourceLineNo">190</span><a id="line.190"></a>
+<span class="sourceLineNo">191</span><a id="line.191">    public void testSetFromRequestObjectHttpServletRequest()</a>
+<span class="sourceLineNo">192</span><a id="line.192">    {</a>
+<span class="sourceLineNo">193</span><a id="line.193">    }</a>
+<span class="sourceLineNo">194</span><a id="line.194"></a>
+<span class="sourceLineNo">195</span><a id="line.195">    public void testSetFromRequestObjectHttpServletRequestStringArray()</a>
+<span class="sourceLineNo">196</span><a id="line.196">    {</a>
+<span class="sourceLineNo">197</span><a id="line.197">    }</a>
+<span class="sourceLineNo">198</span><a id="line.198"></a>
+<span class="sourceLineNo">199</span><a id="line.199">    public void testGetValue()</a>
+<span class="sourceLineNo">200</span><a id="line.200">    {</a>
+<span class="sourceLineNo">201</span><a id="line.201">    }</a>
+<span class="sourceLineNo">202</span><a id="line.202">    </a>
+<span class="sourceLineNo">203</span><a id="line.203">    public void testReduceNewlines() </a>
+<span class="sourceLineNo">204</span><a id="line.204">    {</a>
+<span class="sourceLineNo">205</span><a id="line.205">        String dosString = "this\r\nis a string\r\nwith DOS EOL conventions\r\n";</a>
+<span class="sourceLineNo">206</span><a id="line.206">                String unixString = "this\nis a string\nwith unix EOL conventions\n";</a>
+<span class="sourceLineNo">207</span><a id="line.207">                String macString = "this\ris a string\rwith mac EOL conventions\r";</a>
+<span class="sourceLineNo">208</span><a id="line.208">                String oddString = "this\r\n\nis a string\r\rwith mixed EOL conventions\n\n\n\r\n\r";</a>
+<span class="sourceLineNo">209</span><a id="line.209">                </a>
+<span class="sourceLineNo">210</span><a id="line.210">                assertEquals("this\nis a string\nwith DOS EOL conventions\n", Text.reduceNewlines(dosString));</a>
+<span class="sourceLineNo">211</span><a id="line.211">                assertEquals("this\nis a string\nwith unix EOL conventions\n", Text.reduceNewlines(unixString));</a>
+<span class="sourceLineNo">212</span><a id="line.212">                assertEquals("this\nis a string\nwith mac EOL conventions\n", Text.reduceNewlines(macString));</a>
+<span class="sourceLineNo">213</span><a id="line.213">                assertEquals("this\n\nis a string\n\nwith mixed EOL conventions\n\n\n\n", Text.reduceNewlines(oddString));</a>
+<span class="sourceLineNo">214</span><a id="line.214">    }</a>
+<span class="sourceLineNo">215</span><a id="line.215">    </a>
+<span class="sourceLineNo">216</span><a id="line.216">    @SuppressWarnings("deprecation")</a>
+<span class="sourceLineNo">217</span><a id="line.217">        public void testEscapeJavascript() {</a>
+<span class="sourceLineNo">218</span><a id="line.218">        String a = "lineWith\nNewlines";</a>
+<span class="sourceLineNo">219</span><a id="line.219">        String b = "lineWith\r\nNewlines";</a>
+<span class="sourceLineNo">220</span><a id="line.220">        String c = "lineWith'Quote";</a>
+<span class="sourceLineNo">221</span><a id="line.221">        String d = "lineWith&lt;/scrIpT&gt;scriptTag";</a>
+<span class="sourceLineNo">222</span><a id="line.222">        </a>
+<span class="sourceLineNo">223</span><a id="line.223">        assertEquals("lineWith\\nNewlines", Text.escapeJavascript(a));</a>
+<span class="sourceLineNo">224</span><a id="line.224">        assertEquals("lineWith\\nNewlines", Text.escapeJavascript2(b));</a>
+<span class="sourceLineNo">225</span><a id="line.225">        assertEquals("lineWith\\u0027Quote", Text.escapeJavascript(c));</a>
+<span class="sourceLineNo">226</span><a id="line.226">        assertEquals("lineWith\\u003C/scrIpT&gt;scriptTag", Text.escapeJavascript(d));</a>
+<span class="sourceLineNo">227</span><a id="line.227">    }</a>
+<span class="sourceLineNo">228</span><a id="line.228">    </a>
+<span class="sourceLineNo">229</span><a id="line.229">    public void testParseCodecOutput() {</a>
+<span class="sourceLineNo">230</span><a id="line.230">        // @TODO</a>
+<span class="sourceLineNo">231</span><a id="line.231">    }</a>
+<span class="sourceLineNo">232</span><a id="line.232">    public void testCsvEscape(){</a>
+<span class="sourceLineNo">233</span><a id="line.233">        </a>
+<span class="sourceLineNo">234</span><a id="line.234">        assertEquals("\"'=CMD()\"", Text.escapeCsv("=CMD()"));</a>
+<span class="sourceLineNo">235</span><a id="line.235">        assertEquals("\"'=12345\"", Text.escapeCsv("=12345"));</a>
+<span class="sourceLineNo">236</span><a id="line.236">        assertEquals("\"abc,def\"", Text.escapeCsv("abc,def"));</a>
+<span class="sourceLineNo">237</span><a id="line.237">        assertEquals("\"'=DDE(\"\"cmd\"\";\"\"/C calc\"\";\"\"__DdeLink_60_870516294\"\")\"", Text.escapeCsv("=DDE(\"cmd\";\"/C calc\";\"__DdeLink_60_870516294\")"));</a>
+<span class="sourceLineNo">238</span><a id="line.238">        assertEquals("\"'=cmd|' /C calc'!A0\"", Text.escapeCsv("=cmd|' /C calc'!A0"));</a>
+<span class="sourceLineNo">239</span><a id="line.239">        assertEquals("\"'+cmd|' /C calc'!A0\"", Text.escapeCsv("+cmd|' /C calc'!A0"));</a>
+<span class="sourceLineNo">240</span><a id="line.240">        assertEquals("\"'-cmd|' /C calc'!A0\"", Text.escapeCsv("-cmd|' /C calc'!A0"));</a>
+<span class="sourceLineNo">241</span><a id="line.241"></a>
+<span class="sourceLineNo">242</span><a id="line.242">        // numbers shouldn't be escaped</a>
+<span class="sourceLineNo">243</span><a id="line.243">        assertEquals("123.456", Text.escapeCsv("123.456"));</a>
+<span class="sourceLineNo">244</span><a id="line.244">        assertEquals("123", Text.escapeCsv("123"));</a>
+<span class="sourceLineNo">245</span><a id="line.245">        assertEquals("-123.456", Text.escapeCsv("-123.456"));</a>
+<span class="sourceLineNo">246</span><a id="line.246">        assertEquals("-123", Text.escapeCsv("-123"));</a>
+<span class="sourceLineNo">247</span><a id="line.247">        </a>
+<span class="sourceLineNo">248</span><a id="line.248">        // and with E notation</a>
+<span class="sourceLineNo">249</span><a id="line.249">        assertEquals("123.456E+5", Text.escapeCsv("123.456E+5"));</a>
+<span class="sourceLineNo">250</span><a id="line.250">        assertEquals("123E+5", Text.escapeCsv("123E+5"));</a>
+<span class="sourceLineNo">251</span><a id="line.251">        assertEquals("-123.456E+5", Text.escapeCsv("-123.456E+5"));</a>
+<span class="sourceLineNo">252</span><a id="line.252">        assertEquals("-123E+5", Text.escapeCsv("-123E+5"));</a>
+<span class="sourceLineNo">253</span><a id="line.253">    }</a>
+<span class="sourceLineNo">254</span><a id="line.254">    </a>
+<span class="sourceLineNo">255</span><a id="line.255">    public void testPad() {</a>
+<span class="sourceLineNo">256</span><a id="line.256">        String source = "1234";</a>
+<span class="sourceLineNo">257</span><a id="line.257">        assertEquals("1234      ", Text.pad(source, 10, Text.JUSTIFICATION_LEFT));</a>
+<span class="sourceLineNo">258</span><a id="line.258">                assertEquals("      1234", Text.pad(source, 10, Text.JUSTIFICATION_RIGHT));</a>
+<span class="sourceLineNo">259</span><a id="line.259">                assertEquals("   1234   ", Text.pad(source, 10, Text.JUSTIFICATION_CENTER));</a>
+<span class="sourceLineNo">260</span><a id="line.260">    }</a>
+<span class="sourceLineNo">261</span><a id="line.261">    </a>
+<span class="sourceLineNo">262</span><a id="line.262"></a>
+<span class="sourceLineNo">263</span><a id="line.263">    public void testSubstitutePlaceholders() {</a>
+<span class="sourceLineNo">264</span><a id="line.264">                Properties v = new Properties();</a>
+<span class="sourceLineNo">265</span><a id="line.265">                assertEquals("${var}", Text.substitutePlaceholders(v, "${var}"));</a>
+<span class="sourceLineNo">266</span><a id="line.266">                v.put("var",  "test");</a>
+<span class="sourceLineNo">267</span><a id="line.267">                assertEquals("test", Text.substitutePlaceholders(v, "${var}"));</a>
+<span class="sourceLineNo">268</span><a id="line.268">                </a>
+<span class="sourceLineNo">269</span><a id="line.269">                </a>
+<span class="sourceLineNo">270</span><a id="line.270">                v.put("prop:varname",  "asdf");</a>
+<span class="sourceLineNo">271</span><a id="line.271">                assertEquals("z${env:missing}x", Text.substitutePlaceholders(v, "z${env:missing}x"));</a>
+<span class="sourceLineNo">272</span><a id="line.272">                assertEquals("zasdfx", Text.substitutePlaceholders(v, "z${prop:varname}x"));</a>
+<span class="sourceLineNo">273</span><a id="line.273">                assertEquals("dollarAtEnd$", Text.substitutePlaceholders(v, "dollarAtEnd$"));</a>
+<span class="sourceLineNo">274</span><a id="line.274">                assertEquals("^[a-zA-Z0-9:/\\\\!@#$%^&amp;{}\\[\\]()_+\\-=,.~'` ]{1,255}$", Text.substitutePlaceholders(v, "^[a-zA-Z0-9:/\\\\!@#$%^&amp;{}\\[\\]()_+\\-=,.~'` ]{1,255}$"));</a>
+<span class="sourceLineNo">275</span><a id="line.275">    }</a>
+<span class="sourceLineNo">276</span><a id="line.276">    </a>
+<span class="sourceLineNo">277</span><a id="line.277">    public void testEscapePathComponent() {</a>
+<span class="sourceLineNo">278</span><a id="line.278">        assertEquals("abc", Text.escapePathComponent("abc"));</a>
+<span class="sourceLineNo">279</span><a id="line.279">        assertEquals("a\\:bc\\/def", Text.escapePathComponent("a:bc/def"));</a>
+<span class="sourceLineNo">280</span><a id="line.280">        assertEquals("a\\:bc\\\\def", Text.escapePathComponent("a:bc\\def"));</a>
+<span class="sourceLineNo">281</span><a id="line.281">        assertEquals("", Text.escapePathComponent(""));</a>
+<span class="sourceLineNo">282</span><a id="line.282">        assertEquals(null, Text.escapePathComponent(null));</a>
+<span class="sourceLineNo">283</span><a id="line.283">    }</a>
+<span class="sourceLineNo">284</span><a id="line.284">    </a>
+<span class="sourceLineNo">285</span><a id="line.285">    public void testUnscapePathComponent() {</a>
+<span class="sourceLineNo">286</span><a id="line.286">        assertEquals("abc", Text.unescapePathComponent("abc"));</a>
+<span class="sourceLineNo">287</span><a id="line.287">        assertEquals("a:bc/def", Text.unescapePathComponent("a\\:bc\\/def"));</a>
+<span class="sourceLineNo">288</span><a id="line.288">        assertEquals("a:bc\\def", Text.unescapePathComponent("a\\:bc\\\\def"));</a>
+<span class="sourceLineNo">289</span><a id="line.289">        assertEquals("", Text.unescapePathComponent(""));</a>
+<span class="sourceLineNo">290</span><a id="line.290">        assertEquals(null, Text.unescapePathComponent(null));</a>
+<span class="sourceLineNo">291</span><a id="line.291">        try {</a>
+<span class="sourceLineNo">292</span><a id="line.292">                Text.unescapePathComponent("abcd\\efg");</a>
+<span class="sourceLineNo">293</span><a id="line.293">                fail("Expected IllegalArgumentException");</a>
+<span class="sourceLineNo">294</span><a id="line.294">        } catch (IllegalArgumentException iae) {</a>
+<span class="sourceLineNo">295</span><a id="line.295">                // OK</a>
+<span class="sourceLineNo">296</span><a id="line.296">        }</a>
+<span class="sourceLineNo">297</span><a id="line.297">        try {</a>
+<span class="sourceLineNo">298</span><a id="line.298">                Text.unescapePathComponent("abcdefg\\");</a>
+<span class="sourceLineNo">299</span><a id="line.299">                fail("Expected IllegalArgumentException");</a>
+<span class="sourceLineNo">300</span><a id="line.300">        } catch (IllegalArgumentException iae) {</a>
+<span class="sourceLineNo">301</span><a id="line.301">                // OK</a>
+<span class="sourceLineNo">302</span><a id="line.302">        }</a>
+<span class="sourceLineNo">303</span><a id="line.303">    }</a>
+<span class="sourceLineNo">304</span><a id="line.304">    </a>
+<span class="sourceLineNo">305</span><a id="line.305">    public void testSplitEscapedPath() {</a>
+<span class="sourceLineNo">306</span><a id="line.306">        assertArrayEquals(new String[] { "abc" }, Text.splitEscapedPath("abc"));</a>
+<span class="sourceLineNo">307</span><a id="line.307">        assertArrayEquals(new String[] { "abc", "def" }, Text.splitEscapedPath("abc/def"));</a>
+<span class="sourceLineNo">308</span><a id="line.308">        assertArrayEquals(new String[] { "a:bc", "def" }, Text.splitEscapedPath("a:bc/def"));</a>
+<span class="sourceLineNo">309</span><a id="line.309">        assertArrayEquals(new String[] { "a:bc", "def" }, Text.splitEscapedPath("a\\:bc/def")); // /: unescapes to :</a>
+<span class="sourceLineNo">310</span><a id="line.310">        </a>
+<span class="sourceLineNo">311</span><a id="line.311">        assertArrayEquals(new String[] { "a:bc\\/def" }, Text.splitEscapedPath("a\\:bc\\\\\\/def")); // does not unescape or split escaped '/' characters</a>
+<span class="sourceLineNo">312</span><a id="line.312">        assertArrayEquals(new String[] { "a:bcd\\efg" }, Text.splitEscapedPath("a\\:bcd\\\\efg")); // does not unescape other characters</a>
+<span class="sourceLineNo">313</span><a id="line.313">        assertArrayEquals(new String[] { "a:bcdefg\\" }, Text.splitEscapedPath("a\\:bcdefg\\\\")); // does not unescape other characters</a>
+<span class="sourceLineNo">314</span><a id="line.314"></a>
+<span class="sourceLineNo">315</span><a id="line.315">        try {</a>
+<span class="sourceLineNo">316</span><a id="line.316">                Text.splitEscapedPath(null);</a>
+<span class="sourceLineNo">317</span><a id="line.317">                fail("Expected NullPointerException");</a>
+<span class="sourceLineNo">318</span><a id="line.318">        } catch (NullPointerException iae) {</a>
+<span class="sourceLineNo">319</span><a id="line.319">                // OK</a>
+<span class="sourceLineNo">320</span><a id="line.320">        }</a>
+<span class="sourceLineNo">321</span><a id="line.321">        assertArrayEquals(new String[] { "a:bc/def" }, Text.splitEscapedPath("a:bc\\/def"));</a>
+<span class="sourceLineNo">322</span><a id="line.322">        try {</a>
+<span class="sourceLineNo">323</span><a id="line.323">                Text.splitEscapedPath("a:bcd\\efg"); // unknown escape '\e'</a>
+<span class="sourceLineNo">324</span><a id="line.324">                fail("Expected IllegalArgumentException");</a>
+<span class="sourceLineNo">325</span><a id="line.325">        } catch (IllegalArgumentException iae) {</a>
+<span class="sourceLineNo">326</span><a id="line.326">                // OK</a>
+<span class="sourceLineNo">327</span><a id="line.327">        }</a>
+<span class="sourceLineNo">328</span><a id="line.328">        try {</a>
+<span class="sourceLineNo">329</span><a id="line.329">                Text.splitEscapedPath("a:bcdefg\\"); // unclosed escape</a>
+<span class="sourceLineNo">330</span><a id="line.330">        } catch (IllegalArgumentException iae) {</a>
+<span class="sourceLineNo">331</span><a id="line.331">                // OK</a>
+<span class="sourceLineNo">332</span><a id="line.332">        }</a>
+<span class="sourceLineNo">333</span><a id="line.333">                </a>
+<span class="sourceLineNo">334</span><a id="line.334"></a>
+<span class="sourceLineNo">335</span><a id="line.335">    }</a>
+<span class="sourceLineNo">336</span><a id="line.336">    </a>
+<span class="sourceLineNo">337</span><a id="line.337">    public void testCreateEscapedPath() {</a>
+<span class="sourceLineNo">338</span><a id="line.338">        assertEquals("abc", Text.createEscapedPath(new String[] { "abc" }));</a>
+<span class="sourceLineNo">339</span><a id="line.339">        assertEquals("abc/def", Text.createEscapedPath(new String[] { "abc", "def" }));</a>
+<span class="sourceLineNo">340</span><a id="line.340">        assertEquals("a\\:bc/def", Text.createEscapedPath(new String[] { "a:bc", "def" }));</a>
+<span class="sourceLineNo">341</span><a id="line.341">        assertEquals("a\\:bc\\\\\\/def", Text.createEscapedPath(new String[] { "a:bc\\/def" })); // does not unescape escaped '/' characters</a>
+<span class="sourceLineNo">342</span><a id="line.342">        assertEquals("a\\:bcd\\\\efg", Text.createEscapedPath(new String[] { "a:bcd\\efg" })); // does not unescape other characters</a>
+<span class="sourceLineNo">343</span><a id="line.343">        assertEquals("a\\:bcdefg\\\\", Text.createEscapedPath(new String[] { "a:bcdefg\\" })); // does not unescape other characters</a>
+<span class="sourceLineNo">344</span><a id="line.344">        </a>
+<span class="sourceLineNo">345</span><a id="line.345">    }</a>
+<span class="sourceLineNo">346</span><a id="line.346">    </a>
+<span class="sourceLineNo">347</span><a id="line.347"></a>
+<span class="sourceLineNo">348</span><a id="line.348">    public void testParseCsv() throws ParseException {</a>
+<span class="sourceLineNo">349</span><a id="line.349">        assertEquals(Arrays.asList(new String[] { "abc" }), Text.parseCsv("abc"));</a>
+<span class="sourceLineNo">350</span><a id="line.350">        assertEquals(Arrays.asList(new String[] { "abc","def" }), Text.parseCsv("abc,def"));</a>
+<span class="sourceLineNo">351</span><a id="line.351">        assertEquals(Arrays.asList(new String[] { "", "abc", "" }), Text.parseCsv(",abc,"));</a>
+<span class="sourceLineNo">352</span><a id="line.352">        assertEquals(Arrays.asList(new String[] { "" }), Text.parseCsv(""));</a>
+<span class="sourceLineNo">353</span><a id="line.353">        assertEquals(Arrays.asList(new String[] { "quotes" }), Text.parseCsv("\"quotes\""));</a>
+<span class="sourceLineNo">354</span><a id="line.354">        assertEquals(Arrays.asList(new String[] { "q", "a,b", "c" }), Text.parseCsv("\"q\",\"a,b\",c"));</a>
+<span class="sourceLineNo">355</span><a id="line.355">        assertEquals(Arrays.asList(new String[] { "q", "a,\"b\",c", "d" }), Text.parseCsv("\"q\",\"a,\"\"b\"\",c\",d"));</a>
+<span class="sourceLineNo">356</span><a id="line.356">        assertEquals(Arrays.asList(new String[] { "nq", "q", "a,\"b\",c", "d" }), Text.parseCsv("nq,\"q\",\"a,\"\"b\"\",c\",d"));</a>
+<span class="sourceLineNo">357</span><a id="line.357">        assertEquals(Arrays.asList(new String[] { "nq", "q", "a,\"b\",c", "d" }), Text.parseCsv("nq   ,   \"q\",   \"a,\"\"b\"\",c\"   ,d"));</a>
+<span class="sourceLineNo">358</span><a id="line.358">        // whitespace-sensitive</a>
+<span class="sourceLineNo">359</span><a id="line.359">        assertEquals(Arrays.asList(new String[] { "nq", "q", "a,\"b\",c", "d" }), Text.parseCsv("nq,\"q\",\"a,\"\"b\"\",c\",d", true));</a>
+<span class="sourceLineNo">360</span><a id="line.360">        assertEquals(Arrays.asList(new String[] { "nq   ", "   \"q\"", "  \"a  " }), Text.parseCsv("nq   ,   \"q\",  \"a  ", true));</a>
+<span class="sourceLineNo">361</span><a id="line.361">        </a>
+<span class="sourceLineNo">362</span><a id="line.362">        // test failure modes</a>
+<span class="sourceLineNo">363</span><a id="line.363">        try {</a>
+<span class="sourceLineNo">364</span><a id="line.364">                Text.parseCsv("\"q\",\"a"); // unclosed quote</a>
+<span class="sourceLineNo">365</span><a id="line.365">                fail("expected ParseException");</a>
+<span class="sourceLineNo">366</span><a id="line.366">        } catch (ParseException e) { }</a>
+<span class="sourceLineNo">367</span><a id="line.367">        try {</a>
+<span class="sourceLineNo">368</span><a id="line.368">                Text.parseCsv("\"q\",\"a\"  ",true); // whitespace after close quote in whitespace-sensitive mode</a>
+<span class="sourceLineNo">369</span><a id="line.369">                fail("expected ParseException");</a>
+<span class="sourceLineNo">370</span><a id="line.370">        } catch (ParseException e) { }</a>
+<span class="sourceLineNo">371</span><a id="line.371"></a>
+<span class="sourceLineNo">372</span><a id="line.372">    }</a>
+<span class="sourceLineNo">373</span><a id="line.373"></a>
+<span class="sourceLineNo">374</span><a id="line.374">    </a>
+<span class="sourceLineNo">375</span><a id="line.375">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

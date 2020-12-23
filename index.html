@@ -8,7 +8,7 @@
 
 	<head>
 		<meta charset="UTF-8" />
-		<title>randomnoun jessop</title>
+		<title>randomnoun common-public</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
 		<meta http-equiv="content-language" content="en" />
@@ -33,7 +33,7 @@
 <link rel="author" href="mailto:knoxg@randomnoun.com"/>
 	</head>
 
-	<body class="page-index project-jessop" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
+	<body class="page-index project-common-public" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
 
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -43,11 +43,11 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</a>
-					<a class="brand" href="./"><span class="color-highlight">randomnoun</span> jessop</a>
+					<a class="brand" href="https://randomnoun.github.io/common-public/"><span class="color-highlight">randomnoun</span> common-public</a>
 					<div class="nav-collapse">
 						<ul class="nav pull-right">
 							<li><a href="index.html#Usage" title="Download">Download </a></li>
-							<li><a href="https://github.com/randomnoun/jessop" title="Github" class="externalLink">Github </a></li>
+							<li class="active"><a href="./" title="Github">Github </a></li>
 							<li class="dropdown active">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -72,8 +72,8 @@
 		<div class="row" id="banner">
 			<div class="span12">
 				<div class="pull-left">
-					<a href="./" id="bannerLeft"><h1><span class="color-highlight">randomnoun</span> jessop</h1></a>
-					<p class="lead">Multi-language templates in the style of Java Server Pages</p>
+					<a href="https://randomnoun.github.io/common-public/" id="bannerLeft"><h1><span class="color-highlight">randomnoun</span> common-public</h1></a>
+					<p class="lead">Common utility classes</p>
 				</div>
 				<div class="pull-right">
 				</div>
@@ -82,279 +82,6 @@
 	</header>
 
 	<div class="main-body">
-	<div class="row columns columns1">
-		<div class="span12">
-			<h2 id="Overview">Overview</h2>
-<p><b>Jessop</b> is a polyglot templating language in the style of Java Server Pages (JSPs).</p>
-<p>Like all templating languages, output can be any text stream ( e.g. English text, HTML/CSS or other text-based programming or markup languages), but the statements, conditions and expressions within the language can be written in any language that the Java scripting engine ( javax.script ) supports. </p>
-<p><i>e.g.</i> by enabling the '<b>javascript</b>' target language, you can embed javascript code within your jessop script (which executes using the 'rhino' engine), or by enabling the '<b>python</b>' target language, you can embed python code within your jessop script (which executes using the 'jython' engine). </p>
-<p>The jessop syntax should be familiar to anyone who has written JSPs. A file may contain </p>
-<ul> 
- <li>a <b>declaration</b> in the form <p class="inline-code">&lt;%@ jessop language=&quot;javascript&quot; engine=&quot;rhino&quot; %&gt;</p> </li> 
- <li><b>expressions</b> to generate output in the form <p class="inline-code">&lt;%= name %&gt;</p> </li> 
- <li><b>scriptlets</b> to execute arbitrary code in the form <p class="inline-code">&lt;% if (name==null) { %&gt;</p> <p class="inline"> No name </p> <p class="inline-code">&lt;% } %&gt;</p> </li> 
-</ul>
-<p>See the <a href="apidocs/index.html" shape="rect">Javadoc overview</a> for a more complete description of the <b>jessop</b> syntax. </p>
-<div class="section">  
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span12">
-			<h2 id="Example_inputoutput">Example input/output</h2>
-		</div>
-	</div>
-	<div class="row">
-	</div>
-	<div class="row columns columns2">
-		<div class="span6">
-			<h3 id="Javascript">Javascript</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;javascript&quot; engine=&quot;rhino&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;% for (var i = 1; i &lt; maxCount; i++) { %&gt;
-&lt;%= i %&gt;
-&lt;% } %&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3 id="Java">Java</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;java&quot; engine=&quot;beanshell&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;% for (int i=1; i &lt; maxCount; i++) { %&gt;
-&lt;%= i %&gt;
-&lt;% } %&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3 id="Ruby">Ruby</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;ruby&quot; engine=&quot;jruby&quot; %&gt;
-Hello, &lt;%= $name %&gt;
-&lt;% (1..$maxCount).each do |i| %&gt;
-&lt;%= i %&gt;
-&lt;% end %&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3 id="Python">Python</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;python2&quot; engine=&quot;jython&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;%
-for i in range(1, maxCount):
-%&gt;
-&lt;%= i %&gt;
-&lt;%
-pass;
-%&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3 id="Lua">Lua</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;lua&quot; engine=&quot;luaj&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;% for i = 1, maxCount - 1 do %&gt;
-&lt;%= i %&gt;
-&lt;% end %&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h3 id="Lisp">Lisp</h3>
-<div> 
- <pre>
-&lt;%@ jessop language=&quot;lisp&quot; engine=&quot;ABCL&quot; %&gt;
-Hello, &lt;%= name %&gt;
-&lt;% (loop for i from 1 to maxCount do %&gt;
-&lt;%= i %&gt;
-&lt;% ) %&gt;
-</pre> 
-</div>
-<div class="section">   
-</div>
-		</div>
-		<div class="span6">
-			<h3 id="Output">Output</h3>
-<div> 
- <pre>
-Hello, Count von Count
-
-1
-
-2
-
-3
-</pre> 
-</div>
-<div class="section">    
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h2></h2>
-<p>See the <a href="apidocs/index.html" shape="rect">Javadoc overview</a> for more example programs. </p>
-<p>The <a href="xref-test/index.html" shape="rect">unit tests</a> accompanying this project include further examples. </p>
-		</div>
-	</div>
-	<div class="row columns columns1">
-		<div class="span12">
-			<h2 id="Example_Java_code">Example Java code</h2>
-<p>The following Java code will read an input file and evaluate it using the 'jessop' ScriptEngine.</p>
-<p>See the <a href="apidocs/index.html" shape="rect">Javadoc overview</a> for more example programs. </p>
-<div> 
- <pre>
-package com.example.contrived.jessop;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
-import java.util.Scanner;
-
-public class JessopExample {
-
-    public void main(String args[]) throws FileNotFoundException, ScriptException {
-
-        // read the input file
-        String filename = args[1];
-        String input = new Scanner(new File(filename)).useDelimiter(&quot;\\Z&quot;).next();
-        
-        // initialise the jessop ScriptEngine
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName(&quot;jessop&quot;);
-        if (engine==null) { throw new IllegalStateException(&quot;Missing engine 'jessop'&quot;); }
-        
-        // set some variables which are used in the jessop script
-        Bindings b = engine.createBindings();
-        b.put(&quot;name&quot;, &quot;Count von Count&quot;);
-        b.put(&quot;maxCount&quot;, 4);
-        
-        // evaluate the script
-        engine.eval(input);
-    }
-
-}
-</pre> 
-</div>
-		</div>
-	</div>
-	<div class="row">
-	</div>
 	<div class="row columns columns2">
 		<div class="span6">
 			<h2 id="Usage">Usage</h2>
@@ -367,8 +94,8 @@ public class JessopExample {
     ...
     &lt;dependency&gt;
       &lt;groupId&gt;com.randomnoun.common&lt;/groupId&gt;
-      &lt;artifactId&gt;jessop&lt;/artifactId&gt;
-      &lt;version&gt;1.0.15&lt;/version&gt;
+      &lt;artifactId&gt;common-public&lt;/artifactId&gt;
+      &lt;version&gt;1.0.1&lt;/version&gt;
     &lt;/dependency&gt;
     ...    
   &lt;/dependencies&gt;
@@ -376,28 +103,14 @@ public class JessopExample {
 &lt;/project&gt;
 </pre> 
 </div>
-<div class="section">    
+<div class="section">     
 </div>
 		</div>
 		<div class="span6">
 			<h2 id="Download">Download</h2>
 <p>If you're not using maven, you can download the binary and source JARs using these links:</p>
-<table border="0" class="bodyTable table table-striped table-hover"> 
- <tbody> 
-  <tr class="a"> 
-   <td colspan="1" rowspan="1"> <p class="download-button"><a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15.jar" shape="rect"><img src="images/download-arrow.png" width="41" height="40" style="margin: 5px; float:left;" alt="" /></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15.jar" shape="rect"><sup>Download compiled JAR</sup></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15.jar" shape="rect"><sub>jessop-1.0.15.jar</sub></a> </p> </td> 
-   <td colspan="1" rowspan="1">To compile or run, add this JAR to your CLASSPATH. </td> 
-  </tr> 
-  <tr class="b"> 
-   <td colspan="1" rowspan="1"> <p class="download-button"><a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-sources.jar" shape="rect"><img src="images/download-arrow.png" width="41" height="40" style="margin: 5px; float:left;" alt="" /></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-sources.jar" shape="rect"><sup>Download source JAR</sup></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-sources.jar" shape="rect"><sub>jessop-1.0.15-sources.jar</sub></a> </p> </td> 
-   <td colspan="1" rowspan="1">To debug in an IDE, set this JAR as the Java Source attachment for jessop-1.0.15.jar </td> 
-  </tr> 
-  <tr class="a"> 
-   <td colspan="1" rowspan="1"> <p class="download-button"><a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-dist.zip" shape="rect"><img src="images/download-arrow.png" width="41" height="40" style="margin: 5px; float:left;" alt="" /></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-dist.zip" shape="rect"><sup>Download distribution ZIP</sup></a> <a class="externalLink" href="https://repo1.maven.org/maven2/com/randomnoun/common/1.0.15/jessop-1.0.15-dist.zip" shape="rect"><sub>jessop-1.0.15-dist.zip</sub></a> </p> </td> 
-   <td colspan="1" rowspan="1">To build jessop from source, unpackage this archive and run <tt>mvn compile</tt> </td> 
-  </tr> 
- </tbody> 
-</table>
+<p class="download-button"><a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1.jar" shape="rect"><img src="images/download-arrow.png" width="41" height="40" style="margin: 5px; float:left;" alt="" /></a> <a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1.jar" shape="rect"><sup>Download compiled JAR</sup></a> <a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1.jar" shape="rect"><sub>common-public-1.0.1.jar</sub></a> </p>
+<p class="download-button"><a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1-sources.jar" shape="rect"><img src="images/download-arrow.png" width="41" height="40" style="margin: 5px; float:left;" alt="" /></a> <a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1-sources.jar" shape="rect"><sup>Download source JAR</sup></a> <a class="externalLink" href="http://central.maven.org/maven2/com/randomnoun/common/common-public/1.0.1/common-public-1.0.1-sources.jar" shape="rect"><sub>common-public-1.0.1-sources.jar</sub></a> </p>
 		</div>
 	</div>
 	<div class="row">
@@ -406,79 +119,55 @@ public class JessopExample {
 		<div class="span12">
 			<div class="body-content">
 				<div class="section"> 
- <h2 id="Target_languages">Target languages</h2> 
- <p>Jessop has support for six target languages (using eight script engines).</p> 
- <p>You will need to add the appropriate maven dependency to target these languages and engines.</p> 
+ <h2 id="Code_Examples">Code Examples</h2> The classes in this project have descriptions of their usage in both the 
+ <a href="apidocs/index.html?overview-summary.html" shape="rect">Javadoc overview</a> and on the 
+ <a class="externalLink" href="http://www.randomnoun.com/wp" shape="rect">randomnoun blog</a>. These are: 
  <table border="0" class="bodyTable table table-striped table-hover"> 
   <thead> 
    <tr class="a"> 
-    <th colspan="1" rowspan="1">Language</th> 
-    <th colspan="1" rowspan="1">Engine</th> 
-    <th colspan="1" rowspan="1">Engine groupId</th> 
-    <th colspan="1" rowspan="1">Engine artifactId</th> 
-    <th colspan="1" rowspan="1">Artifact version </th> 
+    <th colspan="1" rowspan="1">Class</th> 
+    <th colspan="1" rowspan="1">Blog URL</th> 
    </tr> 
   </thead> 
   <tbody> 
    <tr class="b"> 
-    <td colspan="1" rowspan="1">javascript </td> 
-    <td colspan="1" rowspan="1">rhino / nashorn </td> 
-    <td colspan="3" rowspan="1"><i>(Bundled with JVM)</i> </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/ExceptionUtils" shape="rect">ExceptionUtils</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2012/12/17/marginally-better-stack-traces/" shape="rect">Marginally better stack traces</a></td> 
    </tr> 
    <tr class="a"> 
-    <td colspan="1" rowspan="1">javascript </td> 
-    <td colspan="1" rowspan="1">graalvm </td> 
-    <td colspan="1" rowspan="1">org.graalvm.js </td> 
-    <td colspan="1" rowspan="1">js </td> 
-    <td colspan="1" rowspan="1">20.3.0 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/Keyboard" shape="rect">Keyboard</a></td> 
+    <td colspan="1" rowspan="1"></td> 
    </tr> 
    <tr class="b"> 
-    <td colspan="1" rowspan="1">java </td> 
-    <td colspan="1" rowspan="1">beanshell </td> 
-    <td colspan="1" rowspan="1">org.beanshell </td> 
-    <td colspan="1" rowspan="1">bsh </td> 
-    <td colspan="1" rowspan="1">2.0b5 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/ResourceFinder" shape="rect">ResourceFinder</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2015/01/11/resourcefinder/" shape="rect">ResourceFinder ( rn-find )</a></td> 
    </tr> 
    <tr class="a"> 
-    <td colspan="1" rowspan="1">python </td> 
-    <td colspan="1" rowspan="1">jython </td> 
-    <td colspan="1" rowspan="1">org.python </td> 
-    <td colspan="1" rowspan="1">jython </td> 
-    <td colspan="1" rowspan="1">2.5.3 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/SourceforgeStats" shape="rect">SourceforgeStats</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2012/09/23/sourceforge-omphaloskepsis/" shape="rect">Sourceforge Omphalskepsis</a></td> 
    </tr> 
    <tr class="b"> 
-    <td colspan="1" rowspan="1">ruby </td> 
-    <td colspan="1" rowspan="1">jruby </td> 
-    <td colspan="1" rowspan="1">org.jruby </td> 
-    <td colspan="1" rowspan="1">jruby-complete </td> 
-    <td colspan="1" rowspan="1">9.1.2.0 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/XmlUtil" shape="rect">XmlUtil</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2013/01/25/exciting-things-with-xml/" shape="rect">Exciting things with XML</a></td> 
    </tr> 
    <tr class="a"> 
-    <td colspan="1" rowspan="1">lua </td> 
-    <td colspan="1" rowspan="1">luaj </td> 
-    <td colspan="1" rowspan="1">org.luaj </td> 
-    <td colspan="1" rowspan="1">luaj-jse </td> 
-    <td colspan="1" rowspan="1">3.0.1 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/jna/WindowTreeDom" shape="rect">WindowTreeDom</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2012/12/26/automating-windows-from-java-and-windowtreedom/" shape="rect">Automating Windows from Java and WindowTreeDom</a></td> 
    </tr> 
    <tr class="b"> 
-    <td colspan="1" rowspan="1">lisp </td> 
-    <td colspan="1" rowspan="1">abcl </td> 
-    <td colspan="1" rowspan="1">org.abcl </td> 
-    <td colspan="1" rowspan="1">abcl </td> 
-    <td colspan="1" rowspan="1">1.4.0 </td> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/log4j/Log4jCliConfiguration" shape="rect">Log4jCliConfiguration</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2013/01/13/logging/" shape="rect">Logging</a></td> 
+   </tr> 
+   <tr class="a"> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/log4j/MemoryAppender" shape="rect">MemoryAppender</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2013/01/13/logging/" shape="rect">Logging</a></td> 
+   </tr> 
+   <tr class="b"> 
+    <td colspan="1" rowspan="1"><a href="apidocs/com/randomnoun/common/servlet/VersionServlet" shape="rect">VersionServlet</a></td> 
+    <td colspan="1" rowspan="1"><a class="externalLink" href="http://www.randomnoun.com/wp/2013/09/24/webapp-versions-v1-0/" shape="rect">Webapp versions v1.0</a></td> 
    </tr> 
   </tbody> 
  </table> 
- <p>Additional languages and engines can be added by implementing the <a href="apidocs/com/randomnoun/common/jessop/JessopScriptBuilder.html" shape="rect">JessopScriptBuilder</a> interface, registered using the standared Java <a class="externalLink" href="https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html" shape="rect">ServiceLoader</a> mechanism. </p> 
-</div>
-<div class="section"> 
- <h2 id="Syntax">Syntax</h2> 
- <p>See the <a href="apidocs/index.html" shape="rect">Javadoc overview</a> for a description of the <b>jessop</b> syntax. </p> 
-</div>
-<div class="section"> 
- <h2 id="License">License</h2> 
- <b>jessop</b> is licensed under the 
- <a href="license.html" shape="rect">Simplified BSD 2-clause license</a>. 
 </div>
 			</div>
 		</div>
@@ -498,8 +187,11 @@ public class JessopExample {
 						<li class="active">
 							<a href="#" title="Home">Home </a>
 						</li>
+						<li class="active">
+							<a href="#" title="Github project">Github project </a>
+						</li>
 						<li>
-							<a href="https://github.com/randomnoun/jessop" title="Github project" class="externalLink">Github project </a>
+							<a href="http://www.randomnoun.com/wp" title="Blog" class="externalLink">Blog </a>
 						</li>
 						<li>
 							<a href="changes-report.html" title="Release notes">Release notes </a>
@@ -543,6 +235,9 @@ public class JessopExample {
 						<li>
 							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-down"></i></a>
 							<ul class="nav nav-list">
+						<li>
+							<a href="integration.html" title="CI Management">CI Management </a>
+						</li>
 						<li>
 							<a href="dependencies.html" title="Dependencies">Dependencies </a>
 						</li>
@@ -590,8 +285,8 @@ public class JessopExample {
 					</ul>
 				</div>
 				<div class="span3 bottom-description">
-					<blockquote><span class="color-highlight">jessop</span> is a Maven project which provides
-multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/detail?id=245">Java Server Pages</a>.</blockquote>
+					<blockquote><span class="color-highlight">common-public</span> is a Maven project which provides
+a set of common utility classes.</blockquote>
 				</div>
 			</div>
 		</div>
@@ -601,7 +296,7 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
 		<div class="row">
 			<div class="span12">
 				<p class="pull-right"><a href="#">Back to top</a></p>
-				<p class="copyright">Copyright &copy;2016-09-16-2020 <a href="http://www.randomnoun.com">randomnoun</a>. All Rights Reserved.</p>
+				<p class="copyright">Copyright &copy;2013-2020 <a href="http://www.randomnoun.com">randomnoun</a>. All Rights Reserved.</p>
 				<p><a href="http://github.com/andriusvelykis/reflow-maven-skin" title="Reflow Maven skin">Reflow Maven skin</a> by <a href="http://andrius.velykis.lt" target="_blank" title="Andrius Velykis">Andrius Velykis</a>.</p>
 			</div>
 		</div>

@@ -1,0 +1,286 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.jna;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">/* (c) 2013 randomnoun. All Rights Reserved. This work is licensed under a</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * BSD Simplified License. (http://www.randomnoun.com/bsd-simplified.html)</a>
+<span class="sourceLineNo">005</span><a id="line.5"> */</a>
+<span class="sourceLineNo">006</span><a id="line.6"></a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.util.HashMap;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import java.util.Map;</a>
+<span class="sourceLineNo">009</span><a id="line.9"></a>
+<span class="sourceLineNo">010</span><a id="line.10">import javax.xml.parsers.DocumentBuilder;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import javax.xml.parsers.DocumentBuilderFactory;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import javax.xml.parsers.ParserConfigurationException;</a>
+<span class="sourceLineNo">013</span><a id="line.13">import javax.xml.transform.TransformerException;</a>
+<span class="sourceLineNo">014</span><a id="line.14"></a>
+<span class="sourceLineNo">015</span><a id="line.15">import org.apache.log4j.Logger;</a>
+<span class="sourceLineNo">016</span><a id="line.16">import org.w3c.dom.Document;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import org.w3c.dom.Element;</a>
+<span class="sourceLineNo">018</span><a id="line.18"></a>
+<span class="sourceLineNo">019</span><a id="line.19">import com.sun.jna.Native;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import com.sun.jna.Pointer;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import com.sun.jna.platform.win32.WinUser;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import com.sun.jna.platform.win32.WinDef.DWORD;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import com.sun.jna.platform.win32.WinDef.HWND;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import com.sun.jna.platform.win32.WinUser.WNDENUMPROC;</a>
+<span class="sourceLineNo">025</span><a id="line.25">import com.sun.jna.win32.StdCallLibrary;</a>
+<span class="sourceLineNo">026</span><a id="line.26">import com.sun.jna.win32.W32APIOptions;</a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">import com.randomnoun.common.XmlUtil;</a>
+<span class="sourceLineNo">029</span><a id="line.29"></a>
+<span class="sourceLineNo">030</span><a id="line.30">/** A class to convert the Win32 windows tree into a DOM object</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * </a>
+<span class="sourceLineNo">032</span><a id="line.32"> * @blog http://www.randomnoun.com/wp/2012/12/26/automating-windows-from-java-and-windowtreedom/</a>
+<span class="sourceLineNo">033</span><a id="line.33"> * @author knoxg</a>
+<span class="sourceLineNo">034</span><a id="line.34"> * </a>
+<span class="sourceLineNo">035</span><a id="line.35"> */</a>
+<span class="sourceLineNo">036</span><a id="line.36">public class WindowTreeDom {</a>
+<span class="sourceLineNo">037</span><a id="line.37"></a>
+<span class="sourceLineNo">038</span><a id="line.38">        // the User32 functions we invoke from this class</a>
+<span class="sourceLineNo">039</span><a id="line.39">        public interface User32 extends StdCallLibrary {</a>
+<span class="sourceLineNo">040</span><a id="line.40">      User32 INSTANCE = (User32) Native.loadLibrary("user32", User32.class, </a>
+<span class="sourceLineNo">041</span><a id="line.41">        W32APIOptions.DEFAULT_OPTIONS);</a>
+<span class="sourceLineNo">042</span><a id="line.42">      </a>
+<span class="sourceLineNo">043</span><a id="line.43">      public static final DWORD GW_OWNER = new DWORD(4);</a>
+<span class="sourceLineNo">044</span><a id="line.44">      boolean EnumWindows(WinUser.WNDENUMPROC lpEnumFunc, Pointer arg);</a>
+<span class="sourceLineNo">045</span><a id="line.45">      boolean EnumChildWindows(HWND hWnd, WNDENUMPROC lpEnumFunc, Pointer data);</a>
+<span class="sourceLineNo">046</span><a id="line.46">      int GetWindowText(HWND hWnd, char[] lpString, int nMaxCount);</a>
+<span class="sourceLineNo">047</span><a id="line.47">      int GetClassName(HWND hWnd, char[] lpClassName, int nMaxCount);</a>
+<span class="sourceLineNo">048</span><a id="line.48">      public HWND GetWindow(HWND hWnd, DWORD cmd);</a>
+<span class="sourceLineNo">049</span><a id="line.49">      HWND GetParent(HWND hWnd);</a>
+<span class="sourceLineNo">050</span><a id="line.50">    }</a>
+<span class="sourceLineNo">051</span><a id="line.51">        </a>
+<span class="sourceLineNo">052</span><a id="line.52">        /** JNA interface to USER32.DLL */</a>
+<span class="sourceLineNo">053</span><a id="line.53">        final static User32 lib = User32.INSTANCE;</a>
+<span class="sourceLineNo">054</span><a id="line.54"></a>
+<span class="sourceLineNo">055</span><a id="line.55">        /** Logger instance for this class */</a>
+<span class="sourceLineNo">056</span><a id="line.56">        static Logger logger = Logger.getLogger(WindowTreeDom.class);</a>
+<span class="sourceLineNo">057</span><a id="line.57">        </a>
+<span class="sourceLineNo">058</span><a id="line.58">        /** WindowTreeDom constructor.</a>
+<span class="sourceLineNo">059</span><a id="line.59">         * </a>
+<span class="sourceLineNo">060</span><a id="line.60">         * @see #getDom()</a>
+<span class="sourceLineNo">061</span><a id="line.61">         */</a>
+<span class="sourceLineNo">062</span><a id="line.62">        public WindowTreeDom() {</a>
+<span class="sourceLineNo">063</span><a id="line.63">                </a>
+<span class="sourceLineNo">064</span><a id="line.64">        }</a>
+<span class="sourceLineNo">065</span><a id="line.65">        </a>
+<span class="sourceLineNo">066</span><a id="line.66">        /** This callback is invoked for each window found. It generates XML </a>
+<span class="sourceLineNo">067</span><a id="line.67">         * {#link org.w3c.Element}s for each window, and attaches them to the supplied </a>
+<span class="sourceLineNo">068</span><a id="line.68">         * {#link org.w3c.Document}.</a>
+<span class="sourceLineNo">069</span><a id="line.69">         * </a>
+<span class="sourceLineNo">070</span><a id="line.70">         */</a>
+<span class="sourceLineNo">071</span><a id="line.71">        private static class WindowCallback implements WinUser.WNDENUMPROC {</a>
+<span class="sourceLineNo">072</span><a id="line.72">                Document doc;</a>
+<span class="sourceLineNo">073</span><a id="line.73">                Element documentElement;</a>
+<span class="sourceLineNo">074</span><a id="line.74">                Element topLevelWindow; </a>
+<span class="sourceLineNo">075</span><a id="line.75">                Map&lt;String, Element&gt; hwndMap = new HashMap&lt;String, Element&gt;();</a>
+<span class="sourceLineNo">076</span><a id="line.76">                </a>
+<span class="sourceLineNo">077</span><a id="line.77">                /** Creates a new window callback</a>
+<span class="sourceLineNo">078</span><a id="line.78">                 * </a>
+<span class="sourceLineNo">079</span><a id="line.79">                 * @param doc The XML document populated by this callback.</a>
+<span class="sourceLineNo">080</span><a id="line.80">                 * @param topLevelHWND If non-null, the windows being returned should all be</a>
+<span class="sourceLineNo">081</span><a id="line.81">                 *   child windows of this HWND (via EnumChildWindows), otherwise it is</a>
+<span class="sourceLineNo">082</span><a id="line.82">                 *   assumed toplevel windows are returned (via EnumWindows)</a>
+<span class="sourceLineNo">083</span><a id="line.83">                 * @param topLevelWindow If non-null, the document Element within &lt;tt&gt;doc&lt;/tt&gt;</a>
+<span class="sourceLineNo">084</span><a id="line.84">                 *   which will contain new child elements.</a>
+<span class="sourceLineNo">085</span><a id="line.85">                 */</a>
+<span class="sourceLineNo">086</span><a id="line.86">                public WindowCallback(Document doc, HWND topLevelHWND, Element topLevelWindow) {</a>
+<span class="sourceLineNo">087</span><a id="line.87">                        this.doc = doc;</a>
+<span class="sourceLineNo">088</span><a id="line.88">                        this.topLevelWindow = topLevelWindow;</a>
+<span class="sourceLineNo">089</span><a id="line.89">                        if (topLevelWindow != null) {</a>
+<span class="sourceLineNo">090</span><a id="line.90">                                hwndMap.put(topLevelHWND.getPointer().toString(), topLevelWindow);</a>
+<span class="sourceLineNo">091</span><a id="line.91">                        }</a>
+<span class="sourceLineNo">092</span><a id="line.92">                        documentElement = doc.getDocumentElement();</a>
+<span class="sourceLineNo">093</span><a id="line.93">                }</a>
+<span class="sourceLineNo">094</span><a id="line.94">                </a>
+<span class="sourceLineNo">095</span><a id="line.95">                public boolean callback(HWND hWnd, Pointer data) {</a>
+<span class="sourceLineNo">096</span><a id="line.96">                        </a>
+<span class="sourceLineNo">097</span><a id="line.97">                        char[] buffer = new char[512];</a>
+<span class="sourceLineNo">098</span><a id="line.98">                        User32.INSTANCE.GetWindowText(hWnd, buffer, 512);</a>
+<span class="sourceLineNo">099</span><a id="line.99">                        </a>
+<span class="sourceLineNo">100</span><a id="line.100">                        char[] buffer2 = new char[1026];</a>
+<span class="sourceLineNo">101</span><a id="line.101">                        int classLen = User32.INSTANCE.GetClassName(hWnd, buffer2, 1026);</a>
+<span class="sourceLineNo">102</span><a id="line.102">                    </a>
+<span class="sourceLineNo">103</span><a id="line.103">                        String windowTitle = Native.toString(buffer);</a>
+<span class="sourceLineNo">104</span><a id="line.104">                        String className = Native.toString(buffer2);</a>
+<span class="sourceLineNo">105</span><a id="line.105"></a>
+<span class="sourceLineNo">106</span><a id="line.106">                        HWND parent = User32.INSTANCE.GetParent(hWnd);</a>
+<span class="sourceLineNo">107</span><a id="line.107">                        HWND owner = User32.INSTANCE.GetWindow(hWnd, User32.GW_OWNER);</a>
+<span class="sourceLineNo">108</span><a id="line.108">                        </a>
+<span class="sourceLineNo">109</span><a id="line.109">                    // check if this has already been created in the DOM</a>
+<span class="sourceLineNo">110</span><a id="line.110">                        Element el = hwndMap.get(hWnd.getPointer().toString());</a>
+<span class="sourceLineNo">111</span><a id="line.111">                        if (el==null) {</a>
+<span class="sourceLineNo">112</span><a id="line.112">                                el = doc.createElement("window");</a>
+<span class="sourceLineNo">113</span><a id="line.113">                        } else {</a>
+<span class="sourceLineNo">114</span><a id="line.114">                                el.removeAttribute("pwindow");</a>
+<span class="sourceLineNo">115</span><a id="line.115">                        }</a>
+<span class="sourceLineNo">116</span><a id="line.116">                        el.setAttribute("hwnd", hWnd.getPointer().toString());</a>
+<span class="sourceLineNo">117</span><a id="line.117">                        if (owner!=null) {</a>
+<span class="sourceLineNo">118</span><a id="line.118">                                el.setAttribute("owner", owner.getPointer().toString());</a>
+<span class="sourceLineNo">119</span><a id="line.119">                        }</a>
+<span class="sourceLineNo">120</span><a id="line.120">                        el.setAttribute("title", windowTitle);</a>
+<span class="sourceLineNo">121</span><a id="line.121">                        el.setAttribute("class", className);</a>
+<span class="sourceLineNo">122</span><a id="line.122">                        </a>
+<span class="sourceLineNo">123</span><a id="line.123">                        hwndMap.put(hWnd.getPointer().toString(), el);</a>
+<span class="sourceLineNo">124</span><a id="line.124">                        if (topLevelWindow==null) { </a>
+<span class="sourceLineNo">125</span><a id="line.125">                                // this is a real top level element, so enumerate its children</a>
+<span class="sourceLineNo">126</span><a id="line.126">                                WindowCallback childDommer = new WindowCallback(doc, hWnd, el);</a>
+<span class="sourceLineNo">127</span><a id="line.127">                                // this code relies on being able to enum child windows whilst enumming toplevel windows</a>
+<span class="sourceLineNo">128</span><a id="line.128">                                lib.EnumChildWindows (hWnd, childDommer, new Pointer(0));</a>
+<span class="sourceLineNo">129</span><a id="line.129">                                try {</a>
+<span class="sourceLineNo">130</span><a id="line.130">                                        childDommer.checkForOrphanedWindows();</a>
+<span class="sourceLineNo">131</span><a id="line.131">                                } catch (TransformerException e) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">                                        logger.error("Problem serialising orphaned windows to XML", e);</a>
+<span class="sourceLineNo">133</span><a id="line.133">                                }</a>
+<span class="sourceLineNo">134</span><a id="line.134">                        }</a>
+<span class="sourceLineNo">135</span><a id="line.135">                        </a>
+<span class="sourceLineNo">136</span><a id="line.136">                        if (parent==null) {</a>
+<span class="sourceLineNo">137</span><a id="line.137">                                documentElement.appendChild(el);</a>
+<span class="sourceLineNo">138</span><a id="line.138">                                if (topLevelWindow!=null) {</a>
+<span class="sourceLineNo">139</span><a id="line.139">                                        // have seen VMDragDetectWndClass'es here, presumably a vmware thing</a>
+<span class="sourceLineNo">140</span><a id="line.140">                                        // (note that this window won't be in the parent callback's hwndMap)</a>
+<span class="sourceLineNo">141</span><a id="line.141">                                        try {</a>
+<span class="sourceLineNo">142</span><a id="line.142">                                                logger.warn("Toplevel child window found: " + XmlUtil.getXmlString(el, true));</a>
+<span class="sourceLineNo">143</span><a id="line.143">                                        } catch (TransformerException e) {</a>
+<span class="sourceLineNo">144</span><a id="line.144">                                                logger.error("Toplevel child window found, problem serialising toplevel windows to XML", e);</a>
+<span class="sourceLineNo">145</span><a id="line.145">                                        }</a>
+<span class="sourceLineNo">146</span><a id="line.146">                                }</a>
+<span class="sourceLineNo">147</span><a id="line.147">                                </a>
+<span class="sourceLineNo">148</span><a id="line.148">                        } else {</a>
+<span class="sourceLineNo">149</span><a id="line.149">                                Element parentEl = hwndMap.get(parent.getPointer().toString());</a>
+<span class="sourceLineNo">150</span><a id="line.150">                                if (parentEl==null) {</a>
+<span class="sourceLineNo">151</span><a id="line.151">                                        // throw new IllegalStateException("Unknown parent window '" + parent.getPointer().toString() + "'");</a>
+<span class="sourceLineNo">152</span><a id="line.152">                                        // it appears that we can get IME child windows being returned </a>
+<span class="sourceLineNo">153</span><a id="line.153">                                        // by EnumWindows, even though they're not top-level</a>
+<span class="sourceLineNo">154</span><a id="line.154">                                        parentEl = doc.createElement("window");</a>
+<span class="sourceLineNo">155</span><a id="line.155">                                        parentEl.setAttribute("pwindow", "true");</a>
+<span class="sourceLineNo">156</span><a id="line.156">                                        parentEl.setAttribute("hwnd", parent.getPointer().toString());</a>
+<span class="sourceLineNo">157</span><a id="line.157">                                        hwndMap.put(parent.getPointer().toString(), parentEl); </a>
+<span class="sourceLineNo">158</span><a id="line.158">                                }</a>
+<span class="sourceLineNo">159</span><a id="line.159">                                parentEl.appendChild(el);</a>
+<span class="sourceLineNo">160</span><a id="line.160">                        }</a>
+<span class="sourceLineNo">161</span><a id="line.161">                        </a>
+<span class="sourceLineNo">162</span><a id="line.162">                        return true;</a>
+<span class="sourceLineNo">163</span><a id="line.163">                }</a>
+<span class="sourceLineNo">164</span><a id="line.164">                </a>
+<span class="sourceLineNo">165</span><a id="line.165">                /** Lists any window nodes that were generated via enumeration, whose </a>
+<span class="sourceLineNo">166</span><a id="line.166">                 * parent nodes were not generated.</a>
+<span class="sourceLineNo">167</span><a id="line.167">                 * </a>
+<span class="sourceLineNo">168</span><a id="line.168">                 * @throws TransformerException</a>
+<span class="sourceLineNo">169</span><a id="line.169">                 */</a>
+<span class="sourceLineNo">170</span><a id="line.170">                public void checkForOrphanedWindows() throws TransformerException {</a>
+<span class="sourceLineNo">171</span><a id="line.171">                        for (Element e : hwndMap.values()) {</a>
+<span class="sourceLineNo">172</span><a id="line.172">                                if (!e.getAttribute("pwindow").equals("")) {</a>
+<span class="sourceLineNo">173</span><a id="line.173">                                        // the desktop window isn't in the enumeration</a>
+<span class="sourceLineNo">174</span><a id="line.174">                                        logger.warn("Parent window found that was not in enumeration: " + XmlUtil.getXmlString(e, true));</a>
+<span class="sourceLineNo">175</span><a id="line.175">                                        // throw new IllegalStateException("Window found without parent window");</a>
+<span class="sourceLineNo">176</span><a id="line.176">                                }</a>
+<span class="sourceLineNo">177</span><a id="line.177">                        }</a>
+<span class="sourceLineNo">178</span><a id="line.178">                }</a>
+<span class="sourceLineNo">179</span><a id="line.179"></a>
+<span class="sourceLineNo">180</span><a id="line.180">        }</a>
+<span class="sourceLineNo">181</span><a id="line.181">        </a>
+<span class="sourceLineNo">182</span><a id="line.182">        /** Generate an XML document from the Win32 window tree */</a>
+<span class="sourceLineNo">183</span><a id="line.183">        public Document getDom() throws ParserConfigurationException, TransformerException {</a>
+<span class="sourceLineNo">184</span><a id="line.184">                DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();</a>
+<span class="sourceLineNo">185</span><a id="line.185">                DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();</a>
+<span class="sourceLineNo">186</span><a id="line.186">                Document doc = docBuilder.newDocument();</a>
+<span class="sourceLineNo">187</span><a id="line.187">                Element topElement = doc.createElement("windows");</a>
+<span class="sourceLineNo">188</span><a id="line.188">                doc.appendChild(topElement);</a>
+<span class="sourceLineNo">189</span><a id="line.189">                </a>
+<span class="sourceLineNo">190</span><a id="line.190">                WindowCallback dommer = new WindowCallback(doc, null, null);</a>
+<span class="sourceLineNo">191</span><a id="line.191">                lib.EnumWindows (dommer, new Pointer(0));</a>
+<span class="sourceLineNo">192</span><a id="line.192">                dommer.checkForOrphanedWindows();</a>
+<span class="sourceLineNo">193</span><a id="line.193">                </a>
+<span class="sourceLineNo">194</span><a id="line.194">                return doc;</a>
+<span class="sourceLineNo">195</span><a id="line.195">        }</a>
+<span class="sourceLineNo">196</span><a id="line.196">        </a>
+<span class="sourceLineNo">197</span><a id="line.197">        /** Return the hwnd of an element, as a pointer represented as a long </a>
+<span class="sourceLineNo">198</span><a id="line.198">         * </a>
+<span class="sourceLineNo">199</span><a id="line.199">         * @param windowEl a window element returned from getDom()</a>
+<span class="sourceLineNo">200</span><a id="line.200">         * </a>
+<span class="sourceLineNo">201</span><a id="line.201">         * @return the hwnd of the element.</a>
+<span class="sourceLineNo">202</span><a id="line.202">         */</a>
+<span class="sourceLineNo">203</span><a id="line.203">        public HWND getHwnd(Element windowEl) {</a>
+<span class="sourceLineNo">204</span><a id="line.204">        String hwndString = windowEl.getAttribute("hwnd");</a>
+<span class="sourceLineNo">205</span><a id="line.205">        if (hwndString.startsWith("native@0x")) {</a>
+<span class="sourceLineNo">206</span><a id="line.206">                return new HWND(new Pointer(Long.parseLong(hwndString.substring(9), 16)));</a>
+<span class="sourceLineNo">207</span><a id="line.207">        } else {</a>
+<span class="sourceLineNo">208</span><a id="line.208">                throw new IllegalStateException("Could not determine HWND of window element: found '" + hwndString + "'");</a>
+<span class="sourceLineNo">209</span><a id="line.209">        }</a>
+<span class="sourceLineNo">210</span><a id="line.210">        }</a>
+<span class="sourceLineNo">211</span><a id="line.211">        </a>
+<span class="sourceLineNo">212</span><a id="line.212">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>StructuredMapCallbackHandlerResultSetExtractor xref</title>
+<link type="text/css" rel="stylesheet" href="../../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../../apidocs/com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <strong class="jxr_keyword">package</strong> com.randomnoun.common.spring;
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment">/* (c) 2013 randomnoun. All Rights Reserved. This work is licensed under a</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> * BSD Simplified License. (<a href="http://www.randomnoun.com/bsd-simplified.html" target="alexandria_uri">http://www.randomnoun.com/bsd-simplified.html</a>)</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> java.sql.ResultSet;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.sql.SQLException;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.util.*;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.springframework.dao.DataAccessException;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.*;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.apache.log4j.Logger;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> com.randomnoun.common.Struct;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">/** A bit like a StructuredListResultSetExtractor, but executes a callback on each object, rather than returning List of them.</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * @see StructuredListResultSetExtractor</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * </em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * @author knoxg</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandlerResultSetExtractor</a> 
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">implements</strong> ResultSetExtractor&lt;Object&gt; {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <em class="jxr_javadoccomment">/** Logger instance for this class */</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Logger logger = Logger.getLogger(StructuredMapCallbackHandlerResultSetExtractor.<strong class="jxr_keyword">class</strong>);  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <em class="jxr_javadoccomment">/** Contains mappings from source column names to (structured) target column names */</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      Map&lt;String, String&gt; columnMapping;
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <em class="jxr_javadoccomment">/** List to save results in */</em>
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;Map&lt;String, Object&gt;&gt; results;
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">private</strong> List&lt;String&gt; levels;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <em class="jxr_javadoccomment">/** Row mapper */</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> RowMapper&lt;Map&lt;String, Object&gt;&gt; rowMapper;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">private</strong> Map&lt;String, Object&gt; lastResultRow = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandler</a> smch;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandler</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processMap(Map&lt;String, Object&gt; row);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <em class="jxr_javadoccomment">/** The counter used to count rows */</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">int</strong> rowNum = 0;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * Create a new RowMapperResultReader.</em>
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     * @param jt jdbcTemplate for some reason</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandlerResultSetExtractor</a>(JdbcTemplate jt, String mappings, <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandler</a> smch) {
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">this</strong>(<strong class="jxr_keyword">new</strong> ColumnMapRowMapper(), mappings, smch);
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     * Create a new RowMapperResultReader.</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     * @param rowMapper the RowMapper which creates an object for each row</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandlerResultSetExtractor</a>(RowMapper&lt;Map&lt;String, Object&gt;&gt; rowMapper, String mappings, <a href="../../../../com/randomnoun/common/spring/StructuredMapCallbackHandlerResultSetExtractor.html">StructuredMapCallbackHandler</a> smch) {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">this</strong>.smch = smch;
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">if</strong> (mappings == <strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> NullPointerException(<span class="jxr_string">"mappings cannot be null"</span>); }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <em class="jxr_comment">// Use the more efficient collection if we know how many rows to expect:</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <em class="jxr_comment">// ArrayList in case of a known row count, LinkedList if unknown</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">this</strong>.results = <strong class="jxr_keyword">new</strong> ArrayList&lt;Map&lt;String, Object&gt;&gt;();
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">this</strong>.rowMapper = rowMapper;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">this</strong>.columnMapping = <strong class="jxr_keyword">new</strong> HashMap&lt;String, String&gt;();
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">this</strong>.levels = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(3); <em class="jxr_comment">// we're not going to go higher than this too often</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          StringTokenizer st = <strong class="jxr_keyword">new</strong> StringTokenizer(mappings, <span class="jxr_string">","</span>);
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          StringTokenizer st2;
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          StringTokenizer st3;
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          String column = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          String columnTarget = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          String token;
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          String mapping;
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          <strong class="jxr_keyword">while</strong> (st.hasMoreTokens()) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              mapping = st.nextToken().trim();
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>              <strong class="jxr_keyword">if</strong> (mapping.indexOf(' ') == -1) {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                  column = mapping;
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  columnTarget = mapping;
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>              } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  <em class="jxr_comment">// parse state (note that this uses a StringTokenizer, </em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  <em class="jxr_comment">// rather than a character-based parser)</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                  <em class="jxr_comment">// </em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  <em class="jxr_comment">// 0 = start of parse</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  <em class="jxr_comment">// 1 = consumed column name</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  <em class="jxr_comment">// 2 = consumed 'as'</em>
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  <em class="jxr_comment">// 3 = consumed mapping</em>
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 <strong class="jxr_keyword">int</strong> state = 0; <em class="jxr_comment">// 0=initial, 1=got column name, 2=got 'as', 3=got mapping</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>                 st2 = <strong class="jxr_keyword">new</strong> StringTokenizer(mapping, <span class="jxr_string">" "</span>);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>                 <strong class="jxr_keyword">while</strong> (st2.hasMoreTokens()) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>                     token = st2.nextToken().trim();
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>                     <strong class="jxr_keyword">if</strong> (token.equals(<span class="jxr_string">""</span>)) { <strong class="jxr_keyword">continue</strong>; }
+<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                     <strong class="jxr_keyword">if</strong> (state == 0) {
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>                         column = token;
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                         state = 1;
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (state == 1) {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                         <strong class="jxr_keyword">if</strong> (!token.equalsIgnoreCase(<span class="jxr_string">"as"</span>)) {
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Invalid mapping '"</span> + mapping + <span class="jxr_string">"'; expected AS"</span>);
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                         }
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                         state = 2;
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (state == 2) {
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                         columnTarget = token;
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                         state = 3;
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                     } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (state == 3) {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Invalid mapping '"</span> + mapping + <span class="jxr_string">"'; too many tokens"</span>);
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                     }
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 }
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>             }
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>             <em class="jxr_comment">// check target for levels</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>             <strong class="jxr_keyword">int</strong> levelIdx = 0;
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             st3 = <strong class="jxr_keyword">new</strong> StringTokenizer(columnTarget, <span class="jxr_string">"."</span>);
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             <strong class="jxr_keyword">if</strong> (st3.hasMoreTokens()) {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                 String level = st3.nextToken();
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>                 <strong class="jxr_keyword">while</strong> (st3.hasMoreTokens()) {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>                     <strong class="jxr_keyword">if</strong> (levelIdx &lt; levels.size()) {
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                         <strong class="jxr_keyword">if</strong> (!levels.get(levelIdx).equals(level)) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>                             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Multiple lists in mapping at level "</span> + levelIdx + <span class="jxr_string">": '"</span> + levels.get(levelIdx) + <span class="jxr_string">"' and '"</span> + level + <span class="jxr_string">"'"</span>);
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                         }
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>                         levels.add(level);
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>                         <em class="jxr_comment">// System.out.println("Levels now: " + levels);</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>                     }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                     level = st3.nextToken();
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>                     levelIdx++;
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>                 }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>             }
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>             columnMapping.put(column.toUpperCase(), columnTarget);
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         }
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     }
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> 
+<a class="jxr_linenumber" name="L146" href="#L146">146</a> 	<em class="jxr_javadoccomment">/** Required to support ResultSetExtractor interface</em>
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> <em class="jxr_javadoccomment">	 * </em>
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> <em class="jxr_javadoccomment">	 * @param rs resultSet to process</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">	 * </em>
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">	 * @return null</em>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">	 */</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     <strong class="jxr_keyword">public</strong> Object extractData(ResultSet rs) <strong class="jxr_keyword">throws</strong> SQLException, DataAccessException 
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> 	{
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> 		<strong class="jxr_keyword">while</strong> (rs.next()) {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 			processRow(rs);
+<a class="jxr_linenumber" name="L156" href="#L156">156</a> 		}
+<a class="jxr_linenumber" name="L157" href="#L157">157</a> 		<strong class="jxr_keyword">if</strong> (results.size()&gt;0) { smch.processMap(results.get(0)); }
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		<strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L159" href="#L159">159</a> 	}
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>     
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>     
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <em class="jxr_javadoccomment">/** Used by the ResultReader interface to return the results read by this class</em>
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * @see org.springframework.jdbc.core.ResultReader#getResults()</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">    public List getResults() {</em>
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">    	return null;</em>
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">    }</em>
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">    */</em>
+<a class="jxr_linenumber" name="L170" href="#L170">170</a> 
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">     * Used by the ResultReader interface to process a single row from the database.</em>
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L174" href="#L174">174</a> <em class="jxr_javadoccomment">     * &lt;p&gt;The row is read and matched against the 'levels' specified in the </em>
+<a class="jxr_linenumber" name="L175" href="#L175">175</a> <em class="jxr_javadoccomment">     * object constructor. As values change, tree branches are created in the returned</em>
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> <em class="jxr_javadoccomment">     * structured List. </em>
+<a class="jxr_linenumber" name="L177" href="#L177">177</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L178" href="#L178">178</a> <em class="jxr_javadoccomment">     * @see org.springframework.jdbc.core.RowCallbackHandler#processRow(java.sql.ResultSet)</em>
+<a class="jxr_linenumber" name="L179" href="#L179">179</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>     @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> 	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processRow(ResultSet rs)
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">throws</strong> SQLException {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>         Map&lt;String, Object&gt; row = (Map&lt;String, Object&gt;) rowMapper.mapRow(rs, <strong class="jxr_keyword">this</strong>.rowNum++); <em class="jxr_comment">// ClobRowMapper always returns a Map.</em>
+<a class="jxr_linenumber" name="L184" href="#L184">184</a> 		<em class="jxr_comment">// System.out.println("Processing row " + Struct.structuredMapToString("row", row));</em>
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>         <em class="jxr_comment">// logger.debug("row is " + Struct.structuredMapToJson(row));</em>
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>         
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">int</strong> createLevel = 0;
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         List&lt;Map&lt;String, Object&gt;&gt; createList = results;
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         Map&lt;String, Object&gt; createRow = <strong class="jxr_keyword">new</strong> HashMap&lt;String, Object&gt;();
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         String createPrefix = <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <em class="jxr_comment">// determine highest level that we can create at</em>
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>         <strong class="jxr_keyword">if</strong> (lastResultRow != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>             <em class="jxr_comment">// System.out.println("lastResultRow processing");</em>
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>             createLevel = levels.size() + 1;
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>             <em class="jxr_comment">// find lowest level that has a different value</em>
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>             <strong class="jxr_keyword">for</strong> (Iterator&lt;Map.Entry&lt;String, String&gt;&gt; i = columnMapping.entrySet().iterator(); i.hasNext();) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>                 Map.Entry&lt;String, String&gt; entry = (Map.Entry&lt;String, String&gt;) i.next();
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>                 String column = (String) entry.getKey();
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>                 String columnTarget = (String) entry.getValue();
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>                 List&lt;Map&lt;String,Object&gt;&gt; containerList = results; <em class="jxr_comment">// maybe</em>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>                 Map&lt;String, Object&gt; containerMap = lastResultRow;
+<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                 String component;
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>                 <strong class="jxr_keyword">int</strong> pos = columnTarget.indexOf('.');
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>                 <strong class="jxr_keyword">int</strong> level = 0;
+<a class="jxr_linenumber" name="L209" href="#L209">209</a> 
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>                 <strong class="jxr_keyword">while</strong> (pos != -1) {
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>                     component = columnTarget.substring(0, pos);
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>                     columnTarget = columnTarget.substring(pos + 1);
+<a class="jxr_linenumber" name="L213" href="#L213">213</a> 
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>                     <strong class="jxr_keyword">if</strong> (!containerMap.containsKey(component)) {
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>                         <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalStateException(<span class="jxr_string">"Missing field '"</span> + component + <span class="jxr_string">"' in "</span> + Struct.structuredMapToString(<span class="jxr_string">"containerMap"</span>, containerMap) + <span class="jxr_string">"; last result row is "</span> + Struct.structuredMapToString(<span class="jxr_string">"lastResultRow"</span>, lastResultRow));
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>                     }
+<a class="jxr_linenumber" name="L217" href="#L217">217</a> 
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>                     <strong class="jxr_keyword">if</strong> (component.equals(levels.get(level))) {
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>                         level++;
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>                         containerList = (List&lt;Map&lt;String,Object&gt;&gt;) containerMap.get(component);
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>                         containerMap = (Map&lt;String, Object&gt;) containerList.get(containerList.size() - 1);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>                         <strong class="jxr_keyword">if</strong> (containerMap==<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>                         	logger.error(<span class="jxr_string">"null containerMap"</span>);
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                         }
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>                     } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                         containerMap = (Map&lt;String, Object&gt;) containerMap.get(component);
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                         <strong class="jxr_keyword">if</strong> (containerMap==<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                         	logger.error(<span class="jxr_string">"null containerMap"</span>);
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>                         }
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> 
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     }
+<a class="jxr_linenumber" name="L232" href="#L232">232</a> 
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     pos = columnTarget.indexOf('.');
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>                 }
+<a class="jxr_linenumber" name="L235" href="#L235">235</a> 
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>                 Object thisValue = row.get(column);
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>                 Object lastValue = containerMap.get(columnTarget);
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 <em class="jxr_comment">// System.out.println("Comparing thisValue '" + thisValue + "' to lastValue '" + lastValue + "'");</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>                 <strong class="jxr_keyword">if</strong> ((thisValue == <strong class="jxr_keyword">null</strong> &amp;&amp; lastValue != <strong class="jxr_keyword">null</strong>) || (thisValue != <strong class="jxr_keyword">null</strong> &amp;&amp; !thisValue.equals(lastValue))) {
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     <em class="jxr_comment">// values are different; create row</em>
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>                     <strong class="jxr_keyword">if</strong> (createLevel &gt; level) {
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>                         createList = containerList;
+<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                         <em class="jxr_comment">// System.out.println("Reducing level to '" + level + "' because of " +</em>
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                         <em class="jxr_comment">//   "column '" + columnTarget + "' differing (" + thisValue + " instead of previous: " + lastValue);</em>
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>                         createLevel = level;
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>                     }
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>                 }
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>             }
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>         }
+<a class="jxr_linenumber" name="L252" href="#L252">252</a> 
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>         <strong class="jxr_keyword">if</strong> (createLevel &gt; levels.size()) {
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>             <em class="jxr_comment">// rows are completely identical -- don't add it to the list</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>         }
+<a class="jxr_linenumber" name="L257" href="#L257">257</a> 
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; createLevel; i++) {
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>             createPrefix = createPrefix + levels.get(i) + <span class="jxr_string">"."</span>;
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         }
+<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         <em class="jxr_comment">// generate 'createRow'</em>
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         <strong class="jxr_keyword">for</strong> (Iterator&lt;Map.Entry&lt;String, String&gt;&gt; i = columnMapping.entrySet().iterator(); i.hasNext();) {
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>             Map.Entry&lt;String, String&gt; entry = i.next();
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>             String column = (String) entry.getKey();
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             String columnTarget = (String) entry.getValue();
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>             <strong class="jxr_keyword">if</strong> (!columnTarget.startsWith(createPrefix)) {
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>             }
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             Object value = row.get(column); 
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             <em class="jxr_comment">//logger.debug("About to add column '" + columnTarget + "' from rs column '" + column + "'; createPrefix = '" + createPrefix + "' with value '" + value + "'");</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>             
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>             columnTarget = columnTarget.substring(createPrefix.length());
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>             <em class="jxr_comment">//logger.debug("  columnTarget '" + columnTarget + "'");</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>             List&lt;Map&lt;String, Object&gt;&gt; containerList = createList;
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             Map&lt;String, Object&gt; containerMap = createRow;
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>             
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>             <strong class="jxr_keyword">int</strong> level = createLevel;  <em class="jxr_comment">// ** was 0 ?</em>
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>             String component;
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>             <strong class="jxr_keyword">int</strong> pos = columnTarget.indexOf('.');
+<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             <strong class="jxr_keyword">while</strong> (pos != -1) {
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>                 component = columnTarget.substring(0, pos);
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>                 columnTarget = columnTarget.substring(pos + 1);
+<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>                 <strong class="jxr_keyword">if</strong> (component.equals(levels.get(level))) {
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                     level++;
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>                     containerList = (List&lt;Map&lt;String, Object&gt;&gt;) containerMap.get(component);
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> 
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>                     <strong class="jxr_keyword">if</strong> (containerList == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>                         containerList = <strong class="jxr_keyword">new</strong> ArrayList&lt;Map&lt;String, Object&gt;&gt;();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>                         containerMap.put(component, containerList);
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>                         containerList.add(<strong class="jxr_keyword">new</strong> HashMap&lt;String, Object&gt;());
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>                     }
+<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>                     containerMap = (Map&lt;String, Object&gt;) containerList.get(containerList.size() - 1);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>                     <strong class="jxr_keyword">if</strong> (containerMap==<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>                     	logger.error(<span class="jxr_string">"C null containerMap"</span>);
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>                     }
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                     containerMap = (Map&lt;String, Object&gt;) containerMap.get(component);
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                     <strong class="jxr_keyword">if</strong> (containerMap==<strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>                     	logger.error(<span class="jxr_string">"D null containerMap"</span>);
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>                     }
+<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>                 }
+<a class="jxr_linenumber" name="L310" href="#L310">310</a> 
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>                 pos = columnTarget.indexOf('.');
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>             }
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>             containerMap.put(columnTarget, value);
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>         }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>         <strong class="jxr_keyword">if</strong> (createList == results) {
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         	<strong class="jxr_keyword">if</strong> (results.size()&gt;0) { smch.processMap(results.get(0)); } 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         	results.clear(); <em class="jxr_comment">// @TODO don't use a list for this, since we only ever hold a single object. Keeps it vaguely similar to StructuredResultReader a.k.a. StructuredListResultSetExtractor though.</em>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         	<em class="jxr_comment">// smch.processSomethingElsePerhaps();</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         }
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         createList.add(createRow);
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         lastResultRow = results.get(results.size() - 1);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>     }
+<a class="jxr_linenumber" name="L328" href="#L328">328</a> 
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> }
+</pre>
+<hr/>
+<div id="footer">Copyright &#169; 2013&#x2013;2020 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>
+</body>
+</html>

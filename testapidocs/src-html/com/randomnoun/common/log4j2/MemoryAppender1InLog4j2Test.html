@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.log4j2;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">/* (c) 2013 randomnoun. All Rights Reserved. This work is licensed under a</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * BSD Simplified License. (http://www.randomnoun.com/bsd-simplified.html)</a>
+<span class="sourceLineNo">005</span><a id="line.5"> */</a>
+<span class="sourceLineNo">006</span><a id="line.6"></a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.util.List;</a>
+<span class="sourceLineNo">008</span><a id="line.8">import java.util.Properties;</a>
+<span class="sourceLineNo">009</span><a id="line.9"></a>
+<span class="sourceLineNo">010</span><a id="line.10">import org.apache.log4j.Level;</a>
+<span class="sourceLineNo">011</span><a id="line.11">import org.apache.log4j.Logger;</a>
+<span class="sourceLineNo">012</span><a id="line.12">import org.apache.log4j.spi.LoggingEvent;</a>
+<span class="sourceLineNo">013</span><a id="line.13"></a>
+<span class="sourceLineNo">014</span><a id="line.14">import com.randomnoun.common.log4j.MemoryAppender;</a>
+<span class="sourceLineNo">015</span><a id="line.15"></a>
+<span class="sourceLineNo">016</span><a id="line.16">import org.apache.logging.log4j.LogManager;</a>
+<span class="sourceLineNo">017</span><a id="line.17">import org.apache.logging.log4j.core.LoggerContext;</a>
+<span class="sourceLineNo">018</span><a id="line.18">import org.apache.logging.log4j.core.config.AppenderRef;</a>
+<span class="sourceLineNo">019</span><a id="line.19">import org.apache.logging.log4j.core.config.Configuration;</a>
+<span class="sourceLineNo">020</span><a id="line.20">import org.apache.logging.log4j.core.config.Configurator;</a>
+<span class="sourceLineNo">021</span><a id="line.21">import org.apache.logging.log4j.core.config.LoggerConfig;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;</a>
+<span class="sourceLineNo">023</span><a id="line.23"></a>
+<span class="sourceLineNo">024</span><a id="line.24">import junit.framework.TestCase;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">/**</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * Unit test for the log4j2 MemoryAppender </a>
+<span class="sourceLineNo">028</span><a id="line.28"> * </a>
+<span class="sourceLineNo">029</span><a id="line.29"> * @blog http://www.randomnoun.com/wp/2013/01/13/logging/</a>
+<span class="sourceLineNo">030</span><a id="line.30"> * </a>
+<span class="sourceLineNo">031</span><a id="line.31"> * @author knoxg</a>
+<span class="sourceLineNo">032</span><a id="line.32"> */</a>
+<span class="sourceLineNo">033</span><a id="line.33">public class MemoryAppender1InLog4j2Test</a>
+<span class="sourceLineNo">034</span><a id="line.34">        extends TestCase</a>
+<span class="sourceLineNo">035</span><a id="line.35">{</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">        /** Reset log4j before each test</a>
+<span class="sourceLineNo">038</span><a id="line.38">         */</a>
+<span class="sourceLineNo">039</span><a id="line.39">        protected void setUp() {</a>
+<span class="sourceLineNo">040</span><a id="line.40">                LogManager.shutdown();</a>
+<span class="sourceLineNo">041</span><a id="line.41">        }</a>
+<span class="sourceLineNo">042</span><a id="line.42">        </a>
+<span class="sourceLineNo">043</span><a id="line.43">        /**</a>
+<span class="sourceLineNo">044</span><a id="line.44">         */</a>
+<span class="sourceLineNo">045</span><a id="line.45">        protected void tearDown()</a>
+<span class="sourceLineNo">046</span><a id="line.46">        {</a>
+<span class="sourceLineNo">047</span><a id="line.47">        }</a>
+<span class="sourceLineNo">048</span><a id="line.48">        </a>
+<span class="sourceLineNo">049</span><a id="line.49">        public void testMemoryAppenderViaProperties_Log1Logger() {</a>
+<span class="sourceLineNo">050</span><a id="line.50"></a>
+<span class="sourceLineNo">051</span><a id="line.51">                Properties props = new Properties();</a>
+<span class="sourceLineNo">052</span><a id="line.52">                props.put("log4j.rootCategory", "INFO, MEMORY");</a>
+<span class="sourceLineNo">053</span><a id="line.53">                props.put("log4j.appender.MEMORY", "com.randomnoun.common.log4j.MemoryAppender");</a>
+<span class="sourceLineNo">054</span><a id="line.54">                // layouts have no effect on MemoryAppenders</a>
+<span class="sourceLineNo">055</span><a id="line.55">                //props.put("log4j.appender.MEMORY.layout", "org.apache.log4j.PatternLayout");</a>
+<span class="sourceLineNo">056</span><a id="line.56">                //props.put("log4j.appender.MEMORY.layout.ConversionPattern", "%d{dd/MM/yy HH:mm:ss.SSS} %-5p %c - %m%n");</a>
+<span class="sourceLineNo">057</span><a id="line.57">                </a>
+<span class="sourceLineNo">058</span><a id="line.58">                props.put("log4j.appender.MEMORY.MaximumLogSize", "100");</a>
+<span class="sourceLineNo">059</span><a id="line.59">                </a>
+<span class="sourceLineNo">060</span><a id="line.60">                // PropertyConfigurator.configure(props);</a>
+<span class="sourceLineNo">061</span><a id="line.61">                </a>
+<span class="sourceLineNo">062</span><a id="line.62">                Log4j1ConfigurationParser lcp = new Log4j1ConfigurationParser();</a>
+<span class="sourceLineNo">063</span><a id="line.63">                ConfigurationBuilder&lt;?&gt; builder = lcp.buildConfigurationBuilder(props);</a>
+<span class="sourceLineNo">064</span><a id="line.64">                LoggerContext ctx = Configurator.initialize(builder.build());</a>
+<span class="sourceLineNo">065</span><a id="line.65"></a>
+<span class="sourceLineNo">066</span><a id="line.66">                Logger logger = Logger.getLogger("testLogger");</a>
+<span class="sourceLineNo">067</span><a id="line.67">                // MemoryAppender memoryAppender = (MemoryAppender) Logger.getRootLogger().getAppender("MEMORY");</a>
+<span class="sourceLineNo">068</span><a id="line.68">                // this will be some kind of adapter now, no doubt</a>
+<span class="sourceLineNo">069</span><a id="line.69">                Log4j1WrapperAppender wrapperAppender = ctx.getConfiguration().getAppender("MEMORY");</a>
+<span class="sourceLineNo">070</span><a id="line.70">                MemoryAppender memoryAppender = (MemoryAppender) wrapperAppender.getLog4j1Appender();</a>
+<span class="sourceLineNo">071</span><a id="line.71"></a>
+<span class="sourceLineNo">072</span><a id="line.72">                List&lt;LoggingEvent&gt; logEvents;</a>
+<span class="sourceLineNo">073</span><a id="line.73"></a>
+<span class="sourceLineNo">074</span><a id="line.74">                long start = System.currentTimeMillis();</a>
+<span class="sourceLineNo">075</span><a id="line.75">                logger.info("info message");</a>
+<span class="sourceLineNo">076</span><a id="line.76">                long end = System.currentTimeMillis();</a>
+<span class="sourceLineNo">077</span><a id="line.77">                </a>
+<span class="sourceLineNo">078</span><a id="line.78">                logEvents = memoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">079</span><a id="line.79">                assertTrue("info message in memoryAppender", logEvents.size()==1);</a>
+<span class="sourceLineNo">080</span><a id="line.80">                assertEquals("info message", logEvents.get(0).getRenderedMessage());</a>
+<span class="sourceLineNo">081</span><a id="line.81">                // assertEquals("info message", logEvents.get(0).getRenderedMessage());</a>
+<span class="sourceLineNo">082</span><a id="line.82">                assertNotNull(logEvents.get(0).getLoggerName());</a>
+<span class="sourceLineNo">083</span><a id="line.83">                assertEquals(Level.INFO, logEvents.get(0).getLevel());</a>
+<span class="sourceLineNo">084</span><a id="line.84">                // NB: timestamp field requires log4j 1.2.15</a>
+<span class="sourceLineNo">085</span><a id="line.85">                assertTrue("timestamp of loggingEvent &gt;= start", logEvents.get(0).getTimeStamp() &gt;= start);</a>
+<span class="sourceLineNo">086</span><a id="line.86">                assertTrue("timestamp of loggingEvent &lt;= end", logEvents.get(0).getTimeStamp() &lt;= end);</a>
+<span class="sourceLineNo">087</span><a id="line.87">                </a>
+<span class="sourceLineNo">088</span><a id="line.88">                logger.debug("debug message");</a>
+<span class="sourceLineNo">089</span><a id="line.89">                logEvents = memoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">090</span><a id="line.90">                assertTrue("debug message suppressed from memoryAppender", logEvents.size()==1);</a>
+<span class="sourceLineNo">091</span><a id="line.91">                </a>
+<span class="sourceLineNo">092</span><a id="line.92">        }</a>
+<span class="sourceLineNo">093</span><a id="line.93"></a>
+<span class="sourceLineNo">094</span><a id="line.94">        // see https://logging.apache.org/log4j/2.x/manual/customconfig.html#AddingToCurrent</a>
+<span class="sourceLineNo">095</span><a id="line.95">        </a>
+<span class="sourceLineNo">096</span><a id="line.96">        public void testMemoryAppenderViaObjectModel() {</a>
+<span class="sourceLineNo">097</span><a id="line.97">                Logger logger = Logger.getLogger("testLogger");</a>
+<span class="sourceLineNo">098</span><a id="line.98">                </a>
+<span class="sourceLineNo">099</span><a id="line.99">                </a>
+<span class="sourceLineNo">100</span><a id="line.100">                LoggerContext ctx = (LoggerContext) LogManager.getContext(false);</a>
+<span class="sourceLineNo">101</span><a id="line.101">        Configuration config = ctx.getConfiguration();</a>
+<span class="sourceLineNo">102</span><a id="line.102">        </a>
+<span class="sourceLineNo">103</span><a id="line.103">                config.getRootLogger().setLevel(org.apache.logging.log4j.Level.INFO);</a>
+<span class="sourceLineNo">104</span><a id="line.104">                </a>
+<span class="sourceLineNo">105</span><a id="line.105">                // one of those adapter thingies</a>
+<span class="sourceLineNo">106</span><a id="line.106">                MemoryAppender log4j1MemoryAppender = new MemoryAppender(1000);</a>
+<span class="sourceLineNo">107</span><a id="line.107">                // Log4j1WrapperAppender memoryAppender = Log4j1WrapperAppender.createAppender("Memory", log4j1MemoryAppender);  </a>
+<span class="sourceLineNo">108</span><a id="line.108">                </a>
+<span class="sourceLineNo">109</span><a id="line.109">                Log4j1WrapperAppender memoryAppender = Log4j1WrapperAppender.createAppender("Memory", log4j1MemoryAppender);  </a>
+<span class="sourceLineNo">110</span><a id="line.110">                </a>
+<span class="sourceLineNo">111</span><a id="line.111">                // MemoryAppender memoryAppender = MemoryAppender.createAppender("Memory");</a>
+<span class="sourceLineNo">112</span><a id="line.112">                // memoryAppender.start();</a>
+<span class="sourceLineNo">113</span><a id="line.113">        // config.addAppender(memoryAppender);</a>
+<span class="sourceLineNo">114</span><a id="line.114">        </a>
+<span class="sourceLineNo">115</span><a id="line.115">                </a>
+<span class="sourceLineNo">116</span><a id="line.116">        AppenderRef ref = AppenderRef.createAppenderRef("MEMORY", null, null);</a>
+<span class="sourceLineNo">117</span><a id="line.117">        AppenderRef[] refs = new AppenderRef[] {ref};</a>
+<span class="sourceLineNo">118</span><a id="line.118">        LoggerConfig loggerConfig = LoggerConfig.createLogger(false, org.apache.logging.log4j.Level.INFO, "testLogger", "true", refs, null, config, null );</a>
+<span class="sourceLineNo">119</span><a id="line.119">        loggerConfig.addAppender(memoryAppender, null, null);</a>
+<span class="sourceLineNo">120</span><a id="line.120">        config.addLogger("testLogger", loggerConfig);</a>
+<span class="sourceLineNo">121</span><a id="line.121">        ctx.updateLoggers();</a>
+<span class="sourceLineNo">122</span><a id="line.122">        </a>
+<span class="sourceLineNo">123</span><a id="line.123">                List&lt;LoggingEvent&gt; logEvents;</a>
+<span class="sourceLineNo">124</span><a id="line.124"></a>
+<span class="sourceLineNo">125</span><a id="line.125">                long start = System.currentTimeMillis();</a>
+<span class="sourceLineNo">126</span><a id="line.126">                logger.info("info message");</a>
+<span class="sourceLineNo">127</span><a id="line.127">                long end = System.currentTimeMillis();</a>
+<span class="sourceLineNo">128</span><a id="line.128">                </a>
+<span class="sourceLineNo">129</span><a id="line.129">                logEvents = log4j1MemoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">130</span><a id="line.130">                assertTrue("info message in memoryAppender", logEvents.size()==1);</a>
+<span class="sourceLineNo">131</span><a id="line.131">                assertEquals("info message", logEvents.get(0).getMessage().toString());</a>
+<span class="sourceLineNo">132</span><a id="line.132">                assertEquals("info message", logEvents.get(0).getRenderedMessage());</a>
+<span class="sourceLineNo">133</span><a id="line.133">                assertNotNull(logEvents.get(0).getLoggerName());</a>
+<span class="sourceLineNo">134</span><a id="line.134">                assertEquals(Level.INFO, logEvents.get(0).getLevel());</a>
+<span class="sourceLineNo">135</span><a id="line.135">                </a>
+<span class="sourceLineNo">136</span><a id="line.136">                // the LoggingEvent class provided in the log4j-1.2-api jar </a>
+<span class="sourceLineNo">137</span><a id="line.137">                // has a 'final' implementation of getTimeStamp() which returns 0, </a>
+<span class="sourceLineNo">138</span><a id="line.138">                // so the LogEventAdapter class also returns zero.</a>
+<span class="sourceLineNo">139</span><a id="line.139">                // I mean, why would anyone want to know when a log message was generated</a>
+<span class="sourceLineNo">140</span><a id="line.140">                // Surprised they didn't have a final getMessage() that returned null as well,</a>
+<span class="sourceLineNo">141</span><a id="line.141">                // which would make logging all that more informative.</a>
+<span class="sourceLineNo">142</span><a id="line.142">                </a>
+<span class="sourceLineNo">143</span><a id="line.143">                // anyway, I've created my own LogEvent class that actually stores the TimeStamp, this will need to be </a>
+<span class="sourceLineNo">144</span><a id="line.144">                // include ahead of log4j-1.2-api to take effect.</a>
+<span class="sourceLineNo">145</span><a id="line.145">                System.out.println(logEvents.get(0).getTimeStamp()); // was zero</a>
+<span class="sourceLineNo">146</span><a id="line.146">                System.out.println(start);</a>
+<span class="sourceLineNo">147</span><a id="line.147">                assertTrue("timestamp of loggingEvent &gt;= start", logEvents.get(0).getTimeStamp() &gt;= start);</a>
+<span class="sourceLineNo">148</span><a id="line.148">                assertTrue("timestamp of loggingEvent &lt;= end", logEvents.get(0).getTimeStamp() &lt;= end);</a>
+<span class="sourceLineNo">149</span><a id="line.149">                </a>
+<span class="sourceLineNo">150</span><a id="line.150">                </a>
+<span class="sourceLineNo">151</span><a id="line.151">                logger.debug("debug message");</a>
+<span class="sourceLineNo">152</span><a id="line.152">                logEvents = log4j1MemoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">153</span><a id="line.153">                assertTrue("debug message suppressed from memoryAppender", logEvents.size()==1);</a>
+<span class="sourceLineNo">154</span><a id="line.154">        }</a>
+<span class="sourceLineNo">155</span><a id="line.155">        </a>
+<span class="sourceLineNo">156</span><a id="line.156"></a>
+<span class="sourceLineNo">157</span><a id="line.157">        </a>
+<span class="sourceLineNo">158</span><a id="line.158">        public void testLogWindowSize() {</a>
+<span class="sourceLineNo">159</span><a id="line.159"></a>
+<span class="sourceLineNo">160</span><a id="line.160">                // create a MemoryLogger capable of holding 10 entries</a>
+<span class="sourceLineNo">161</span><a id="line.161">                </a>
+<span class="sourceLineNo">162</span><a id="line.162">                Properties props = new Properties();</a>
+<span class="sourceLineNo">163</span><a id="line.163">                props.put("log4j.rootCategory", "INFO, MEMORY");</a>
+<span class="sourceLineNo">164</span><a id="line.164">                props.put("log4j.appender.MEMORY", "com.randomnoun.common.log4j.MemoryAppender");</a>
+<span class="sourceLineNo">165</span><a id="line.165">                props.put("log4j.appender.MEMORY.MaximumLogSize", "10");</a>
+<span class="sourceLineNo">166</span><a id="line.166">                // PropertyConfigurator.configure(props);</a>
+<span class="sourceLineNo">167</span><a id="line.167">                </a>
+<span class="sourceLineNo">168</span><a id="line.168"></a>
+<span class="sourceLineNo">169</span><a id="line.169">                Log4j1ConfigurationParser lcp = new Log4j1ConfigurationParser();</a>
+<span class="sourceLineNo">170</span><a id="line.170">                ConfigurationBuilder&lt;?&gt; builder = lcp.buildConfigurationBuilder(props);</a>
+<span class="sourceLineNo">171</span><a id="line.171">                LoggerContext ctx = Configurator.initialize(builder.build());</a>
+<span class="sourceLineNo">172</span><a id="line.172"></a>
+<span class="sourceLineNo">173</span><a id="line.173">                Logger logger = Logger.getLogger("testLogger");</a>
+<span class="sourceLineNo">174</span><a id="line.174">                Log4j1WrapperAppender wrapperAppender = ctx.getConfiguration().getAppender("MEMORY");</a>
+<span class="sourceLineNo">175</span><a id="line.175">                MemoryAppender memoryAppender = (MemoryAppender) wrapperAppender.getLog4j1Appender();</a>
+<span class="sourceLineNo">176</span><a id="line.176">                </a>
+<span class="sourceLineNo">177</span><a id="line.177">                List&lt;LoggingEvent&gt; logEvents;</a>
+<span class="sourceLineNo">178</span><a id="line.178"></a>
+<span class="sourceLineNo">179</span><a id="line.179">                // write five messages. </a>
+<span class="sourceLineNo">180</span><a id="line.180">                // the 0th message in MemoryAppender should be the most recent (i.e. message #5)</a>
+<span class="sourceLineNo">181</span><a id="line.181">                for (int i=1; i&lt;=5; i++) {</a>
+<span class="sourceLineNo">182</span><a id="line.182">                        logger.info("message number " + i);</a>
+<span class="sourceLineNo">183</span><a id="line.183">                }</a>
+<span class="sourceLineNo">184</span><a id="line.184">                logEvents = memoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">185</span><a id="line.185">                assertTrue("5 info messages in memoryAppender", logEvents.size()==5);</a>
+<span class="sourceLineNo">186</span><a id="line.186">                for (int i=0; i&lt;5; i++) {</a>
+<span class="sourceLineNo">187</span><a id="line.187">                        assertEquals("message number " + (5 - i), logEvents.get(i).getRenderedMessage());</a>
+<span class="sourceLineNo">188</span><a id="line.188">                }</a>
+<span class="sourceLineNo">189</span><a id="line.189">                </a>
+<span class="sourceLineNo">190</span><a id="line.190">                // write another five messages</a>
+<span class="sourceLineNo">191</span><a id="line.191">                for (int i=6; i&lt;=10; i++) {</a>
+<span class="sourceLineNo">192</span><a id="line.192">                        logger.info("message number " + i);</a>
+<span class="sourceLineNo">193</span><a id="line.193">                }</a>
+<span class="sourceLineNo">194</span><a id="line.194">                logEvents = memoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">195</span><a id="line.195">                assertTrue("10 info messages in memoryAppender", logEvents.size()==10);</a>
+<span class="sourceLineNo">196</span><a id="line.196">                for (int i=0; i&lt;10; i++) {</a>
+<span class="sourceLineNo">197</span><a id="line.197">                        assertEquals("message number " + (10 - i), logEvents.get(i).getRenderedMessage());</a>
+<span class="sourceLineNo">198</span><a id="line.198">                }</a>
+<span class="sourceLineNo">199</span><a id="line.199">                </a>
+<span class="sourceLineNo">200</span><a id="line.200">                // write another five messages (memoryAppender should just contain messages 6-15)</a>
+<span class="sourceLineNo">201</span><a id="line.201">                for (int i=11; i&lt;=15; i++) {</a>
+<span class="sourceLineNo">202</span><a id="line.202">                        logger.info("message number " + i);</a>
+<span class="sourceLineNo">203</span><a id="line.203">                }</a>
+<span class="sourceLineNo">204</span><a id="line.204">                logEvents = memoryAppender.getLoggingEvents();</a>
+<span class="sourceLineNo">205</span><a id="line.205">                //System.out.println(loggingEvents.size());</a>
+<span class="sourceLineNo">206</span><a id="line.206">                assertTrue("10 info messages in memoryAppender", logEvents.size()==10);</a>
+<span class="sourceLineNo">207</span><a id="line.207">                for (int i=0; i&lt;10; i++) {</a>
+<span class="sourceLineNo">208</span><a id="line.208">                        assertEquals("message number " + (15 - i), logEvents.get(i).getRenderedMessage());</a>
+<span class="sourceLineNo">209</span><a id="line.209">                }</a>
+<span class="sourceLineNo">210</span><a id="line.210">                </a>
+<span class="sourceLineNo">211</span><a id="line.211">        }</a>
+<span class="sourceLineNo">212</span><a id="line.212"></a>
+<span class="sourceLineNo">213</span><a id="line.213"></a>
+<span class="sourceLineNo">214</span><a id="line.214">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>

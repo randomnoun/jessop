@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<main role="main">
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span><a id="line.1">package com.randomnoun.common.jexl.eval;</a>
+<span class="sourceLineNo">002</span><a id="line.2"></a>
+<span class="sourceLineNo">003</span><a id="line.3">/* (c) 2013 randomnoun. All Rights Reserved. This work is licensed under a</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * BSD Simplified License. (http://www.randomnoun.com/bsd-simplified.html)</a>
+<span class="sourceLineNo">005</span><a id="line.5"> */</a>
+<span class="sourceLineNo">006</span><a id="line.6"></a>
+<span class="sourceLineNo">007</span><a id="line.7">import java.util.*;</a>
+<span class="sourceLineNo">008</span><a id="line.8"></a>
+<span class="sourceLineNo">009</span><a id="line.9">import org.apache.log4j.Logger;</a>
+<span class="sourceLineNo">010</span><a id="line.10"></a>
+<span class="sourceLineNo">011</span><a id="line.11"></a>
+<span class="sourceLineNo">012</span><a id="line.12">/**</a>
+<span class="sourceLineNo">013</span><a id="line.13"> * This class encapsulates a function, which is intended to be placed in an</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * EvalContext (using EvalContext.setFunctions()). Any</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * expression evaluated in that context will then be able to invoke developer-defined</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * functions.</a>
+<span class="sourceLineNo">017</span><a id="line.17"> *</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * &lt;pre&gt;</a>
+<span class="sourceLineNo">019</span><a id="line.19">    Map&lt;String, EvalFunction&gt; functions = new HashMap();</a>
+<span class="sourceLineNo">020</span><a id="line.20">    functions.put("length", new LengthFunction());</a>
+<span class="sourceLineNo">021</span><a id="line.21">    functions.put("like", new LikeFunction());</a>
+<span class="sourceLineNo">022</span><a id="line.22">    EvalContext evalContext = new EvalContext();</a>
+<span class="sourceLineNo">023</span><a id="line.23">    evalContext.setFunctions(functions);</a>
+<span class="sourceLineNo">024</span><a id="line.24"> * &lt;/pre&gt;</a>
+<span class="sourceLineNo">025</span><a id="line.25"> *</a>
+<span class="sourceLineNo">026</span><a id="line.26"> * Some functions can also generate SQL, see</a>
+<span class="sourceLineNo">027</span><a id="line.27"> * {@link com.randomnoun.common.jexl.sql.SqlFunction}.</a>
+<span class="sourceLineNo">028</span><a id="line.28"> *</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * </a>
+<span class="sourceLineNo">030</span><a id="line.30"> * @author knoxg</a>
+<span class="sourceLineNo">031</span><a id="line.31"> */</a>
+<span class="sourceLineNo">032</span><a id="line.32">public interface EvalFunction</a>
+<span class="sourceLineNo">033</span><a id="line.33">{</a>
+<span class="sourceLineNo">034</span><a id="line.34">        /** Logger for this class */</a>
+<span class="sourceLineNo">035</span><a id="line.35">        public static Logger logger = Logger.getLogger(EvalFunction.class);</a>
+<span class="sourceLineNo">036</span><a id="line.36"></a>
+<span class="sourceLineNo">037</span><a id="line.37">    /**</a>
+<span class="sourceLineNo">038</span><a id="line.38">     * This is the main entry point for classes that implement this interface.</a>
+<span class="sourceLineNo">039</span><a id="line.39">     * The evaluate method performs the evaluation of the function that this class</a>
+<span class="sourceLineNo">040</span><a id="line.40">     * implements (and is supplied the functionName, so that the same class may</a>
+<span class="sourceLineNo">041</span><a id="line.41">     * evaluate multiple functions). </a>
+<span class="sourceLineNo">042</span><a id="line.42">     *</a>
+<span class="sourceLineNo">043</span><a id="line.43">     * @param functionName The name of the function to be evaluated (can be disregarded</a>
+<span class="sourceLineNo">044</span><a id="line.44">     *   if this class only performs a single function)</a>
+<span class="sourceLineNo">045</span><a id="line.45">     * @param context The context in which the function is being executed (could hold</a>
+<span class="sourceLineNo">046</span><a id="line.46">     *   things like local variable values, current line number, etc...)</a>
+<span class="sourceLineNo">047</span><a id="line.47">     * @param arguments The arguments passed to this function</a>
+<span class="sourceLineNo">048</span><a id="line.48">     *</a>
+<span class="sourceLineNo">049</span><a id="line.49">     * @return The result of the evaluation</a>
+<span class="sourceLineNo">050</span><a id="line.50">     *</a>
+<span class="sourceLineNo">051</span><a id="line.51">     * @throws EvalException An exception occurred during evaluation</a>
+<span class="sourceLineNo">052</span><a id="line.52">     */</a>
+<span class="sourceLineNo">053</span><a id="line.53">    public Object evaluate(String functionName, EvalContext context, List&lt;Object&gt; arguments)</a>
+<span class="sourceLineNo">054</span><a id="line.54">        throws EvalException;</a>
+<span class="sourceLineNo">055</span><a id="line.55">}</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</main>
+</body>
+</html>
