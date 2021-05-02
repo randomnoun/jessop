@@ -212,7 +212,7 @@
 			</plugin>
 		</plugins>
 		<!-- Build with Java 1.7 -->
-		<!-- although graalvm needs 1.8+ so lets jump to 11 for now -->
+		<!-- although graalvm needs 1.8+ so 1.8 it is -->
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -220,8 +220,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.3</version>
 					<configuration>
-						<source>11</source>
-						<target>11</target>
+						<source>${jdk.version}</source>
+						<target>${jdk.version}</target>
 						<!--  so it turns out that /etc/mavenrc was wrong. sheesh. -->
 						<fork>true</fork>
 						<forceJavacCompilerUse>true</forceJavacCompilerUse>
@@ -248,7 +248,7 @@
 	
 	
 	<properties>
-		<jdk.version>11</jdk.version>
+		<jdk.version>8</jdk.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<graalvm.version>20.3.0</graalvm.version>
         <compiler.dir>${project.build.directory}/compiler</compiler.dir>
