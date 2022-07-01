@@ -1,258 +1,256 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>parent-pom</artifactId>
-		<groupId>com.randomnoun.build</groupId>
-		<version>1.23</version>
-	</parent>
+    <parent>
+        <artifactId>parent-pom</artifactId>
+        <groupId>com.randomnoun.build</groupId>
+        <version>1.25</version>
+    </parent>
 
-	<groupId>com.randomnoun.common</groupId>
-	<artifactId>jessop</artifactId>
-	<packaging>jar</packaging>
-	<version>1.0.17-SNAPSHOT</version>
-	
-	<name>Jessop</name>
-	<description>Multi-language templates in the style of Java Server Pages</description>
-	<url>https://randomnoun.github.io/jessop/</url>
-	<inceptionYear>2016-09-16</inceptionYear>
-	
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <groupId>com.randomnoun.common</groupId>
+    <artifactId>jessop</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.17-SNAPSHOT</version>
+    
+    <name>Jessop</name>
+    <description>Multi-language templates in the style of Java Server Pages</description>
+    <url>https://randomnoun.github.io/jessop/</url>
+    <inceptionYear>2016-09-16</inceptionYear>
+    
+    <dependencies>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         
+        <dependency>
+            <groupId>com.randomnoun.common</groupId>
+            <artifactId>log4j-one</artifactId>
+            <version>0.0.4</version>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>org.luaj</groupId>
-			<artifactId>luaj-jse</artifactId>
-			<version>3.0.1</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.luaj</groupId>
+            <artifactId>luaj-jse</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>org.python</groupId>
-			<artifactId>jython</artifactId>
-			<version>2.5.3</version> <!-- 2.5.3 works, but 2.7.0 and 2.7.1b3 return a null ScriptEngine -->
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.5.3</version> <!-- 2.5.3 works, but 2.7.0 and 2.7.1b3 return a null ScriptEngine -->
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>2.0b5</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<!-- so openjdk 1.7.0 places classes in a different java package than the oracle-jdk rhino. 
-		The rhino jar here is not in maven central, but is a copy of the rhino.jar bundled with 
-		  java version "1.7.0_79"
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b5</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- so openjdk 1.7.0 places classes in a different java package than the oracle-jdk rhino. 
+        The rhino jar here is not in maven central, but is a copy of the rhino.jar bundled with 
+          java version "1.7.0_79"
           OpenJDK Runtime Environment (IcedTea 2.5.6) (7u79-2.5.6-0ubuntu1.14.04.1)
           OpenJDK 64-Bit Server VM (build 24.79-b02, mixed mode)
         on ubuntu 14.04.4 LTS
-		-->
-		<dependency>
-			<groupId>net.java.openjdk.icedtea</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.0.79-randomnoun</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		<!-- and compile for the genuine rhino, whilst we're at it -->
-		<dependency>
-		    <groupId>rhino</groupId>
-			<artifactId>js</artifactId>
-			<version>1.7R2</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<!-- 
-		  this JAR contains the 
-		    com.sun.script.* and 
-		    sun.org.mozilla.javascript.*
-		  classes from the java 1.7.0_80 rt.jar 
-		  ... will eventually replace this with graalvm or nashorn once I'm more confident that those actually work	
-		-->
-		<dependency>
-		  <groupId>com.sun.jre</groupId>
-		  <artifactId>rhino</artifactId>
-		  <version>1.7.0_80</version>
-		  <scope>compile</scope>
-		  <optional>true</optional>
-		</dependency>
-		
-		
-		<!--  see also https://github.com/cevou/rhino-script-engine -->
-		<!-- 
-		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.7.1</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		 -->
-		<!-- JSR223 for rhino
-		<dependency>
-			<groupId>org.apache.bsf</groupId>
-			<artifactId>bsf-all</artifactId>
-			<version>3.0-beta3</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency> 
-		-->
-		
-		<dependency>
-		    <groupId>org.jruby</groupId>
-		    <artifactId>jruby-complete</artifactId>
-		    <version>9.1.2.0</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<!--  armed bear lisp -->
-		<dependency>
-		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
-			<artifactId>abcl</artifactId>
-			<version>1.4.0</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-		    <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
-			<artifactId>abcl-contrib</artifactId>
-			<version>1.4.0</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		
-		<!-- graalvm javascript -->
-		<dependency>
+        -->
+        <dependency>
+            <groupId>net.java.openjdk.icedtea</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7.0.79-randomnoun</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <!-- and compile for the genuine rhino, whilst we're at it -->
+        <dependency>
+            <groupId>rhino</groupId>
+            <artifactId>js</artifactId>
+            <version>1.7R2</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- 
+          this JAR contains the 
+            com.sun.script.* and 
+            sun.org.mozilla.javascript.*
+          classes from the java 1.7.0_80 rt.jar 
+          ... will eventually replace this with graalvm or nashorn once I'm more confident that those actually work 
+        -->
+        <dependency>
+          <groupId>com.sun.jre</groupId>
+          <artifactId>rhino</artifactId>
+          <version>1.7.0_80</version>
+          <scope>compile</scope>
+          <optional>true</optional>
+        </dependency>
+        
+        
+        <!--  see also https://github.com/cevou/rhino-script-engine -->
+        <!-- 
+        <dependency>
+            <groupId>org.mozilla</groupId>
+            <artifactId>rhino</artifactId>
+            <version>1.7.7.1</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+         -->
+        <!-- JSR223 for rhino
+        <dependency>
+            <groupId>org.apache.bsf</groupId>
+            <artifactId>bsf-all</artifactId>
+            <version>3.0-beta3</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency> 
+        -->
+        
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>9.1.2.0</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <!--  armed bear lisp -->
+        <dependency>
+            <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
+            <artifactId>abcl</artifactId>
+            <version>1.4.0</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
+            <artifactId>abcl-contrib</artifactId>
+            <version>1.4.0</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        
+        <!-- graalvm javascript -->
+        <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
             <version>${graalvm.version}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
             <version>${graalvm.version}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js-scriptengine</artifactId>
             <version>${graalvm.version}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>profiler</artifactId>
             <version>${graalvm.version}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>chromeinspector</artifactId>
             <version>${graalvm.version}</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-        </dependency>		
-	
-	</dependencies>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>       
+    
+    </dependencies>
 
-	<!--  these are on github now. except for the bits on gitlab. -->
-	<scm>
-		<connection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</connection>
-		<developerConnection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</developerConnection>
-		<url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
-  	  <tag>jessop-1.0.12</tag>
+    <!--  these are on github now. except for the bits on gitlab. -->
+    <scm>
+        <connection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</connection>
+        <developerConnection>scm:git:http://gitlab.dev.randomnoun/randomnoun/jessop.git</developerConnection>
+        <url>http://gitlab.dev.randomnoun/randomnoun/jessop</url>
+      <tag>jessop-1.0.12</tag>
   </scm>
-	
-	<build>
-		<finalName>jessop</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<attach>true</attach>
-					<descriptors>
-						<descriptor>src/assembly/dist.xml</descriptor>
-					</descriptors>
-					<tarLongFileMode>posix</tarLongFileMode>
-				</configuration>
-				<executions>
-					<execution>
-				        <id>dist-assembly</id>  <!-- this is used for inheritance merges (?) -->
-				        <phase>package</phase>
-				        <goals>
-				            <goal>single</goal>
-				        </goals>
-			        </execution>
-				</executions>
-			</plugin>
-		</plugins>
-		<!-- Build with Java 1.7 -->
-		<!-- although graalvm needs 1.8+ so 1.8 it is -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.3</version>
-					<configuration>
-						<source>${jdk.version}</source>
-						<target>${jdk.version}</target>
-						<!--  so it turns out that /etc/mavenrc was wrong. sheesh. -->
-						<fork>true</fork>
-						<forceJavacCompilerUse>true</forceJavacCompilerUse>
-						<encoding>UTF-8</encoding>
-						<verbose>true</verbose>
-						<!--  allow linking against rt.jar (for sun internal classes) -->
-						<compilerArgs>
-							<arg>-XDignore.symbol.file</arg>
-						</compilerArgs>
-					</configuration>
-				</plugin>
+    
+    <build>
+        <finalName>jessop</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <attach>true</attach>
+                    <descriptors>
+                        <descriptor>src/assembly/dist.xml</descriptor>
+                    </descriptors>
+                    <tarLongFileMode>posix</tarLongFileMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>dist-assembly</id>  <!-- this is used for inheritance merges (?) -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <!-- Build with Java 1.7 -->
+        <!-- although graalvm needs 1.8+ so 1.8 it is -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                    <configuration>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
+                        <!--  so it turns out that /etc/mavenrc was wrong. sheesh. -->
+                        <fork>true</fork>
+                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                        <encoding>UTF-8</encoding>
+                        <verbose>true</verbose>
+                        <!--  allow linking against rt.jar (for sun internal classes) -->
+                        <compilerArgs>
+                            <arg>-XDignore.symbol.file</arg>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
 
-			</plugins>
-		</pluginManagement>
-	</build>
-	
-	<distributionManagement>
-		<site>
-        	<id>gh-pages</id>
-        	<name>jessop Website</name>
-	        <url>git:http://gitlab.dev.randomnoun/randomnoun/jessop.git?gh-pages#</url>
-    	</site>
-	</distributionManagement>
-	
-	
-	<properties>
-		<jdk.version>8</jdk.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<graalvm.version>20.3.0</graalvm.version>
+            </plugins>
+        </pluginManagement>
+    </build>
+    
+    <distributionManagement>
+        <site>
+            <id>gh-pages</id>
+            <name>jessop Website</name>
+            <url>git:http://gitlab.dev.randomnoun/randomnoun/jessop.git?gh-pages#</url>
+        </site>
+    </distributionManagement>
+    
+    
+    <properties>
+        <jdk.version>8</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <graalvm.version>20.3.0</graalvm.version>
         <compiler.dir>${project.build.directory}/compiler</compiler.dir>
-	</properties>
-	
+    </properties>
+    
 
 </project>
