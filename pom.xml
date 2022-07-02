@@ -28,7 +28,7 @@
             <groupId>com.randomnoun.common</groupId>
             <artifactId>log4j-one</artifactId>
             <version>0.0.4</version>
-            <optional>true</optional>
+            <optional>true</optional><!-- most downstream projects will provide their own logj4-compatible logging framework -->
         </dependency>
 
         <dependency>
