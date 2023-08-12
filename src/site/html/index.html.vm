@@ -309,7 +309,7 @@ public class JessopExample {
 <table>
 <tr><th>Language<th>Engine<th>Engine groupId<th>Engine artifactId<th>Artifact version
 <tr><td>javascript <td>rhino / nashorn <td colspan="3"><i>(Bundled with JVM)</i>
-<tr><td>javascript <td>graalvm   <td>org.graalvm.js <td>js        <td>20.3.0
+<tr><td>javascript <td>graalvm   <td>org.graalvm.js <td>js        <td>23.0.1
 <tr><td>java       <td>beanshell <td>org.beanshell <td>bsh        <td>2.0b5
 <tr><td>python     <td>jython    <td>org.python    <td>jython     <td>2.5.3
 <tr><td>ruby       <td>jruby     <td>org.jruby     <td>jruby-complete <td>9.1.2.0
