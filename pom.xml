@@ -4,7 +4,7 @@
     <parent>
         <artifactId>parent-pom</artifactId>
         <groupId>com.randomnoun.build</groupId>
-        <version>1.25</version>
+        <version>1.28</version>
     </parent>
 
     <groupId>com.randomnoun.common</groupId>
@@ -16,6 +16,13 @@
     <description>Multi-language templates in the style of Java Server Pages</description>
     <url>https://randomnoun.github.io/jessop/</url>
     <inceptionYear>2016-09-16</inceptionYear>
+
+    <properties>
+        <jdk.version>17</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <graalvm.version>23.0.1</graalvm.version>
+        <compiler.dir>${project.build.directory}/compiler</compiler.dir>
+    </properties>
     
     <dependencies>
         <dependency>
@@ -27,10 +34,10 @@
         <dependency>
             <groupId>com.randomnoun.common</groupId>
             <artifactId>log4j-one</artifactId>
-            <version>0.0.4</version>
+            <version>1.0.0</version>
             <optional>true</optional><!-- most downstream projects will provide their own logj4-compatible logging framework -->
         </dependency>
-
+        
         <dependency>
             <groupId>org.luaj</groupId>
             <artifactId>luaj-jse</artifactId>
@@ -208,9 +215,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- <version>2.12.4</version> -->
+                <configuration>
+                    <!-- required for rhino tests -->
+                    <argLine>
+                        --add-opens=java.base/sun.security.action=ALL-UNNAMED
+                    </argLine>                    
+                </configuration>
+              </plugin>
         </plugins>
-        <!-- Build with Java 1.7 -->
-        <!-- although graalvm needs 1.8+ so 1.8 it is -->
+        <!-- graalvm now needs 1.11 -->
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -243,14 +259,6 @@
             <url>git:http://gitlab.dev.randomnoun/randomnoun/jessop.git?gh-pages#</url>
         </site>
     </distributionManagement>
-    
-    
-    <properties>
-        <jdk.version>8</jdk.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <graalvm.version>20.3.0</graalvm.version>
-        <compiler.dir>${project.build.directory}/compiler</compiler.dir>
-    </properties>
     
 
 </project>

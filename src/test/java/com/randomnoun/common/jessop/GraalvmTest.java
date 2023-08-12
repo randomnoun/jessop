@@ -55,6 +55,7 @@ public class GraalvmTest extends TestCase {
 	    ScriptEngine eng = mgr.getEngineByName("graal-js");
 	    Bindings bindings = eng.getBindings(ScriptContext.ENGINE_SCOPE);
 	    bindings.put("polyglot.js.allowAllAccess", true);
+	    // bindings.put("engine.WarnInterpreterOnly", false);
 	    
 		// ScriptEngine eng = mgr.getEngineByName("rhino");
 	    
