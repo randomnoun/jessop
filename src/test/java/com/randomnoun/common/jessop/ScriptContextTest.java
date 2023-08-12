@@ -99,10 +99,10 @@ public class ScriptContextTest extends TestCase {
 	}
 	
     /**
-     * Returns the HTML-escaped form of a string. The <tt>&amp;</tt>,
-     * <tt>&lt;</tt>, <tt>&gt;</tt>, and <tt>"</tt> characters are converted to
-     * <tt>&amp;amp;</tt>, <tt>&amp;lt;<tt>, <tt>&amp;gt;<tt>, and
-     * <tt>&amp;quot;</tt> respectively.
+     * Returns the HTML-escaped form of a string. The <code>&amp;</code>,
+     * <code>&lt;</code>, <code>&gt;</code>, and <code>"</code> characters are converted to
+     * <code>&amp;amp;</code>, <code>&amp;lt;<code>, <code>&amp;gt;<code>, and
+     * <code>&amp;quot;</code> respectively.
      *
      * @param string the string to convert
      *
