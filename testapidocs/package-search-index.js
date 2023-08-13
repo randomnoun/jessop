@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.example.contrived"},{"l":"com.randomnoun.common.jessop"}]
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.contrived"},{"l":"com.randomnoun.common.jessop"}];updateSearchResults();

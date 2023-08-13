@@ -32,7 +32,7 @@
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_comment">// will just use declarations to define the language (and default to javascript if the declaration is missing)</em>
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_comment">// actually getNames() could return jessop-xxx variants based on what's in the registry, couldn't it.</em>
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_comment">// can't see how to get the value of that name though, so that's unfortunate</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../com/randomnoun/common/jessop/JessopScriptEngineFactory.html">JessopScriptEngineFactory</a> <strong class="jxr_keyword">implements</strong> ScriptEngineFactory {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="JessopScriptEngineFactory" href="../../../../com/randomnoun/common/jessop/JessopScriptEngineFactory.html#JessopScriptEngineFactory">JessopScriptEngineFactory</a> <strong class="jxr_keyword">implements</strong> ScriptEngineFactory {
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  	<em class="jxr_javadoccomment">/** The version of the jessop 'language' that this script engine implements */</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <em class="jxr_comment">// may lag the release version if the syntax doesn't change</em>
@@ -122,7 +122,7 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> 	@Override
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 	<strong class="jxr_keyword">public</strong> ScriptEngine getScriptEngine() {
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> 		JessopScriptEngine se = <strong class="jxr_keyword">new</strong> <a href="../../../../com/randomnoun/common/jessop/JessopScriptEngine.html">JessopScriptEngine</a>();
+<a class="jxr_linenumber" name="L117" href="#L117">117</a> 		JessopScriptEngine se = <strong class="jxr_keyword">new</strong> <a name="JessopScriptEngine" href="../../../../com/randomnoun/common/jessop/JessopScriptEngine.html#JessopScriptEngine">JessopScriptEngine</a>();
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 		se.setEngineFactory(<strong class="jxr_keyword">this</strong>);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 		<strong class="jxr_keyword">return</strong> se;
 <a class="jxr_linenumber" name="L120" href="#L120">120</a> 	}
@@ -163,7 +163,7 @@
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> 		
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 		Map&lt;String, Class&lt;? <strong class="jxr_keyword">extends</strong> JessopScriptBuilder&gt;&gt; newRegistry = <strong class="jxr_keyword">new</strong> HashMap&lt;String, Class&lt;? <strong class="jxr_keyword">extends</strong> JessopScriptBuilder&gt;&gt;();
 <a class="jxr_linenumber" name="L157" href="#L157">157</a> 		ServiceLoader&lt;JessopScriptBuilder&gt; jsbLoader = ServiceLoader.load(JessopScriptBuilder.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		<strong class="jxr_keyword">for</strong> (JessopScriptBuilder jsb : jsbLoader) {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> 		<strong class="jxr_keyword">for</strong> (<a name="JessopScriptBuilder" href="../../../../com/randomnoun/common/jessop/JessopScriptBuilder.html#JessopScriptBuilder">JessopScriptBuilder</a> jsb : jsbLoader) {
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 			<em class="jxr_comment">// System.out.println(jsb.getLanguage());</em>
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 			newRegistry.put(jsb.getLanguage(), jsb.getClass()); <em class="jxr_comment">// may not be able to re-use these objects, so just store the Class</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 			<em class="jxr_comment">// it'd be nice if we could dynamically register new JessopScriptEngineFactories here as well.</em>
@@ -174,7 +174,7 @@
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 		<strong class="jxr_keyword">return</strong> registry;
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> 	}
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> 	
-<a class="jxr_linenumber" name="L169" href="#L169">169</a> 	<strong class="jxr_keyword">public</strong> <a href="../../../../com/randomnoun/common/jessop/JessopScriptBuilder.html">JessopScriptBuilder</a> getJessopScriptBuilderForLanguage(String language) {
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> 	<strong class="jxr_keyword">public</strong> <a name="JessopScriptBuilder" href="../../../../com/randomnoun/common/jessop/JessopScriptBuilder.html#JessopScriptBuilder">JessopScriptBuilder</a> getJessopScriptBuilderForLanguage(String language) {
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> 		Map&lt;String, Class&lt;? <strong class="jxr_keyword">extends</strong> JessopScriptBuilder&gt;&gt; registry = getRegistry();
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 		Class&lt;? <strong class="jxr_keyword">extends</strong> JessopScriptBuilder&gt; c = registry.get(language);
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 		<strong class="jxr_keyword">if</strong> (c == <strong class="jxr_keyword">null</strong>) { <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"No JessopScriptBuilder registered for language '"</span> + language + <span class="jxr_string">"'"</span>); }
@@ -191,6 +191,6 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016-09-16&#x2013;2021 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016-09-16&#x2013;2023 <a href="http://www.randomnoun.com">randomnoun</a>. All rights reserved.</div>
 </body>
 </html>
