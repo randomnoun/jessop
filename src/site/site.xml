@@ -109,8 +109,9 @@ multi-language templates in the style of <a href="https://www.jcp.org/en/jsr/det
 
   <body>
     <!-- Add a rel to Google profile for all pages -->
-    <head>
+    <head><![CDATA[
       <link rel="author" href="mailto:knoxg@randomnoun.com"/>
+      ]]>
     </head>
   
     <links>
