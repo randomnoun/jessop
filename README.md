@@ -1,3 +1,4 @@
+[![Maven Central](https://img.shields.io/maven-central/v/com.randomnoun.common/jessop.svg)](https://search.maven.org/artifact/com.randomnoun.common/jessop)
 
 # Jessop
 
