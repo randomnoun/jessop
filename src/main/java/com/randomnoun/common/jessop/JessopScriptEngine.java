@@ -208,19 +208,11 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			
 			// the final JSB contains the final declarations that were in effect 
 			declarations = t.jsb.getDeclarations();
-			
-			// get this from the jessop declaration eventally, but for now:
-			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
-			ScriptEngine engine = new ScriptEngineManager().getEngineByName(declarations.engine);  // nashorn in JDK9
-			if (engine==null) {
-				throw new ScriptException("java.scriptx engine '" + declarations.engine + "' not found");
-			}
-			
+
 			JessopBindingsConverter jbc = null;
 			if (declarations.bindingsConverter !=null && !declarations.bindingsConverter.equals("")) {
 				try {
-					jbc = (JessopBindingsConverter) 
-						Class.forName(declarations.bindingsConverter).newInstance();
+					jbc = (JessopBindingsConverter) Class.forName(declarations.bindingsConverter).getDeclaredConstructor().newInstance();
 				} catch (Exception e) {
 					throw (ScriptException) new ScriptException(
 					  "bindingsConverter '" + declarations.bindingsConverter + "' not loaded").initCause(e);
@@ -230,18 +222,45 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			JessopExceptionConverter jec = null;
 			if (declarations.exceptionConverter!=null && !declarations.exceptionConverter.equals("")) {
 				try {
-					jec = (JessopExceptionConverter) 
-						Class.forName(declarations.exceptionConverter).newInstance();
+					jec = (JessopExceptionConverter) Class.forName(declarations.exceptionConverter).getDeclaredConstructor().newInstance();
 				} catch (Exception e) {
 					throw (ScriptException) new ScriptException(
 					  "exceptionConverter '" + declarations.exceptionConverter + "' not loaded").initCause(e);
 				}
 			}
-			 
-			// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
-			// the newScript is compiled here, if the engine supports it
-			return new JessopCompiledScript(engine, declarations.isCompileTarget(), 
-				declarations.getFilename(), newScript, jec, jbc);
+			
+			// @TODO if we're using graal-js, do something completely different
+			// because their ScriptEngine implementation is missing a few options that are available on the 
+			// Context. Which is a bit annoying, but there you go.
+			// see https://docs.oracle.com/en/graalvm/jdk/20/docs/reference-manual/js/RunOnJDK/#graalvm-javascript-on-jdk-11
+			
+			if ("graal-context-js".equals(declarations.engine)) {
+				// not a real scriptx engine
+				// removes the "WARNING: The polyglot context is using an implementation that does not support runtime compilation." warnings
+				
+				
+			    // @TODO return a different class here
+			    return new JessopGraalCompiledScript("js", declarations.isCompileTarget(), declarations.getFilename(), newScript, jec, jbc);
+			     
+			     // evaluate the parsed script
+			     // value.execute();
+			     
+			     
+				// result = context.eval("js", "(function() { " + javascript + "\n})()");
+			
+			} else {
+				// get this from the jessop declaration eventually, but for now:
+				// if the underlying engine supports compilation, then compile that here, otherwise just store the source
+				ScriptEngine engine = new ScriptEngineManager().getEngineByName(declarations.engine);  // nashorn in JDK9
+				if (engine==null) {
+					throw new ScriptException("java.scriptx engine '" + declarations.engine + "' not found");
+				}
+				
+				// com.sun.script.javascript.RhinoScriptEngine m = (com.sun.script.javascript.RhinoScriptEngine) engine;
+				// the newScript is compiled here, if the engine supports it
+				return new JessopCompiledScript(engine, declarations.isCompileTarget(), 
+					declarations.getFilename(), newScript, jec, jbc);
+			}
 			
 		} catch (IOException ioe) {
 			throw new ScriptException(ioe);
