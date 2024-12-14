@@ -75,6 +75,7 @@ public class JessopCompiledScript extends CompiledScript {
 		}
 	}
 
+
 	/** {@inheritDoc} */
 	@Override
 	public Object eval(ScriptContext context) throws ScriptException {
