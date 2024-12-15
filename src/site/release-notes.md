@@ -1,5 +1,3 @@
-# Updates
+## Updates
 
-* First github package
-* First github release
-
+* Updated graalvm dependencies to 23.1.5
