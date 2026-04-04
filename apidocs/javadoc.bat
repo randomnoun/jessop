@@ -1,1 +1,1 @@
-cmd.exe /X /C "C:\java\jdk-21.0.4.7-hotspot\bin\javadoc.exe @options @packages"
+cmd.exe /X /D /C "C:\java\jdk-25.0.2.10-hotspot\bin\javadoc.exe -J-Duser.language= -J-Duser.country= @options @packages"
