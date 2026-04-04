@@ -36,7 +36,7 @@ See the  [Javadoc overview](https://randomnoun.github.io/jessop/apidocs/index.ht
 See http://www.randomnoun.com/wp/2016/07/04/2897/
 
 ## What languages can be used within jessop ?
-* Javascript ( via rhino or nashorn )
+* Javascript ( via graal-js )
 * Python ( jython )
 * Ruby ( jruby )
 * Lua ( luaj )
