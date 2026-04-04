@@ -4,13 +4,13 @@
     <parent>
         <artifactId>parent-pom</artifactId>
         <groupId>com.randomnoun.build</groupId>
-        <version>1.32</version>
+        <version>1.39</version>
     </parent>
 
     <groupId>com.randomnoun.common</groupId>
     <artifactId>jessop</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.22-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     
     <name>Jessop</name>
     <description>Multi-language templates in the style of Java Server Pages</description>
@@ -18,9 +18,9 @@
     <inceptionYear>2016-09-16</inceptionYear>
 
     <properties>
-        <jdk.version>17</jdk.version>
+        <jdk.version>25</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <graalvm.version>23.1.5</graalvm.version>
+        <graalvm.version>25.0.2</graalvm.version>
         <compiler.dir>${project.build.directory}/compiler</compiler.dir>
     </properties>
     
@@ -28,13 +28,14 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>com.randomnoun.common</groupId>
             <artifactId>log4j-one</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <optional>true</optional><!-- most downstream projects will provide their own logj4-compatible logging framework -->
         </dependency>
         
@@ -62,69 +63,15 @@
             <optional>true</optional>
         </dependency>
         
-        <!-- so openjdk 1.7.0 places classes in a different java package than the oracle-jdk rhino. 
-        The rhino jar here is not in maven central, but is a copy of the rhino.jar bundled with 
-          java version "1.7.0_79"
-          OpenJDK Runtime Environment (IcedTea 2.5.6) (7u79-2.5.6-0ubuntu1.14.04.1)
-          OpenJDK 64-Bit Server VM (build 24.79-b02, mixed mode)
-        on ubuntu 14.04.4 LTS
-        -->
-        <dependency>
-            <groupId>net.java.openjdk.icedtea</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.0.79-randomnoun</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <!-- and compile for the genuine rhino, whilst we're at it -->
-        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-            <version>1.7R2</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        
         <!-- 
-          this JAR contains the 
-            com.sun.script.* and 
-            sun.org.mozilla.javascript.*
-          classes from the java 1.7.0_80 rt.jar 
-          ... will eventually replace this with graalvm or nashorn once I'm more confident that those actually work 
-        -->
-        <dependency>
-          <groupId>com.sun.jre</groupId>
-          <artifactId>rhino</artifactId>
-          <version>1.7.0_80</version>
-          <scope>compile</scope>
-          <optional>true</optional>
-        </dependency>
-        
-        
-        <!--  see also https://github.com/cevou/rhino-script-engine -->
-        <!-- 
-        <dependency>
-            <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.7.1</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-         -->
-        <!-- JSR223 for rhino
-        <dependency>
-            <groupId>org.apache.bsf</groupId>
-            <artifactId>bsf-all</artifactId>
-            <version>3.0-beta3</version>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency> 
+          have removed support for rhino (the original, the openjdk version and the sun version), 
+          everyone's on graal these days 
         -->
         
         <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby-complete</artifactId>
-            <version>9.1.2.0</version>
+            <version>9.4.14.0</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -133,14 +80,14 @@
         <dependency>
             <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
             <artifactId>abcl</artifactId>
-            <version>1.4.0</version>
+            <version>1.9.2</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.abcl</groupId> <!--  org.armedbear.lisp -->
             <artifactId>abcl-contrib</artifactId>
-            <version>1.4.0</version>
+            <version>1.9.2</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -207,9 +154,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <!-- <version>2.12.4</version> -->
                 <configuration>
-                    <!-- required for rhino tests -->
+                    <!-- add-opens for abcl tests -->
                     <argLine>
-                        --add-opens=java.base/sun.security.action=ALL-UNNAMED
+                        -Dpolyglot.engine.WarnInterpreterOnly=false
+                        --add-opens java.base/java.lang=ALL-UNNAMED
                     </argLine>                    
                 </configuration>
               </plugin>

@@ -12,7 +12,7 @@
   -->
 <ul class="bullet">
 <li><b>unprocessed text</b>
-<li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="rhino" %&gt;</code>
+<li>a <b>declaration</b> in the form <code>&lt;%@ jessop language="javascript" engine="graal-js" %&gt;</code>
 <li><b>expressions</b> to generate output in the form <code>&lt;%= name %&gt;</code> 
 <li><b>scriptlets</b> to execute arbitrary code in the form <code>&lt;% if (name==null) { %&gt;</code><code> No name </code><code>&lt;% } %&gt;</code>
 </ul> 
@@ -67,7 +67,7 @@ ENGINE_SCOPE bindings, otherwise jessop-defined defaults will apply.
         {@link com.randomnoun.common.jessop.JessopScriptBuilder#getLanguage()} method.
 <tr><td>engine  
     <td>{@link com.randomnoun.common.jessop.JessopScriptEngine#JESSOP_ENGINE JESSOP_ENGINE}  
-    <td><code>rhino</code>  
+    <td><code>graal-js</code>  
     <td>The name of the ScriptEngine used to evaluate the target language script.
         <p>This should be the same string that the ScriptEngine uses to identify itself; see
         {@link javax.script.ScriptEngineManager#getEngineByName(String)}.

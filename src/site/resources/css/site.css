@@ -23,6 +23,8 @@
     width: 300px;
 }
 
+.download-button a { color: black; }
+
 .download-button SUP {  /* was .download-button .big */
     display: block;
     color: #004400;

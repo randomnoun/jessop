@@ -14,14 +14,13 @@
   
 -->
 #set( $repos = "https://repo1.maven.org/maven2/" )
-#set( $jarBasename = ${project.artifactId} + "-" + ${project.version} + ".jar" )
-#set( $srcBasename = ${project.artifactId} + "-" + ${project.version} + "-sources.jar" )
-#set( $distBasename = ${project.artifactId} + "-" + ${project.version} + "-dist.zip" )
-#set( $groupIdPath = ${project.groupId} )
-#set( $groupIdPath = $groupIdPath.replace(".", "/") )
-#set( $jarUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $jarBasename )
-#set( $srcUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $srcBasename )
-#set( $distUrl = $repos + $groupIdPath + "/" + ${project.version} + "/" + $distBasename )
+#set( $jarBasename = "${project.artifactId}-${project.version}.jar" )
+#set( $srcBasename = "${project.artifactId}-${project.version}-sources.jar" )
+#set( $distBasename = "${project.artifactId}-${project.version}-dist.zip" )
+#set( $groupIdPath = $project.groupId.replace(".", "/") )
+#set( $jarUrl = "${repos}${groupIdPath}/${project.version}/${jarBasename}" )
+#set( $srcUrl = "${repos}${groupIdPath}/${project.version}/${srcBasename}" )
+#set( $distUrl = "${repos}${groupIdPath}/${project.version}/${distBasename}" )
 
 <h2>Overview</h2>
 
@@ -302,19 +301,18 @@ public class JessopExample {
 
 <h2>Target languages</h2>
 
-<p>Jessop has support for six target languages (using eight script engines).</p> 
+<p>Jessop has support for six target languages.</p> 
 
 <p>You will need to add the appropriate maven dependency to target these languages and engines.</p>
 
 <table>
 <tr><th>Language<th>Engine<th>Engine groupId<th>Engine artifactId<th>Artifact version
-<tr><td>javascript <td>rhino / nashorn <td colspan="3"><i>(Bundled with JVM)</i>
-<tr><td>javascript <td>graalvm   <td>org.graalvm.js <td>js        <td>23.0.1
+<tr><td>javascript <td>graalvm   <td>org.graalvm.js <td>js        <td>25.0.2
 <tr><td>java       <td>beanshell <td>org.beanshell <td>bsh        <td>2.0b5
 <tr><td>python     <td>jython    <td>org.python    <td>jython     <td>2.5.3
-<tr><td>ruby       <td>jruby     <td>org.jruby     <td>jruby-complete <td>9.1.2.0
+<tr><td>ruby       <td>jruby     <td>org.jruby     <td>jruby-complete <td>9.4.14.0
 <tr><td>lua        <td>luaj      <td>org.luaj      <td>luaj-jse   <td>3.0.1
-<tr><td>lisp       <td>abcl      <td>org.abcl      <td>abcl       <td>1.4.0
+<tr><td>lisp       <td>abcl      <td>org.abcl      <td>abcl       <td>1.9.2
 </table>
  
 <p>Additional languages and engines can be added by implementing the 
