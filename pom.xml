@@ -188,6 +188,31 @@
         </pluginManagement>
     </build>
     
+    
+    <!-- don't remove, this doesn't inherit from parent pom any more -->
+    <licenses>
+        <license>
+            <name>Simplified BSD License</name>
+            <url>http://www.randomnoun.com/licences/bsd-simplified.txt</url>
+            <distribution>repo</distribution>
+            <comments>Simplified BSD License (BSD 2-clause license).</comments>
+        </license>
+    </licenses>
+    <organization>
+        <name>randomnoun</name>
+        <url>http://www.randomnoun.com</url>
+    </organization> 
+    <developers>
+        <developer>
+            <id>knoxg</id>
+            <name>Greg Knox</name>
+            <email>knoxg@randomnoun.com</email>
+            <organization>randomnoun</organization>
+            <organizationUrl>http://www.randomnoun.com</organizationUrl>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+    
     <distributionManagement>
         <site>
             <id>gh-pages</id>
@@ -195,6 +220,7 @@
             <url>git:http://gitlab.dev.randomnoun/randomnoun/jessop.git?gh-pages#</url>
         </site>
     </distributionManagement>
+    
     
 
 </project>
