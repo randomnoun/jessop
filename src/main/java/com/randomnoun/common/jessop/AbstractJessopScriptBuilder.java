@@ -64,7 +64,7 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 		} else {
 			throw new ScriptException("Could not parse declaration '" + s + "'", null, line);
 		}
-		if (!declType.equals("jessop")) {
+		if (!(declType.equals("jessop"))) {
 			logger.warn("Unknown declaration type '" + declType + "'");
 			// just ignore unknown declarations
 			return;
@@ -73,86 +73,89 @@ public abstract class AbstractJessopScriptBuilder implements JessopScriptBuilder
 		logger.debug("s=" + s);
 		Pattern declAttrPattern = Pattern.compile("(\\S+)=\"([^\"]*)\"");
 		m = declAttrPattern.matcher(s);
-		while (m.find()) {
-			// do something
-			String attrName = m.group(1);
-			String attrValue = m.group(2);
-			if (attrName.equals("language")) {
-				// change the JessopScriptBuilder based on the language
-				// the registry of ScriptBuilders is kept in the EngineFactory
-				JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();
-				JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);
-				newBuilder.setPrintWriter(pw);
-				newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
-				tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
-				// should probably wait until all attributes are parsed, but hey
-				//if (declarations.engine==null) { 
-					declarations.engine = newBuilder.getDefaultScriptEngineName();
-					declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();
-					declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();
-				//}
-				
-				/*
-				JessopScriptBuilder newBuilder;
-				if (attrValue.equals("javascript")) {
-					newBuilder = new JavascriptJessopScriptBuilder(); 
+
+		if ("jessop".equals(declType)) {
+			while (m.find()) {
+				// do something
+				String attrName = m.group(1);
+				String attrValue = m.group(2);
+				if (attrName.equals("language")) {
+					// change the JessopScriptBuilder based on the language
+					// the registry of ScriptBuilders is kept in the EngineFactory
+					JessopScriptEngineFactory jsf = (JessopScriptEngineFactory) tokeniser.jse.getFactory();
+					JessopScriptBuilder newBuilder = jsf.getJessopScriptBuilderForLanguage(attrValue);
 					newBuilder.setPrintWriter(pw);
-					newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
+					newBuilder.setTokeniserAndDeclarations(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
 					tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
-					if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript
-
-				} else if (attrValue.equals("java")) {
-					newBuilder = new JavaJessopScriptBuilder(); 
-					newBuilder.setPrintWriter(pw);
-					newBuilder.setTokeniser(tokeniser, declarations);   
-					tokeniser.setJessopScriptBuilder(newBuilder);       
-					if (declarations.engine==null) { declarations.engine = "beanshell"; }  // default engine for java
-
-				} else if (attrValue.equals("lua")) {
-					newBuilder = new LuaJessopScriptBuilder(); 
-					newBuilder.setPrintWriter(pw);
-					newBuilder.setTokeniser(tokeniser, declarations);   
-					tokeniser.setJessopScriptBuilder(newBuilder);       
-					if (declarations.engine==null) { declarations.engine = "luaj"; }  // default engine for lua
-
-				} else if (attrValue.equals("python") || attrValue.equals("python2")) {
-					newBuilder = new Python2JessopScriptBuilder(); 
-					newBuilder.setPrintWriter(pw);
-					newBuilder.setTokeniser(tokeniser, declarations);   
-					tokeniser.setJessopScriptBuilder(newBuilder);       
-					if (declarations.engine==null) { declarations.engine = "jython"; }  // default engine for lua
-
-				} else {
-					throw new IllegalArgumentException("Unknown language '" + attrValue + "'");
+					// should probably wait until all attributes are parsed, but hey
+					//if (declarations.engine==null) { 
+						declarations.engine = newBuilder.getDefaultScriptEngineName();
+						declarations.exceptionConverter = newBuilder.getDefaultExceptionConverterClassName();
+						declarations.bindingsConverter = newBuilder.getDefaultBindingsConverterClassName();
+					//}
+					
+					/*
+					JessopScriptBuilder newBuilder;
+					if (attrValue.equals("javascript")) {
+						newBuilder = new JavascriptJessopScriptBuilder(); 
+						newBuilder.setPrintWriter(pw);
+						newBuilder.setTokeniser(tokeniser, declarations);   // pass on tokeniser state and declarations to new jsb
+						tokeniser.setJessopScriptBuilder(newBuilder);       // tokeniser should use this jsb from this point on
+						if (declarations.engine==null) { declarations.engine = "rhino"; }  // default engine for javascript
+	
+					} else if (attrValue.equals("java")) {
+						newBuilder = new JavaJessopScriptBuilder(); 
+						newBuilder.setPrintWriter(pw);
+						newBuilder.setTokeniser(tokeniser, declarations);   
+						tokeniser.setJessopScriptBuilder(newBuilder);       
+						if (declarations.engine==null) { declarations.engine = "beanshell"; }  // default engine for java
+	
+					} else if (attrValue.equals("lua")) {
+						newBuilder = new LuaJessopScriptBuilder(); 
+						newBuilder.setPrintWriter(pw);
+						newBuilder.setTokeniser(tokeniser, declarations);   
+						tokeniser.setJessopScriptBuilder(newBuilder);       
+						if (declarations.engine==null) { declarations.engine = "luaj"; }  // default engine for lua
+	
+					} else if (attrValue.equals("python") || attrValue.equals("python2")) {
+						newBuilder = new Python2JessopScriptBuilder(); 
+						newBuilder.setPrintWriter(pw);
+						newBuilder.setTokeniser(tokeniser, declarations);   
+						tokeniser.setJessopScriptBuilder(newBuilder);       
+						if (declarations.engine==null) { declarations.engine = "jython"; }  // default engine for lua
+	
+					} else {
+						throw new IllegalArgumentException("Unknown language '" + attrValue + "'");
+					}
+					*/
+					
+				} else if (attrName.equals("engine")) {
+					// if we're changing engines, this will reset the default exception converter.
+					// we may want to keep a registry of engine names -> ExceptionConverters
+					// at a later stage
+					if (!attrValue.equals(declarations.getEngine())) {
+						declarations.setExceptionConverter(null);
+					}
+					declarations.setEngine(attrValue);
+					
+				} else if (attrName.equals("suppressEol")) {
+					declarations.setSuppressEol(Boolean.valueOf(attrValue));
+	
+				} else if (attrName.equals("compileTarget")) {
+					declarations.setCompileTarget(Boolean.valueOf(attrValue));
+	
+				} else if (attrName.equals("filename")) {
+					declarations.setFilename(attrValue);
+	
+				} else if (attrName.equals("exceptionConverter")) {
+					declarations.setExceptionConverter(attrValue);
+	
+				} else if (attrName.equals("bindingsConverter")) {
+					declarations.setBindingsConverter(attrValue);
+	
 				}
-				*/
-				
-			} else if (attrName.equals("engine")) {
-				// if we're changing engines, this will reset the default exception converter.
-				// we may want to keep a registry of engine names -> ExceptionConverters
-				// at a later stage
-				if (!attrValue.equals(declarations.getEngine())) {
-					declarations.setExceptionConverter(null);
-				}
-				declarations.setEngine(attrValue);
-				
-			} else if (attrName.equals("suppressEol")) {
-				declarations.setSuppressEol(Boolean.valueOf(attrValue));
-
-			} else if (attrName.equals("compileTarget")) {
-				declarations.setCompileTarget(Boolean.valueOf(attrValue));
-
-			} else if (attrName.equals("filename")) {
-				declarations.setFilename(attrValue);
-
-			} else if (attrName.equals("exceptionConverter")) {
-				declarations.setExceptionConverter(attrValue);
-
-			} else if (attrName.equals("bindingsConverter")) {
-				declarations.setBindingsConverter(attrValue);
-
+				logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 			}
-			logger.debug("Found attr " + m.group(1) + "," + m.group(2));
 		}
 	}
 	

@@ -1,13 +1,5 @@
 package com.randomnoun.common.jessop.lang;
 
-/* (c) 2016 randomnoun. All Rights Reserved. This work is licensed under a
- * BSD Simplified License. ( http://www.randomnoun.com/bsd-simplified.html ) 
- */
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
-
 import org.apache.log4j.Logger;
 
 import com.randomnoun.common.jessop.AbstractJessopScriptBuilder;
@@ -73,9 +65,10 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 	}
 	@Override
 	public String getDefaultScriptEngineName() {
-		// the phobos jsr223 wrapper calls itself 'rhino-nonjdk', as well as 'rhino'
+		// everything's graal-js these days
+		return "graal-js";
 		
-		// if we have graalvm, then use that otherwise nashorn, otherwise rhino
+		/*
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
 		if (engine!=null) {
 			return "graal-js";
@@ -87,96 +80,18 @@ public class JavascriptJessopScriptBuilder extends AbstractJessopScriptBuilder i
 				return "rhino";
 			}
 		}
+		*/
 	}
 	
-	
-	// this method should probably take an engine name parameter which is the engine in effect
-	
+	// this used to return different values depending on which engine was in use
 	@Override
 	public String getDefaultBindingsConverterClassName() {
-
-		boolean isComSunRhino = false; // rhino engine is under the com.sun package
-		
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
-		if (engine!=null) {
-			//  com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
-			return "com.randomnoun.common.jessop.engine.graaljs.GraalJsBindingsConverter";
-		}
-		
-		engine = new ScriptEngineManager().getEngineByName("nashorn");
-		if (engine!=null) {
-			// jdk.nashorn.api.scripting.NashornScriptEngine
-			return null; // nashorn doesn't need a bindingsconverter
-		}
-		
-		// let's see what class we get if we try to load the 'rhino' engine, then work from there
-		engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
-		if (engine!=null && engine.getClass().getName().equals("com.sun.script.javascript.RhinoScriptEngine")) {
-			// it's either oracle or openjdk
-			isComSunRhino = true;
-		}
-		String result = null;
-		if (!isComSunRhino) {
-			// maybe we've got com.sun.phobos:phobos-rhino 
-			// or org.rhq:rhq-scripting-javascript 
-			// or de.christophkraemer:rhino-script-engine 
-			// or any of the other JSR223 wrappers for rhino in central 
-			// at http://search.maven.org/#search%7Cga%7C1%7Cc%3A%22RhinoScriptEngine%22
-			try {
-				/*Class c =*/ Class.forName("org.mozilla.javascript.NativeObject");
-				// this exists, so use the mozilla rhino binding converter
-				result = "com.randomnoun.common.jessop.engine.rhino.RhinoBindingsConverter";
-			} catch (ClassNotFoundException cnfe) { }
-		}
-		
-		// ok, it's probably oracle or openjdk at this stage
-		if (result == null) {
-			try {
-				/*Class c =*/ Class.forName("sun.org.mozilla.javascript.internal.NativeObject");
-				// this exists, so use the oracle binding converter
-				result = "com.randomnoun.common.jessop.engine.rhinoOracle.RhinoOracleBindingsConverter";
-			} catch (ClassNotFoundException cnfe2) { }
-		}
-		
-		if (result == null) {
-			try {
-				/*Class c =*/ Class.forName("sun.org.mozilla.javascript.NativeObject");
-				// this exists, so use the openjdk binding converter
-				result = "com.randomnoun.common.jessop.engine.rhinoOpenjdk.RhinoOpenjdkBindingsConverter";
-			} catch (ClassNotFoundException cnfe3) {
-				// logger.warn("No known rhino implementation on classpath; setting JessopBindingsConverter to null");
-				result = null;
-			}
-		}
-		
-		return result;
+		return "com.randomnoun.common.jessop.engine.graaljs.GraalJsBindingsConverter";
 	}
 	
 	@Override
 	public String getDefaultExceptionConverterClassName() {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("graal-js");
-		if (engine!=null) {
-			return "com.randomnoun.common.jessop.engine.graaljs.GraalJsExceptionConverter";
-		}
-		return null; // graal doesn't need a bindingsconverter
-	}
-
-	
-	
-	// going to use this for debugging only
-	public void testEngine() {
-		// this should match the engine in use, so let's see what 'rhino' gives us
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("rhino");  // nashorn in JDK9
-		if (engine!=null) {
-			ScriptEngineFactory factory = engine.getFactory();
-			logger.info("default rhino ScriptEngine is " + engine.getClass().getName());
-			logger.info("ENGINE=" + factory.getParameter(ScriptEngine.ENGINE));
-			logger.info("ENGINE_VERSION=" + factory.getParameter(ScriptEngine.ENGINE_VERSION));
-			logger.info("LANGUAGE=" + factory.getParameter(ScriptEngine.LANGUAGE_VERSION));
-			logger.info("LANGUAGE_VERSION=" + factory.getParameter(ScriptEngine.LANGUAGE_VERSION));
-		} else {
-			logger.warn("default 'rhino' ScriptEngine not found");
-		}
+		return "com.randomnoun.common.jessop.engine.graaljs.GraalJsExceptionConverter";
 	}
 	
 }

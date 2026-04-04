@@ -50,8 +50,8 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
      */
 	public static final String JESSOP_ENGINE = "com.randommoun.common.jessop.engine";
 
-	/** Default value for the JESSOP_ENGINE key; has the value "rhino" */
-	public static final String JESSOP_DEFAULT_ENGINE = "rhino";
+	/** Default value for the JESSOP_ENGINE key; has the value "graal-js" */
+	public static final String JESSOP_DEFAULT_ENGINE = "graal-js";
 	
 	
     /** Reserved key for a named value that sets the initial exception converter.
@@ -60,7 +60,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	public static final String JESSOP_EXCEPTION_CONVERTER = "com.randommoun.common.jessop.exceptionConverter";
 
 	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
-	public static final String JESSOP_DEFAULT_EXCEPTION_CONVERTER = null;
+	public static String JESSOP_DEFAULT_EXCEPTION_CONVERTER = "com.randomnoun.common.jessop.engine.graaljs.GraalJsExceptionConverter";
 
     /** Reserved key for a named value that sets the initial bindings converter.
      * If not set, will use the default converter for the default language
@@ -69,11 +69,12 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 
 	/** Default value for the JESSOP_EXCEPTION_CONVERTER key; has the value null */
 	// so this isn't final any more, since it might change depending on what's on the classpath
-	public static String JESSOP_DEFAULT_BINDINGS_CONVERTER; //  = "com.randomnoun.common.jessop.engine.jvmRhino.JvmRhinoBindingsConverter";
+	public static String JESSOP_DEFAULT_BINDINGS_CONVERTER = "com.randomnoun.common.jessop.engine.graaljs.GraalJsBindingsConverter";
 
 	static {
 		JavascriptJessopScriptBuilder jjsb = new JavascriptJessopScriptBuilder(); 
 		JESSOP_DEFAULT_BINDINGS_CONVERTER = jjsb.getDefaultBindingsConverterClassName();
+		JESSOP_DEFAULT_EXCEPTION_CONVERTER = jjsb.getDefaultExceptionConverterClassName();
 	}
 	
 	
