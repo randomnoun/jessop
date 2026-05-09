@@ -162,6 +162,7 @@ public class Tokeniser {
 					state = 8;
 					// ignore comments
 				}
+				break;
 				
 			case 11:
 				if (ch=='>') {   // closing '--%>' of <%-- ... --%>
