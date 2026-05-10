@@ -19,7 +19,7 @@
 'UTF-8'
 -docfilessubdirs
 -doctitle
-'Jessop 2.0.2 Test API'
+'Jessop 2.0.3 Test API'
 -link
 '../apidocs'
 -linksource
@@ -28,4 +28,4 @@
 -use
 -version
 -windowtitle
-'Jessop 2.0.2 Test API'
+'Jessop 2.0.3 Test API'

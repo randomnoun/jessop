@@ -175,82 +175,83 @@
 <span class="source-line-no">162</span><span id="line-162">                                        state = 8;</span>
 <span class="source-line-no">163</span><span id="line-163">                                        // ignore comments</span>
 <span class="source-line-no">164</span><span id="line-164">                                }</span>
-<span class="source-line-no">165</span><span id="line-165">                                </span>
-<span class="source-line-no">166</span><span id="line-166">                        case 11:</span>
-<span class="source-line-no">167</span><span id="line-167">                                if (ch=='&gt;') {   // closing '--%&gt;' of &lt;%-- ... --%&gt;</span>
-<span class="source-line-no">168</span><span id="line-168">                                        unclosed = null;</span>
-<span class="source-line-no">169</span><span id="line-169">                                        state = 0;</span>
-<span class="source-line-no">170</span><span id="line-170">                                } else {</span>
-<span class="source-line-no">171</span><span id="line-171">                                        state = 8; </span>
-<span class="source-line-no">172</span><span id="line-172">                                }</span>
-<span class="source-line-no">173</span><span id="line-173">                                break;</span>
-<span class="source-line-no">174</span><span id="line-174">                                </span>
-<span class="source-line-no">175</span><span id="line-175">                        case 13:</span>
-<span class="source-line-no">176</span><span id="line-176">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;%= ... %&gt;</span>
-<span class="source-line-no">177</span><span id="line-177">                                        jsb.emitExpression(eline, esb.toString());</span>
-<span class="source-line-no">178</span><span id="line-178">                                        esb.setLength(0);</span>
-<span class="source-line-no">179</span><span id="line-179">                                        eline = line;</span>
-<span class="source-line-no">180</span><span id="line-180">                                        unclosed = null;</span>
-<span class="source-line-no">181</span><span id="line-181">                                        state = 0;</span>
-<span class="source-line-no">182</span><span id="line-182">                                } else {</span>
-<span class="source-line-no">183</span><span id="line-183">                                        esb.append(ch);</span>
-<span class="source-line-no">184</span><span id="line-184">                                        state = 3; </span>
-<span class="source-line-no">185</span><span id="line-185">                                }</span>
-<span class="source-line-no">186</span><span id="line-186">                                break;</span>
-<span class="source-line-no">187</span><span id="line-187">                        </span>
-<span class="source-line-no">188</span><span id="line-188">                        case 14:</span>
-<span class="source-line-no">189</span><span id="line-189">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;% ... %&gt;</span>
-<span class="source-line-no">190</span><span id="line-190">                                        jsb.emitScriptlet(eline, esb.toString());</span>
-<span class="source-line-no">191</span><span id="line-191">                                        esb.setLength(0);</span>
-<span class="source-line-no">192</span><span id="line-192">                                        eline = line;</span>
-<span class="source-line-no">193</span><span id="line-193">                                        unclosed = null;</span>
-<span class="source-line-no">194</span><span id="line-194">                                        state = 0;</span>
-<span class="source-line-no">195</span><span id="line-195">                                } else {</span>
-<span class="source-line-no">196</span><span id="line-196">                                        esb.append(ch);</span>
-<span class="source-line-no">197</span><span id="line-197">                                        state = 4; </span>
-<span class="source-line-no">198</span><span id="line-198">                                }</span>
-<span class="source-line-no">199</span><span id="line-199">                                break;</span>
-<span class="source-line-no">200</span><span id="line-200">                                </span>
-<span class="source-line-no">201</span><span id="line-201">                        case 15:</span>
-<span class="source-line-no">202</span><span id="line-202">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;%@ ... %&gt; declaration</span>
-<span class="source-line-no">203</span><span id="line-203">                                        jsb.emitDeclaration(eline, esb.toString());</span>
-<span class="source-line-no">204</span><span id="line-204">                                        esb.setLength(0);</span>
-<span class="source-line-no">205</span><span id="line-205">                                        eline = line;</span>
-<span class="source-line-no">206</span><span id="line-206">                                        unclosed = null;</span>
-<span class="source-line-no">207</span><span id="line-207">                                        state = 0;</span>
-<span class="source-line-no">208</span><span id="line-208">                                } else {</span>
-<span class="source-line-no">209</span><span id="line-209">                                        esb.append(ch);</span>
-<span class="source-line-no">210</span><span id="line-210">                                        state = 5; </span>
-<span class="source-line-no">211</span><span id="line-211">                                }</span>
-<span class="source-line-no">212</span><span id="line-212">                                break;</span>
-<span class="source-line-no">213</span><span id="line-213">                        </span>
-<span class="source-line-no">214</span><span id="line-214">                        case 16:</span>
-<span class="source-line-no">215</span><span id="line-215">                                if (ch=='"') {   // closing quote of &lt;%@ ... %&gt; declaration attribute</span>
-<span class="source-line-no">216</span><span id="line-216">                                        esb.append(ch);</span>
-<span class="source-line-no">217</span><span id="line-217">                                        state = 5;</span>
-<span class="source-line-no">218</span><span id="line-218">                                } else {</span>
-<span class="source-line-no">219</span><span id="line-219">                                        esb.append(ch);</span>
-<span class="source-line-no">220</span><span id="line-220">                                        // stay in state 16</span>
-<span class="source-line-no">221</span><span id="line-221">                                }</span>
-<span class="source-line-no">222</span><span id="line-222">                                break;</span>
-<span class="source-line-no">223</span><span id="line-223">                }</span>
-<span class="source-line-no">224</span><span id="line-224">                </span>
-<span class="source-line-no">225</span><span id="line-225">                if (ch=='\n') { line++; }                       </span>
-<span class="source-line-no">226</span><span id="line-226">        }</span>
-<span class="source-line-no">227</span><span id="line-227">        </span>
-<span class="source-line-no">228</span><span id="line-228">        public void parseEndOfFile() throws ScriptException {</span>
-<span class="source-line-no">229</span><span id="line-229">                // emit anything that's left, raise exceptions if in invalid state</span>
-<span class="source-line-no">230</span><span id="line-230">                // logger.debug("state " + state + " EOF");</span>
-<span class="source-line-no">231</span><span id="line-231">                if (state != 0 &amp;&amp; unclosed != null) {</span>
-<span class="source-line-no">232</span><span id="line-232">                        throw new ScriptException("unexpected EOF (unclosed '" + unclosed + "')", null, line); // charOffset</span>
-<span class="source-line-no">233</span><span id="line-233">                }</span>
-<span class="source-line-no">234</span><span id="line-234">                if (sb.length()&gt;0) {</span>
-<span class="source-line-no">235</span><span id="line-235">                        jsb.emitText(eline, sb.toString());</span>
-<span class="source-line-no">236</span><span id="line-236">                        sb.setLength(0);</span>
-<span class="source-line-no">237</span><span id="line-237">                        eline = line;</span>
-<span class="source-line-no">238</span><span id="line-238">                }</span>
-<span class="source-line-no">239</span><span id="line-239">        }</span>
-<span class="source-line-no">240</span><span id="line-240">}</span>
+<span class="source-line-no">165</span><span id="line-165">                                break;</span>
+<span class="source-line-no">166</span><span id="line-166">                                </span>
+<span class="source-line-no">167</span><span id="line-167">                        case 11:</span>
+<span class="source-line-no">168</span><span id="line-168">                                if (ch=='&gt;') {   // closing '--%&gt;' of &lt;%-- ... --%&gt;</span>
+<span class="source-line-no">169</span><span id="line-169">                                        unclosed = null;</span>
+<span class="source-line-no">170</span><span id="line-170">                                        state = 0;</span>
+<span class="source-line-no">171</span><span id="line-171">                                } else {</span>
+<span class="source-line-no">172</span><span id="line-172">                                        state = 8; </span>
+<span class="source-line-no">173</span><span id="line-173">                                }</span>
+<span class="source-line-no">174</span><span id="line-174">                                break;</span>
+<span class="source-line-no">175</span><span id="line-175">                                </span>
+<span class="source-line-no">176</span><span id="line-176">                        case 13:</span>
+<span class="source-line-no">177</span><span id="line-177">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;%= ... %&gt;</span>
+<span class="source-line-no">178</span><span id="line-178">                                        jsb.emitExpression(eline, esb.toString());</span>
+<span class="source-line-no">179</span><span id="line-179">                                        esb.setLength(0);</span>
+<span class="source-line-no">180</span><span id="line-180">                                        eline = line;</span>
+<span class="source-line-no">181</span><span id="line-181">                                        unclosed = null;</span>
+<span class="source-line-no">182</span><span id="line-182">                                        state = 0;</span>
+<span class="source-line-no">183</span><span id="line-183">                                } else {</span>
+<span class="source-line-no">184</span><span id="line-184">                                        esb.append(ch);</span>
+<span class="source-line-no">185</span><span id="line-185">                                        state = 3; </span>
+<span class="source-line-no">186</span><span id="line-186">                                }</span>
+<span class="source-line-no">187</span><span id="line-187">                                break;</span>
+<span class="source-line-no">188</span><span id="line-188">                        </span>
+<span class="source-line-no">189</span><span id="line-189">                        case 14:</span>
+<span class="source-line-no">190</span><span id="line-190">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;% ... %&gt;</span>
+<span class="source-line-no">191</span><span id="line-191">                                        jsb.emitScriptlet(eline, esb.toString());</span>
+<span class="source-line-no">192</span><span id="line-192">                                        esb.setLength(0);</span>
+<span class="source-line-no">193</span><span id="line-193">                                        eline = line;</span>
+<span class="source-line-no">194</span><span id="line-194">                                        unclosed = null;</span>
+<span class="source-line-no">195</span><span id="line-195">                                        state = 0;</span>
+<span class="source-line-no">196</span><span id="line-196">                                } else {</span>
+<span class="source-line-no">197</span><span id="line-197">                                        esb.append(ch);</span>
+<span class="source-line-no">198</span><span id="line-198">                                        state = 4; </span>
+<span class="source-line-no">199</span><span id="line-199">                                }</span>
+<span class="source-line-no">200</span><span id="line-200">                                break;</span>
+<span class="source-line-no">201</span><span id="line-201">                                </span>
+<span class="source-line-no">202</span><span id="line-202">                        case 15:</span>
+<span class="source-line-no">203</span><span id="line-203">                                if (ch=='&gt;') {   // closing '%&gt;' of &lt;%@ ... %&gt; declaration</span>
+<span class="source-line-no">204</span><span id="line-204">                                        jsb.emitDeclaration(eline, esb.toString());</span>
+<span class="source-line-no">205</span><span id="line-205">                                        esb.setLength(0);</span>
+<span class="source-line-no">206</span><span id="line-206">                                        eline = line;</span>
+<span class="source-line-no">207</span><span id="line-207">                                        unclosed = null;</span>
+<span class="source-line-no">208</span><span id="line-208">                                        state = 0;</span>
+<span class="source-line-no">209</span><span id="line-209">                                } else {</span>
+<span class="source-line-no">210</span><span id="line-210">                                        esb.append(ch);</span>
+<span class="source-line-no">211</span><span id="line-211">                                        state = 5; </span>
+<span class="source-line-no">212</span><span id="line-212">                                }</span>
+<span class="source-line-no">213</span><span id="line-213">                                break;</span>
+<span class="source-line-no">214</span><span id="line-214">                        </span>
+<span class="source-line-no">215</span><span id="line-215">                        case 16:</span>
+<span class="source-line-no">216</span><span id="line-216">                                if (ch=='"') {   // closing quote of &lt;%@ ... %&gt; declaration attribute</span>
+<span class="source-line-no">217</span><span id="line-217">                                        esb.append(ch);</span>
+<span class="source-line-no">218</span><span id="line-218">                                        state = 5;</span>
+<span class="source-line-no">219</span><span id="line-219">                                } else {</span>
+<span class="source-line-no">220</span><span id="line-220">                                        esb.append(ch);</span>
+<span class="source-line-no">221</span><span id="line-221">                                        // stay in state 16</span>
+<span class="source-line-no">222</span><span id="line-222">                                }</span>
+<span class="source-line-no">223</span><span id="line-223">                                break;</span>
+<span class="source-line-no">224</span><span id="line-224">                }</span>
+<span class="source-line-no">225</span><span id="line-225">                </span>
+<span class="source-line-no">226</span><span id="line-226">                if (ch=='\n') { line++; }                       </span>
+<span class="source-line-no">227</span><span id="line-227">        }</span>
+<span class="source-line-no">228</span><span id="line-228">        </span>
+<span class="source-line-no">229</span><span id="line-229">        public void parseEndOfFile() throws ScriptException {</span>
+<span class="source-line-no">230</span><span id="line-230">                // emit anything that's left, raise exceptions if in invalid state</span>
+<span class="source-line-no">231</span><span id="line-231">                // logger.debug("state " + state + " EOF");</span>
+<span class="source-line-no">232</span><span id="line-232">                if (state != 0 &amp;&amp; unclosed != null) {</span>
+<span class="source-line-no">233</span><span id="line-233">                        throw new ScriptException("unexpected EOF (unclosed '" + unclosed + "')", null, line); // charOffset</span>
+<span class="source-line-no">234</span><span id="line-234">                }</span>
+<span class="source-line-no">235</span><span id="line-235">                if (sb.length()&gt;0) {</span>
+<span class="source-line-no">236</span><span id="line-236">                        jsb.emitText(eline, sb.toString());</span>
+<span class="source-line-no">237</span><span id="line-237">                        sb.setLength(0);</span>
+<span class="source-line-no">238</span><span id="line-238">                        eline = line;</span>
+<span class="source-line-no">239</span><span id="line-239">                }</span>
+<span class="source-line-no">240</span><span id="line-240">        }</span>
+<span class="source-line-no">241</span><span id="line-241">}</span>
 
 
 
