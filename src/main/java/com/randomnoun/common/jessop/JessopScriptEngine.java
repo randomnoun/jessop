@@ -22,6 +22,11 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import org.apache.log4j.Logger;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
+import org.graalvm.polyglot.HostAccess;
+
+import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 
 import com.randomnoun.common.jessop.lang.JavascriptJessopScriptBuilder;
 
@@ -108,10 +113,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 		try {
 			return cscript.eval(context);
 		} finally {
-			ScriptEngine targetEngine = cscript.getEngine();
-			if (targetEngine instanceof AutoCloseable) {
-				try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
-			}
+			closeTargetEngine(cscript.getEngine());
 		}
 	}
 
@@ -122,10 +124,7 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 		try {
 			return cscript.eval(context);
 		} finally {
-			ScriptEngine targetEngine = cscript.getEngine();
-			if (targetEngine instanceof AutoCloseable) {
-				try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
-			}
+			closeTargetEngine(cscript.getEngine());
 		}
 	}
 
@@ -143,6 +142,17 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	public Object eval(Reader reader) throws ScriptException {
         return eval(reader, (ScriptContext) null);
     }
+
+	private void closeTargetEngine(ScriptEngine targetEngine) {
+		if (targetEngine instanceof GraalJSScriptEngine) {
+			GraalJSScriptEngine graalEngine = (GraalJSScriptEngine) targetEngine;
+			Engine polyglotEngine = graalEngine.getPolyglotContext().getEngine();
+			graalEngine.close();
+			polyglotEngine.close();
+		} else if (targetEngine instanceof AutoCloseable) {
+			try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
+		}
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -226,7 +236,21 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			
 			// get this from the jessop declaration eventally, but for now:
 			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
-			ScriptEngine engine = new ScriptEngineManager().getEngineByName(declarations.engine);  // nashorn in JDK9
+			ScriptEngine engine;
+			if ("graal-js".equals(declarations.engine) || "graal.js".equals(declarations.engine)) {
+				// Create an isolated polyglot Engine per evaluation to prevent shape/code cache
+				// accumulation in a shared Engine, which causes memory leaks in long-lived JVMs
+				Engine polyglotEngine = Engine.newBuilder()
+					.option("engine.WarnInterpreterOnly", "false")
+					.build();
+				engine = GraalJSScriptEngine.create(polyglotEngine,
+					Context.newBuilder("js")
+						.engine(polyglotEngine)
+						.allowHostAccess(HostAccess.ALL)
+						.allowHostClassLookup(s -> true));
+			} else {
+				engine = new ScriptEngineManager().getEngineByName(declarations.engine);
+			}
 			if (engine==null) {
 				throw new ScriptException("java.scriptx engine '" + declarations.engine + "' not found");
 			}
