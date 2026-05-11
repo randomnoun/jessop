@@ -105,14 +105,28 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	@Override
 	public Object eval(String script, ScriptContext context) throws ScriptException {
 		CompiledScript cscript = compile(script);
-		return cscript.eval(context);
+		try {
+			return cscript.eval(context);
+		} finally {
+			ScriptEngine targetEngine = cscript.getEngine();
+			if (targetEngine instanceof AutoCloseable) {
+				try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
 		CompiledScript cscript = compile(reader);
-		return cscript.eval(context);
+		try {
+			return cscript.eval(context);
+		} finally {
+			ScriptEngine targetEngine = cscript.getEngine();
+			if (targetEngine instanceof AutoCloseable) {
+				try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
+			}
+		}
 	}
 
 	// if the user doesn't supply a context, we evaluate it with a null context (not the default context)
