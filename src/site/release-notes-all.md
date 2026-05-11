@@ -1,3 +1,9 @@
+# 2.0.5
+
+## Updates
+
+* reduce graalvm memory usage
+
 # 2.0.2
 
 ## Updates
