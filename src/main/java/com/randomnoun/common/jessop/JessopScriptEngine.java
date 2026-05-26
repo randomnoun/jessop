@@ -41,6 +41,10 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 
 	/** ScriptEngineFactory that created this class */
 	ScriptEngineFactory factory;
+
+	/** If set during compile(), holds the externally-provided polyglot Engine so that
+	 * closeTargetEngine() knows not to close it. */
+	private Engine graalEngine;
 	
     /** Reserved key for a named value that identifies the initial language used for jessop scripts.
      * If not set, will default to 'javascript'
@@ -102,7 +106,13 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 	/** Default value for the JESSOP_SUPPRESS_EOL key; has the value "false" */
 	public static final String JESSOP_DEFAULT_SUPPRESS_EOL = "false";
 
-	
+    /** Reserved key for a named value that provides a shared {@code org.graalvm.polyglot.Engine}
+     * instance. If set, the jessop engine will create new Contexts within this Engine rather than
+     * creating a new Engine per evaluation. The caller is responsible for closing this Engine.
+     */
+	public static final String JESSOP_GRAAL_ENGINE = "com.randomnoun.common.jessop.graalEngine";
+
+
 	// so I guess we implement this twice then
 	// let's always compile it if we can
 	
@@ -145,10 +155,12 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 
 	private void closeTargetEngine(ScriptEngine targetEngine) {
 		if (targetEngine instanceof GraalJSScriptEngine) {
-			GraalJSScriptEngine graalEngine = (GraalJSScriptEngine) targetEngine;
-			Engine polyglotEngine = graalEngine.getPolyglotContext().getEngine();
-			graalEngine.close();
-			polyglotEngine.close();
+			GraalJSScriptEngine graalJsEngine = (GraalJSScriptEngine) targetEngine;
+			Engine polyglotEngine = graalJsEngine.getPolyglotContext().getEngine();
+			graalJsEngine.close();
+			if (this.graalEngine == null) {
+				polyglotEngine.close();
+			}
 		} else if (targetEngine instanceof AutoCloseable) {
 			try { ((AutoCloseable) targetEngine).close(); } catch (Exception e) { /* ignore */ }
 		}
@@ -237,12 +249,23 @@ public class JessopScriptEngine extends AbstractScriptEngine implements Compilab
 			// get this from the jessop declaration eventally, but for now:
 			// if the underlying engine supports compilation, then compile that here, otherwise just store the source
 			ScriptEngine engine;
-			if ("graal-js".equals(declarations.engine) || "graal.js".equals(declarations.engine)) {
-				// Create an isolated polyglot Engine per evaluation to prevent shape/code cache
-				// accumulation in a shared Engine, which causes memory leaks in long-lived JVMs
+			if ("graalEngine".equals(declarations.engine)) {
+				Object graalEngineObj = get(JESSOP_GRAAL_ENGINE);
+				if (!(graalEngineObj instanceof Engine)) {
+					throw new ScriptException("engine 'graalEngine' requires a " + JESSOP_GRAAL_ENGINE + " attribute");
+				}
+				Engine polyglotEngine = (Engine) graalEngineObj;
+				this.graalEngine = polyglotEngine;
+				engine = GraalJSScriptEngine.create(polyglotEngine,
+					Context.newBuilder("js")
+						.engine(polyglotEngine)
+						.allowHostAccess(HostAccess.ALL)
+						.allowHostClassLookup(s -> true));
+			} else if ("graal-js".equals(declarations.engine) || "graal.js".equals(declarations.engine)) {
 				Engine polyglotEngine = Engine.newBuilder()
 					.option("engine.WarnInterpreterOnly", "false")
 					.build();
+				this.graalEngine = null;
 				engine = GraalJSScriptEngine.create(polyglotEngine,
 					Context.newBuilder("js")
 						.engine(polyglotEngine)
