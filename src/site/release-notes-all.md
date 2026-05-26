@@ -1,3 +1,9 @@
+# 2.0.6
+
+## Updates
+
+* reuse graal engine between invocations
+
 # 2.0.5
 
 ## Updates

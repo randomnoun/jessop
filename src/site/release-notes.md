@@ -1,3 +1,3 @@
 ## Updates
 
-* reduce graalvm memory usage
+* reuse graal engine between invocations
